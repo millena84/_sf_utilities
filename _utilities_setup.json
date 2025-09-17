@@ -1,0 +1,210 @@
+{
+    "utilDirectory": "/c/Users/YOUR_USER/sf/_sf_utilities",
+    "_explanation": "Previous name: dirPosix_configUtilJson. This is the directory where all Salesforce utilities are stored. It contains the configuration files for various utilities used in Salesforce development.", 
+    "vscodeInfo": 
+        {
+            "_explanation": "Previous name: infoVscode. Here is the posix directory address of all you salesforce projects (local, where you are using - pointing - Vscode). Previous name: dirPosixRepoVscode (bellow)", 
+            "vscodePosixDir": "/c/Users/YOUR_USER/sf"
+        },
+    "orgSfInfo": {
+        "_explanation": "Previous name: infoOrgsSf. This section contains the configuration for different Salesforce environments, including test, development, production, integration testing (IT), and user acceptance testing (UAT). Each environment has its own settings for alias, login URL, username, and project directory.",
+        "env_test": 
+            {
+                "_explanation": "Previous name: ambienteTeste. This section allows you to specify the desired configurations for creating Salesforce projects and connecting to organizations and sandboxes. This property describes information about POC sandbox.",
+                "aliasOrg": "YOUR_TEST_ORG_ALIAS",
+                "urlLogin": "https://test.salesforce.com",
+                "username": "YOUR_USER@YOUR_ORG_SAND.sandbox",
+                "dirPosixProjSf": "/YOUR_PROJECT_DIR_ORG_TEST"
+            },
+        "env_dev": 
+            {
+                "_explanation": "Previous name: ambienteTeste. This section allows you to specify the desired configurations for creating Salesforce projects and connecting to organizations and sandboxes. This property describes information about developer sandbox.",
+                "aliasOrg": "YOUR_DEV_ORG_ALIAS",
+                "urlLogin": "https://test.salesforce.com",
+                "username": "YOUR_USER@YOUR_ORG_SAND.com",
+                "dirPosixProjSf": "/YOUR_PROJECT_DIR_ORG_DEV"
+            },
+        "env_it": 
+            {
+                "_explanation": "Previous name: ambienteIt. This section allows you to specify the desired configurations for creating Salesforce projects and connecting to organizations and sandboxes. This property describes information about IT sandbox.",
+                "aliasOrg": "YOUR_IT_ORG_ALIAS",
+                "urlLogin": "https://test.salesforce.com",
+                "username": "YOUR_USER@YOUR_ORG_SAND.it",
+                "dirPosixProjSf": "/YOUR_PROJECT_DIR_ORG_IT"
+            },
+        "env_uat": 
+            {
+                "_explanation": "Previous name: ambienteUat. This section allows you to specify the desired configurations for creating Salesforce projects and connecting to organizations and sandboxes. This property describes information about UAT sandbox.",
+                "aliasOrg": "YOUR_UAT_ORG_ALIAS",
+                "urlLogin": "https://test.salesforce.com",
+                "username": "YOUR_USER@YOUR_ORG_SAND.UAT",
+                "dirPosixProjSf": "/YOUR_PROJECT_DIR_ORG_UAT"
+            },
+        "env_prd": 
+            {
+                "_explanation": "Previous name: ambientePrd. This section allows you to specify the desired configurations for creating Salesforce projects and connecting to organizations and sandboxes. This property describes information about prd organization.",
+                "aliasOrg": "YOUR_PROD_ORG_ALIAS",
+                "urlLogin": "https://login.salesforce.com",
+                "username": "YOUR_USER@YOUR_ORG_SAND.com",
+                "dirPosixProjSf": "/YOUR_PROJECT_DIR_ORG_PRD"
+            }
+    },
+    "gitInfo": {
+        "repositories": 
+            {
+                "_explanation": "Previous name: infoGit > repositorios. Git repositories information: environment Start, batch Cmdt Process, doc Object Generator.",
+                "environmentStart": "GITREPO",
+                "batchCmdtProcess": "GITREPO",
+                "docObjectGenerator": "GITREPO"
+            }
+    },
+    "detailInfoProccess": {
+        "envConfig":
+            {
+                "_explanation": "Previous name: infoEspecificaProcessos > configAmbiente. This properties were create to save your work org alias and you reference org alias. You also can use the config properties related to dev hub and scratch orgs (ps: you should turn on Dev Hub on you organization.",
+                "workOrg": "orgAliasLOGGED-Where-you-will-work",
+                "referenceOrg": "orgAliasLOGGED-Where-you-will-retrieve-components-data",
+                "infoDevHub": {
+                    "scratchOrgAlias": "",
+                    "posixDirSfdxScratchProj": "./DIR_NAME_SFDX_PROJ_SCRATCH"
+                }
+            },
+        "retrieve":
+            {
+                "_explanation": "This utility uses refOrg in the SF CLI command to retrieve information, as it is defined below or it will make a full retrieve from organization.  #### FUTURO: workOrg and referenceOrg as defined in the previous property. It till retrieve information from the org defined in referenceOrg and save the information in org defined in workOrg. ####",
+                "refOrg": "referenceForRetrieveOrgAlias",
+                "referenceDirPosix": "/DIR_NAME_PROJ_SF_WHERE_WILL_RETRIEVE?????",
+                "referenceManifest": "custom",
+                "dirManifestStandard": "manifest/package.xml",
+                "dirManifestCustom": "/DIR_NAME_PROJ_SF_WHERE_WILL_RETRIEVE",
+                "retrieveCustomDetail": [
+                    {
+                        "componentType": "CustomObject",
+                        "filters": ["xxx", "__mdt"]
+                    },
+                    {
+                        "componentType": "CustomMetadata",
+                        "filters": ["xxx"]
+                    },
+                    {
+                        "componentType": "CompactLayout",
+                        "filters": ["xxx"]
+                    },
+
+                    {
+                        "componentType": "ValidationRule",
+                        "filters": ["xxx"]
+                    }
+                ]
+            },
+        "batchCmdtProcess":
+            {
+                "_explanation": "Previous name: avaliacaoCustomMdt. Information used in the batch custom Metadata process. All configuration needed to the process will stay in this property.",
+                "orgRef": "PROD_ORG",
+                "dirProjSfCustom": "/_DIR_NAME",
+                "dirProcessCmdt": "/_PROCESSCMDT_DIR_NAME",
+                "dirMetadataRefCsv": "/DIR_NAME_METADATA_ORG",
+                "processCmdtName": "yyy_YOUR_CMDT_HERE__mdt",
+                "customRetrieveInfo": [
+                    {
+                        "componentType": "CustomObject",
+                        "filters": ["PARAM_1", "PARAM_2", "Vinculo_PARAM_1_PARAM_2", "PARAM_3", "__mdt"]
+                    },
+                    {
+                        "componentType": "CustomMetadata",
+                        "filters": ["yyy_YOUR_CMDT_HERE."]
+                    },
+                    {
+                        "componentType": "PermissionSet",
+                        "filters": []
+                    },
+                    {
+                        "componentType": "Profile",
+                        "filters": []
+                    },
+                    {
+                        "componentType": "Role",
+                        "filters": []
+                    }
+                ],
+                "localCopyInfo": {
+                    "_explanation": "Previous name: infoCopiaLocal. Points to the project salesforce directory where all the data reference will be filtered.",
+                    "componentDir": "/custommetadata",
+                    "excludeFilter": "ABC",
+                    "CMDT_TABLE_NAME(__mdt)": {
+                        "archPrefixName": "YOUR_CMDT_HERE",
+                        "archParametersReference": "REF_VincParamCanFor.csv",
+                        "archInfoComponentesCmdtXml": "InfoParametrizadaXmlCmdt.csv",
+                        "archUpdatedCmdtXml": "1_listaCustomAlteracao.csv",
+                        "archCreatedCmdtXml": "1_listavinculosCriacao.csv",
+                        "commomInfoCmdts": {
+                        "archPrefixName": "yyy_YOUR_CMDT_HERE.",
+                        "objectDefRelationFieldObjectMaster": "RelationObjectMasterNameUsedInProcess__c",
+                        "screenUsed": "Screen where the process is being used",
+                        "detailListRecoABCmdt": [
+                            {
+                                "fieldParam1": "FIELD_PARAM_1_4",
+                                "fieldParam2": "FIELD_PARAM_2_4",
+                                "labelCmdtRecord": "LABEL CMDT RECORD",
+                                "fieldDefRelationFieldObjectDetail": "RelationFieldDetailNameUsedInProcess__r",
+                                "objectDefRelationFieldObjectDetail": "RelationObjectDetailNameUsedInProcess__c",
+                                "fieldsFromDetailUsed": "FIELD001"
+                            },
+                            {
+                                "fieldParam1": "FIELD_PARAM_3_4",
+                                "fieldParam2": "FIELD_PARAM_4_4",
+                                "labelCmdtRecord": "LABEL CMDT RECORD",
+                                "fieldDefRelationFieldObjectDetail": "RelationFieldDetailNameUsedInProcess__r",
+                                "objectDefRelationFieldObjectDetail": "RelationObjectDetailNameUsedInProcess__c",
+                                "fieldsFromDetailUsed": "FIELD001, FIELD002"
+                            },
+                            {
+                                "fieldParam1": "FIELD_PARAM_3_4",
+                                "fieldParam2": "FIELD_PARAM_1_4",
+                                "labelCmdtRecord": "LABEL CMDT RECORD",
+                                "fieldDefRelationFieldObjectDetail": "RelationFieldDetailNameUsedInProcess__r",
+                                "objectDefRelationFieldObjectDetail": "RelationObjectDetailNameUsedInProcess__c",
+                                "fieldsFromDetailUsed": "FIELD002"
+                            }
+                        ]
+                    },
+                    "queryUsed": "queryName",
+                    "supportedParameterRelations": {
+                        "parameterRelationAAAxBBBQuery": "./utilities/data/processQueries/paramRelatAAAxBBB_customMdt.soql",
+                        "parameterRelationCCCxAAAQuery": "./utilities/data/processQueries/paramRelatBBBxAAA_customMdt.soql"
+                    }
+                }
+            }
+        }
+    },
+    "principalObjectQuery": {
+        "EntityDefinitionQuery": {
+            "_explanation": "Previous name: consultasTabelasInternas > consultaEntityDefinition. This query helps to read principal information about all your organization objects.",
+            "resultFormat": "json",
+            "resultArchive": "result_entityDefinition.json",
+            "dirPosixProjSf": "/c/Users/YOUR_USER/YOUR_PROJECT_DIR/YOUR_ORG_ALIAS",
+            "dirSaidaCompleto": "/c/Users/YOUR_USER/YOUR_PROJECT_DIR/YOUR_UTILITY_DIR/1_infoOrgSf/ORG-REFERENCE/data/internal_objects",
+            "resultAnalysisDir": "/c/Users/YOUR_USER/YOUR_PROJECT_DIR/YOUR_UTILITY_DIR/1_infoOrgSf/ORG-REFERENCE/analises",
+            "referenceOrg": "simulacoesxxx01",
+            "queryOR": ["xxx", "__mdt" ],
+            "queryAND": "__c",
+            "excludeInfo": [""],
+            "includeAditionalObjects": "s",
+            "principalQuery": "SELECT DurableId, Label, QualifiedApiName, DeveloperName, KeyPrefix, IsFeedEnabled, IsSearchable, LastModifiedDate FROM EntityDefinition"
+        },
+        "accountQuery": {
+            "_explanation": "This query helps you to read all relevant information on the Account object.",
+            "resultFormat": "json",
+            "resultArchive": "result_entityDefinition.json",
+            "dirPosixProjSf": "/c/Users/YOUR_USER/YOUR_PROJECT_DIR/model_estbrf_ORG-REFERENCE",
+            "dirSaidaCompleto": "/c/Users/YOUR_USER/YOUR_PROJECT_DIR/YOUR_UTILITY_DIR/1_infoOrgSf/ORG-REFERENCE/data/internal_objects",
+            "resultAnalysisDir": "/c/Users/YOUR_USER/YOUR_PROJECT_DIR/YOUR_UTILITY_DIR/1_infoOrgSf/ORG-REFERENCE/analises",
+            "referenceOrg": "simulacoesxxx01",
+            "queryOR": ["xxx", "__mdt" ],
+            "queryAND": "__c",
+            "excludeInfo": [""],
+            "includeAditionalObjects": "s",
+            "principalQuery": "SELECT DurableId, Label, QualifiedApiName, DeveloperName, KeyPrefix, IsFeedEnabled, IsSearchable, LastModifiedDate FROM EntityDefinition"
+        }
+    }
+}
