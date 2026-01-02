@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- ========================================================= -->
+    <!-- platform (core platform: código, UI, permissões, automação) -->
+    <!-- ========================================================= -->
+    <types><members>*</members><name>ApexClass</name></types>
+    <types><members>*</members><name>ApexComponent</name></types>
+    <types><members>*</members><name>ApexPage</name></types>
+    <types><members>*</members><name>ApexTrigger</name></types>
+    <!-- usado em várias nuvens: Flow / automação -->
+    <types><members>*</members><name>Flow</name></types>
+    <!-- usado em várias nuvens: FlexiPage / Lightning App Builder -->
+    <types><members>*</members><name>FlexiPage</name></types>
+    <!-- usado em várias nuvens: objetos, campos, layouts -->
+    <types><members>*</members><name>CustomObject</name></types>
+    <types><members>*</members><name>CustomField</name></types>
+    <types><members>*</members><name>CustomLabel</name></types>
+    <types><members>*</members><name>CustomMetadata</name></types>
+    <types><members>*</members><name>CustomPermission</name></types>
+    <types><members>*</members><name>CustomTab</name></types>
+    <types><members>*</members><name>CustomApplication</name></types>
+    <types><members>*</members><name>Role</name></types>
+    <types><members>*</members><name>Profile</name></types>
+    <types><members>*</members><name>PermissionSet</name></types>
+    <types><members>*</members><name>PermissionSetGroup</name></types>
+    <types><members>*</members><name>Layout</name></types>
+    <types><members>*</members><name>RecordType</name></types>
+    <types><members>*</members><name>ValidationRule</name></types>
+    <types><members>*</members><name>Workflow</name></types>
+    <types><members>*</members><name>AssignmentRules</name></types>
+    <types><members>*</members><name>AutoResponseRules</name></types>
+    <types><members>*</members><name>EscalationRules</name></types>
+    <types><members>*</members><name>SharingRules</name></types>
+    <types><members>*</members><name>RemoteSiteSetting</name></types>
+    <types><members>*</members><name>NamedCredential</name></types>
+    <types><members>*</members><name>ExternalCredential</name></types>
+    <types><members>*</members><name>AuthProvider</name></types>
+    <types><members>*</members><name>ConnectedApp</name></types>
+    <types><members>*</members><name>Translations</name></types>
+    <types><members>*</members><name>CustomObjectTranslation</name></types>
+    <types><members>*</members><name>GlobalValueSet</name></types>
+    <types><members>*</members><name>GlobalValueSetTranslation</name></types>
+    <types><members>*</members><name>StandardValueSet</name></types>
+    <types><members>*</members><name>StandardValueSetTranslation</name></types>
+    <types><members>*</members><name>StaticResource</name></types>
+    <types><members>*</members><name>LightningComponentBundle</name></types>
+    <types><members>*</members><name>LightningMessageChannel</name></types>
+    <types><members>*</members><name>PlatformCachePartition</name></types>
+    <types><members>*</members><name>Settings</name></types>
+
+    <!-- ================= -->
+    <!-- sales cloud       -->
+    <!-- ================= -->
+    <!-- usado em mais de uma nuvem: CampaignInfluenceModel também toca Marketing/Platform -->
+    <!--
+    <types><members>*</members><name>CampaignInfluenceModel</name></types>
+    <types><members>*</members><name>SalesAgreementSettings</name></types>
+    <types><members>*</members><name>AccountForecastSettings</name></types>
+    <types><members>*</members><name>AdvAccountForecastSet</name></types>
+    <types><members>*</members><name>AdvAcctForecastDimSource</name></types>
+    <types><members>*</members><name>AdvAcctForecastPeriodGroup</name></types>
+    <types><members>*</members><name>Territory2Model</name></types>
+    <types><members>*</members><name>Territory2Type</name></types>
+    <types><members>*</members><name>Territory2</name></types>
+    <types><members>*</members><name>ForecastingType</name></types>
+    <types><members>*</members><name>ForecastingSourceDefinition</name></types>
+    <types><members>*</members><name>ForecastingGroup</name></types>
+    <types><members>*</members><name>ForecastingFilter</name></types>
+    <types><members>*</members><name>ForecastingFilterCondition</name></types>
+    <types><members>*</members><name>PipelineInspMetricConfig</name></types>
+    -->
+
+    <!-- ================= -->
+    <!-- service cloud     -->
+    <!-- ================= -->
+    <!-- usado em mais de uma nuvem: EntitlementProcess pode aparecer com Field Service -->
+    <types><members>*</members><name>ServiceChannel</name></types>
+    <types><members>*</members><name>ServiceProcess</name></types>
+    <types><members>*</members><name>EntitlementProcess</name></types>
+    <types><members>*</members><name>EntitlementTemplate</name></types>
+    <types><members>*</members><name>MilestoneType</name></types>
+    <types><members>*</members><name>ServicePresenceStatus</name></types>
+    <types><members>*</members><name>PresenceDeclineReason</name></types>
+    <types><members>*</members><name>PresenceUserConfig</name></types>
+    <types><members>*</members><name>LiveChatAgentConfig</name></types>
+    <types><members>*</members><name>LiveChatButton</name></types>
+    <types><members>*</members><name>LiveChatDeployment</name></types>
+    <types><members>*</members><name>LiveChatSensitiveDataRule</name></types>
+    <types><members>*</members><name>OmniSupervisorConfig</name></types>
+    <types><members>*</members><name>QueueRoutingConfig</name></types>
+    <types><members>*</members><name>ServiceAISetupDefinition</name></types>
+    <types><members>*</members><name>ServiceAISetupField</name></types>
+
+    <!-- ================= -->
+    <!-- field service     -->
+    <!-- ================= -->
+    <types><members>*</members><name>FieldServiceMobileConfig</name></types>
+    <types><members>*</members><name>FieldServiceMobileExtension</name></types>
+    <types><members>*</members><name>SchedulingObjective</name></types>
+    <types><members>*</members><name>SchedulingRule</name></types>
+    <types><members>*</members><name>WorkSkillRouting</name></types>
+    <types><members>*</members><name>WorkSkillRoutingAttribute</name></types>
+    <types><members>*</members><name>TimeSheetTemplate</name></types>
+
+    <!-- ================= -->
+    <!-- data cloud (puro) -->
+    <!-- ================= -->
+    <!-- tipos Data 360 / Data Cloud puro presentes em "types" -->
+    <!-- [ERRO ao retrieve] <types><members>*</members><name>MktDataModelObject</name></types> -->
+    <!-- [ERRO ao retrieve] <types><members>*</members><name>MktDataModelField</name></types> -->
+    <!-- [ERRO ao retrieve] <types><members>*</members><name>MktDataLakeObject</name></types> -->
+    <types><members>*</members><name>MktDataTranObject</name></types>
+    <types><members>*</members><name>MktDataTranField</name></types>
+    <!-- [ERRO ao retrieve] <types><members>*</members><name>MktDataTranDefinition</name></types> -->
+    <!-- [ERRO ao retrieve] <types><members>*</members><name>MktDataTransform</name></types> --> -->
+    <types><members>*</members><name>MarketSegmentDefinition</name></types>
+    <!-- tipos Data 360 / Data Cloud puro presentes em "types" -->
+    <types><members>*</members><name>DataSource</name></types>
+    <types><members>*</members><name>DataSourceObject</name></types>
+    <types><members>*</members><name>DataSourceBundleDefinition</name></types>
+    <types><members>*</members><name>DataSourceTenant</name></types>
+    <types><members>*</members><name>DataStreamDefinition</name></types>
+    <types><members>*</members><name>DataStreamTemplate</name></types>
+    <types><members>*</members><name>DataSrcDataModelFieldMap</name></types>
+    <types><members>*</members><name>DataConnector</name></types>
+    <types><members>*</members><name>DataConnectorIngestApi</name></types>
+    <types><members>*</members><name>ExternalDataConnector</name></types>
+    <types><members>*</members><name>InternalDataConnector</name></types>
+    <types><members>*</members><name>DataPipeline</name></types>
+    <types><members>*</members><name>StreamingAppDataConnector</name></types>
+    <!-- [ERRO ao retrieve] <types><members>*</members><name>S3DataConnector</name></types> -->
+    <types><members>*</members><name>DataObjectSearchIndexConf</name></types>
+
+    <!-- ===================================== -->
+    <!-- data cloud / agentforce (retrievers)  -->
+    <!-- ===================================== -->
+    <!-- usado em várias nuvens: NamedCredential, ExternalCredential já em platform -->
+
+    <!-- retrievers / search -->
+    <!-- Data Cloud AI models / ML -->
+    <types><members>*</members><name>DataObjectSearchIndexConf</name></types>
+    <types><members>*</members><name>SearchOrgWideObjectConfig</name></types>
+    <!-- [ERRO ao retrieve] <types><members>*</members><name>SearchSettings</name></types> -->
+    <types><members>*</members><name>SearchCustomization</name></types>
+    <!-- [ERRO ao retrieve] <types><members>*</members><name>SearchIndexJobStatusEvent</name></types> -->
+    <types><members>*</members><name>RecordAggregationDefinition</name></types>
+    <types><members>*</members><name>RetrievalSummaryDefinition</name></types>
+    <types><members>*</members><name>MLDataDefinition</name></types>
+    <types><members>*</members><name>MlDomain</name></types>
+    <types><members>*</members><name>MLPredictionDefinition</name></types>
+    <types><members>*</members><name>MLRecommendationDefinition</name></types>
+    <!-- <types><members>*</members><name>ExternalAIModel</name></types> -->
+
+
+    <!-- ============ -->
+    <!-- agentforce   -->
+    <!-- ============ -->
+    <!-- usado em várias nuvens: Prompt é global -->
+    <!-- usado em várias nuvens: NamedCredential, ExternalCredential já em platform -->
+    <types><members>*</members><name>GenAiFunction</name></types>
+    <types><members>*</members><name>GenAiPlanner</name></types>
+    <!-- [ERRO ao retrieve] <types><members>*</members><name>GenAiPlannerBundle</name></types> -->
+    <types><members>*</members><name>GenAiPromptTemplate</name></types>
+    <types><members>*</members><name>GenAiPromptTemplateActv</name></types>
+    <types><members>*</members><name>GenAiPlugin</name></types>
+
+    <!-- <types><members>*</members><name>Prompt</name></types> -->
+    <types><members>*</members><name>AIAssistantTemplate</name></types>
+    <types><members>*</members><name>AIApplication</name></types>
+    <types><members>*</members><name>AIApplicationConfig</name></types>
+    <types><members>*</members><name>AIUsecaseDefinition</name></types>
+    <types><members>*</members><name>AIEvaluationDefinition</name></types>
+    <types><members>*</members><name>AssistantDefinition</name></types>
+    <types><members>*</members><name>AssistantVersion</name></types>
+    <types><members>*</members><name>AssistantContextItem</name></types>
+    <types><members>*</members><name>AssistantRecommendationType</name></types>
+    <types><members>*</members><name>AssistantSkillQuickAction</name></types>
+    <types><members>*</members><name>AssistantSkillSobjectAction</name></types>
+
+    <!-- API version Winter '26 -->
+    <version>65.0</version>
+</Package>
