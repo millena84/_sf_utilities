@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- ===================================== -->
+    <!-- data cloud / agentforce (retrievers)  -->
+    <!-- ===================================== -->
+    <!-- usado em várias nuvens: NamedCredential, ExternalCredential já em platform -->
+    <types><members>*</members><name>GenAiFunction</name></types>
+    <types><members>*</members><name>GenAiPlanner</name></types>
+    <!-- <types><members>*</members><name>GenAiPlannerBundle</name></types> -->
+    <types><members>*</members><name>GenAiPromptTemplate</name></types>
+    <types><members>*</members><name>GenAiPromptTemplateActv</name></types>
+    <types><members>*</members><name>GenAiPlugin</name></types>
+
+    <!-- ============ -->
+    <!-- agentforce   -->
+    <!-- ============ -->
+    <!-- usado em várias nuvens: Prompt é global -->
+    <types><members>*</members><name>Prompt</name></types>
+    <types><members>*</members><name>AIAssistantTemplate</name></types>
+    <types><members>*</members><name>AIApplication</name></types>
+    <types><members>*</members><name>AIApplicationConfig</name></types>
+    <types><members>*</members><name>AIUsecaseDefinition</name></types>
+    <types><members>*</members><name>AIEvaluationDefinition</name></types>
+    <types><members>*</members><name>AssistantDefinition</name></types>
+    <types><members>*</members><name>AssistantVersion</name></types>
+    <types><members>*</members><name>AssistantContextItem</name></types>
+    <types><members>*</members><name>AssistantRecommendationType</name></types>
+    <types><members>*</members><name>AssistantSkillQuickAction</name></types>
+    <types><members>*</members><name>AssistantSkillSobjectAction</name></types>
+    <!-- API version Winter '26 -->
+    <version>65.0</version>
+</Package>

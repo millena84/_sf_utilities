@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- ================= -->
+    <!-- field service     -->
+    <!-- ================= -->
+    <types><members>*</members><name>FieldServiceMobileConfig</name></types>
+    <types><members>*</members><name>FieldServiceMobileExtension</name></types>
+    <types><members>*</members><name>SchedulingObjective</name></types>
+    <types><members>*</members><name>SchedulingRule</name></types>
+    <types><members>*</members><name>WorkSkillRouting</name></types>
+    <types><members>*</members><name>WorkSkillRoutingAttribute</name></types>
+    <types><members>*</members><name>TimeSheetTemplate</name></types>
+
+    <!-- API version Winter '26 -->
+    <version>65.0</version>
+</Package>

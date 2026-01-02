@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- ===================================== -->
+    <!-- data cloud / agentforce (retrievers)  -->
+    <!-- ===================================== -->
+    <!-- usado em várias nuvens: NamedCredential, ExternalCredential já em platform -->
+
+    <!-- retrievers / search -->
+    <!-- Data Cloud AI models / ML -->
+    <types><members>*</members><name>DataObjectSearchIndexConf</name></types>
+    <types><members>*</members><name>SearchOrgWideObjectConfig</name></types>
+    <!-- <types><members>*</members><name>SearchSettings</name></types> -->
+    <types><members>*</members><name>SearchCustomization</name></types>
+    <!-- <types><members>*</members><name>SearchIndexJobStatusEvent</name></types> -->
+    <!-- <types><members>*</members><name>RecordAggregationDefinition</name></types> -->
+    <!-- <types><members>*</members><name>RetrievalSummaryDefinition</name></types> -->
+    <types><members>*</members><name>MLDataDefinition</name></types>
+    <types><members>*</members><name>MlDomain</name></types>
+    <types><members>*</members><name>MLPredictionDefinition</name></types>
+    <types><members>*</members><name>MLRecommendationDefinition</name></types>
+    <!-- <types><members>*</members><name>ExternalAIModel</name></types> -->
+    
+    <!-- API version Winter '26 -->
+    <version>65.0</version>
+</Package>

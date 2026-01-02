@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- ================= -->
+    <!-- data cloud (puro) -->
+    <!-- ================= -->
+    <!-- <types><members>*</members><name>MktDataModelObject</name></types>
+    <types><members>*</members><name>MktDataModelField</name></types>
+    <types><members>*</members><name>MktDataLakeObject</name></types>
+    <types><members>*</members><name>MktDataTranObject</name></types>
+    <types><members>*</members><name>MktDataTranField</name></types>
+    <types><members>*</members><name>MktDataTranDefinition</name></types>
+    <types><members>*</members><name>MktDataTransform</name></types> -->
+    <types><members>*</members><name>MarketSegmentDefinition</name></types>
+    <!-- tipos Data 360 / Data Cloud puro presentes em "types" -->
+    <types><members>*</members><name>DataSource</name></types>
+    <types><members>*</members><name>DataSourceObject</name></types>
+    <types><members>*</members><name>DataSourceBundleDefinition</name></types>
+    <types><members>*</members><name>DataSourceTenant</name></types>
+    <types><members>*</members><name>DataStreamDefinition</name></types>
+    <types><members>*</members><name>DataStreamTemplate</name></types>
+    <types><members>*</members><name>DataSrcDataModelFieldMap</name></types>
+    <types><members>*</members><name>DataConnector</name></types>
+    <types><members>*</members><name>DataConnectorIngestApi</name></types>
+    <types><members>*</members><name>ExternalDataConnector</name></types>
+    <types><members>*</members><name>InternalDataConnector</name></types>
+    <types><members>*</members><name>DataPipeline</name></types>
+    <types><members>*</members><name>StreamingAppDataConnector</name></types>
+    <!-- <types><members>*</members><name>S3DataConnector</name></types> -->
+    <types><members>*</members><name>DataObjectSearchIndexConf</name></types>
+
+    <!-- API version Winter '26 -->
+    <version>65.0</version>
+</Package>
