@@ -4,8 +4,8 @@ Use o prompt-base para criar um utilitário de documentação de `ActionableEven
 
 ## Particularidades
 
-- Identificar tipo de evento, origem, payload, campos, filtros e status.
-- Relacionar ActionableEventOrchestrationDefinition, PlatformEvent, Flow e integrações.
-- Não expor payloads reais ou dados pessoais presentes em eventos.
-- Diferenciar tipo definido de evento publicado ou processado.
-- Comparar alterações de payload, filtros, origem e disponibilidade.
+- Identificar tipo de evento, objeto, campos, origem, esquema e status.
+- Relacionar ActionableEventOrchestrationDefinition, Platform Event, Flow e integrações.
+- Não expor exemplos com PII, credenciais ou dados de produção.
+- Diferenciar esquema do evento de eventos efetivamente publicados.
+- Comparar alterações de campos, origem, esquema, status e compatibilidade.

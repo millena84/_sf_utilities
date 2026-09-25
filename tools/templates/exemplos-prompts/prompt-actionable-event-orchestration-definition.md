@@ -4,8 +4,8 @@ Use o prompt-base para criar um utilitário de documentação de `ActionableEven
 
 ## Particularidades
 
-- Identificar evento, condição, ação, orquestração, prioridade e status.
-- Relacionar ActionableEventTypeDefinition, Orchestration, Flow, Apex e notificações.
-- Diferenciar evento configurado de evento capturado e ação executada.
-- Avaliar duplicidade, tempestividade, loops e efeitos colaterais.
-- Comparar alterações de evento, critérios, prioridade e ações.
+- Identificar definição, eventos, condições, ações, contexto e status.
+- Relacionar automação, eventos acionáveis, Flow, Apex e integrações.
+- Não expor payloads com PII, tokens ou dados operacionais sensíveis.
+- Diferenciar definição configurada de orquestração efetivamente executada.
+- Comparar alterações de eventos, critérios, ações, versão e ativação.

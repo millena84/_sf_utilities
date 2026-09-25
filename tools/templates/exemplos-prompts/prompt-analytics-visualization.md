@@ -4,8 +4,8 @@ Use o prompt-base para criar um utilitário de documentação de `AnalyticsVisua
 
 ## Particularidades
 
-- Identificar visualização, dataset, dimensões, medidas, filtros e tipo de gráfico.
-- Relacionar WaveDataset, WaveDashboard, WaveLens e consultas analíticas.
-- Não expor dados reais, PII ou filtros que revelem informações restritas.
-- Diferenciar definição da visualização de resultado renderizado.
-- Comparar alterações de dataset, métricas, filtros e apresentação.
+- Identificar visualização, dataset, dimensões, medidas, filtros, layout e status.
+- Relacionar CRM Analytics, dashboards, lenses, recipes e permissões.
+- Não expor dados sensíveis, filtros com PII ou resultados de produção.
+- Diferenciar visualização configurada de dados efetivamente consultados.
+- Comparar alterações de consultas, filtros, métricas, layout e versão.

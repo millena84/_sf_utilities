@@ -4,8 +4,8 @@ Use o prompt-base para criar um utilitário de documentação de `AnalyticsWorks
 
 ## Particularidades
 
-- Identificar workspace, proprietário, capacidade, permissões, status e região.
-- Relacionar WaveApplication, WaveDataset, WaveDashboard, WaveRecipe e usuários.
-- Não expor dados de negócio, identificadores sensíveis ou permissões excessivas.
-- Diferenciar workspace configurado de ativos efetivamente publicados.
-- Comparar alterações de proprietário, acesso, capacidade e status.
+- Identificar workspace, datasets, dashboards, lenses, recipes, usuários e status.
+- Relacionar CRM Analytics, permissões, compartilhamento e fontes de dados.
+- Não expor dados analíticos, PII, tokens ou conteúdo confidencial.
+- Diferenciar workspace configurado de conteúdo publicado e acessível.
+- Comparar alterações de membros, permissões, datasets, assets e status.
