@@ -96,3 +96,75 @@ Aponte o que for analisado em Português (Brasil), mantendo os termos técnicos 
 Você pode enviar esse bloco como **System Prompt** ou como a **primeira mensagem** de uma conversa no Claude, acompanhado dos seus arquivos ou texto. Por exemplo:
 
 > *"Claude, siga as diretrizes do prompt acima para documentar a seguinte integração. Aqui estão os arquivos Apex e os XMLs dos metadados que encontrei na org: [Anexar arquivos ou colar o código aqui]"*
+
+
+
+---------
+
+
+
+### 📦 REQUISITO OBRIGATÓRIO: INVENTÁRIO DUPLO (HUMAN & AGENT READABLE)
+
+Para cada componente identificado no rastreio, você DEVE gerar duas representações complementares:
+
+#### A. Inventário Estruturado (Para Agentes, CI/CD e Checklist Prévia)
+Apresente uma lista/tabela legível por máquina contendo exatamente estes atributos para cada componente encontrado:
+- `Tipo de Metadado` (ex: `ApexClass`, `CustomMetadataType`, `NamedCredential`, `ExternalClientApplication`, `PermissionSet`, `Flow`, etc.)
+- `Nome do Metadado / API Name` (ex: `AWSOrderService`, `Integration_Settings__mdt.AWS_PRD`)
+- `Origem` (`IN-ORG` se estiver no repositório/Salesforce ou `EXTERNAL` se for recurso fora do Salesforce)
+- `Papel na Integração` (ex: `Trigger`, `Controller`, `Service`, `DTO`, `Authentication`, `Staging/Buffer`, `Endpoint/Network`)
+- `Status` (`ENCONTRADO` ou `FALTANTE/REQUERIDO`)
+
+#### B. Explicação Semântica Narrativa (Para Leitura Humana)
+Para cada grupo de componentes, forneça a explicação semântica em texto fluido explicando:
+- **O Porquê:** Qual a responsabilidade técnica e funcional deste componente no fluxo.
+- **O Como:** Como ele se conecta com o componente anterior e com o próximo (cadeia de dependências).
+- **As Regras:** Quais exceções, limites de governança ou transformações de dados acontecem dentro dele.
+
+---
+
+### 🧱 MATRIZ DE FRONTEIRA E INVENTÁRIO DE INSUMOS EXTERNOS (IN-ORG VS. OUT-ORG)
+
+Divida o inventário de requisitos em duas categorias claras para que a equipe técnica saiba exatamente o que precisa ser buscado na Org e o que precisa ser solicitado ao sistema parceiro/externo:
+
+1. 🔵 **Insumos Internos (Dentro do Salesforce):**
+   - Classes Apex, Triggers, Handlers, Queueables, Batches e Mocks de teste.
+   - Estruturas de dados: Objetos Padrão/Customizados, Campos, External IDs e Tabelas de Staging (`__c`).
+   - Segurança e Acesso: `PermissionSet`, `Profile`, Usuário de Integração, `ExternalClientApplication` / `ConnectedApp`.
+   - Parametrização: `CustomMetadataType`, `CustomSettings`, `NamedCredential`, `ExternalCredential`, `Certificate` (.crt).
+
+2. 🟡 **Insumos Externos (Necessários de Fora do Salesforce):**
+   - **Documentação de API Externa:** Especificação OpenAPI/Swagger (JSON/YAML) ou WSDL.
+   - **Endpoints e Redes:** URLs por ambiente (Dev, UAT, Prod), faixas de IP de origem/destino para *Whitelisting* e portas.
+   - **Contrato de Mensagem:** Exemplos de Payloads JSON/XML reais de sucesso e de erro gerados pela AWS/Middleware.
+   - **Segurança Externa:** Client ID, Client Secret, Tokens de Acesso, Chaves AWS (Access Key / Secret Key / ARN) ou Certificados de Autenticação Mútua (mTLS).
+   - **Comportamento do Servidor Externo:** *Rate limits*, políticas de *throttling*, janela de manutenção e tempos médios de resposta (SLA).
+
+---
+
+### 🎯 SAÍDA ADICIONAL: JSON MANIFEST PARA AGENTES (PIPELINE STEP)
+
+Ao final do documento, gere um bloco de código JSON estritamente formatado com o resumo do rastreio, no seguinte formato:
+
+```json
+{
+  "integration_id": "NOME_DA_INTEGRACAO",
+  "direction": "INBOUND | OUTBOUND | HYBRID",
+  "pattern": "SYNCHRONOUS | ASYNC_QUEUEABLE | ASYNC_BATCH | EVENT_DRIVEN",
+  "in_org_components": [
+    {
+      "metadata_type": "ApexClass",
+      "api_name": "NomeDaClasse",
+      "role": "Service"
+    }
+  ],
+  "missing_or_external_inputs": [
+    {
+      "category": "AUTHENTICATION | ENDPOINT | CONTRACT | NETWORK",
+      "item": "Descrição do item necessário",
+      "source_system": "AWS / Middleware / Parceiro"
+    }
+  ]
+}
+```
+
