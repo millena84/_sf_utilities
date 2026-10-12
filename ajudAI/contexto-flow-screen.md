@@ -1,108 +1,132 @@
-Para automatizar o preenchimento da documentação de um **Flow Trigger** (seja um *Record-Triggered Flow*, *Schedule-Triggered Flow* ou *Platform Event-Triggered Flow*), o modelo de documentação precisa se alinhar **1:1 com os metadados nativos da plataforma Salesforce** (Metadata API do tipo `Flow` / arquivo `.flow-meta.xml` e Tooling API).
+Peço desculpas pela confusão anterior! Compreendido: o foco correto é um **Screen Flow** (Fluxo de Tela / `processType = Flow`), que possui uma dinâmica totalmente voltada para interface de usuário, componentes interativos (como LWC/Aura na tela), regras de visibilidade, validações de campo, escolhas dinâmicas e navegação por etapas (*Stages*).
 
-Abaixo está a proposta de **evolução do modelo de documentação**, expandida com **todas as propriedades possíveis** suportadas pela plataforma, acompanhada das tags XML equivalentes e do contrato em JSON Schema para que seu utilitário ou agente consiga fazer o parser e preenchimento 100% automático.
-
----
-
-# 📑 Modelo Evoluído: Documentação Técnica de Flow Trigger (DETI - Flow Module)
-
-Este modelo foi desenhado para ser legível por humanos e facilmente gerado por utilitários automatizados (ex: scripts em Python/Node consumindo a Salesforce CLI / Tooling API ou agentes LLM que analisam arquivos `.flow-meta.xml`).
+Abaixo está o **modelo de documentação evoluído e completo para Screen Flow**, alinhado 1:1 com a **Metadata API do Salesforce (`.flow-meta.xml`)** e a **Tooling API**, acompanhado do **JSON Schema** para alimentar utilitários automáticos.
 
 ---
 
-## 1. Identificação e Metadados do Fluxo
+# 📑 Modelo Evoluído: Documentação Técnica de Screen Flow (DETI - Screen Flow Module)
+
+---
+
+## 1. Identificação e Metadados do Fluxo de Tela
 * **Nome de Exibição (`label`):** `{Flow.label}`
 * **Nome API (`fullName` / `apiName`):** `{Flow.fullName}`
-* **Tipo de Processo (`processType`):** `AutoLaunchedFlow` | `Flow` | `OrchestrationFlow`
+* **Tipo de Processo (`processType`):** `Flow` *(Screen Flow)*
 * **Status (`status`):** `Active` | `Draft` | `Obsolete`
 * **Versão da API (`apiVersion`):** `{Flow.apiVersion}` (ex: `62.0`)
 * **Descrição Funcional (`description`):** `{Flow.description}`
-* **Ambientes de Execução (`environments`):** `Default` | `Slack` | `Offline`
 * **Modo de Execução e Segurança (`runInMode`):**
-  * `DefaultMode` (Respeita o usuário que disparou)
+  * `DefaultMode` (Respeita as permissões do usuário logado)
   * `SystemModeWithSharing` (Modo Sistema - Respeita regras de compartilhamento)
-  * `SystemModeWithoutSharing` (Modo Sistema - Acesso total / Bypass de segurança)
+  * `SystemModeWithoutSharing` (Modo Sistema - Permissão total / Bypass de FLS)
+* **Ponto de Entrada Inicial (`startElementReference`):** `{Flow.startElementReference}`
 
 ---
 
-## 2. Configuração do Elemento Start (`<start>`) e Condições de Disparo
+## 2. Estrutura e Navegação das Telas (`<screens>`)
 
-### 2.1. Tipo de Gatilho e Objeto Alvo
-* **Tipo de Disparo (`triggerType`):** `RecordBeforeSave` | `RecordAfterSave` | `Scheduled` | `PlatformEvent`
-* **Objeto Afetado (`object`):** `{Flow.start.object}` (ex: `Account`, `Order__c`, `Order_Event__e`)
-* **Evento do Registro (`recordTriggerType`):** `Create` | `Update` | `CreateAndUpdate` | `Delete`
-* **Modo de Otimização do Fluxo:**
-  * **Fast Field Updates (Before-Save):** Executado antes do registro ser gravado no banco.
-  * **Actions and Related Records (After-Save):** Executado após o salvamento, permite criar/atualizar outros registros e fazer callouts.
+Relação de todas as telas apresentadas ao usuário durante o fluxo:
 
-### 2.2. Filtros de Entrada e Lógica de Execução (`<filters>` / `<filterLogic>`)
-* **Lógica do Filtro (`filterLogic`):** `and` | `or` | `custom` (ex: `1 AND (2 OR 3)`)
-* **Exigência de Alteração (`doesRequireRecordChangedToMeetCriteria`):** `true` | `false` *(Define se roda apenas quando o registro passa a atender aos critérios no momento da alteração)*.
-* **Fórmula do Filtro (`filterFormula` / `formulaExpression`):** `{Flow.start.filterFormula}` *(Fórmulas em sintaxe de validação se utilizadas)*.
+### Tabela Geral de Telas:
+| Nome API (`name`) | Rótulo (`label`) | Cabeçalho (`showHeader`) | Rodapé (`showFooter`) | Voltar (`allowBack`) | Concluir (`allowFinish`) | Pausar (`allowPause`) | Rótulo do Botão Avançar/Concluir |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `{screen.name}` | `{screen.label}` | `true/false` | `true/false` | `true/false` | `true/false` | `true/false` | `{screen.nextOrFinishButtonLabel}` |
 
-#### Tabela de Filtros Registrados (`<filters>`):
-| Campo (`field`) | Operador (`operator`) | Valor (`value`) | Tipo de Valor (`valueType`) |
+---
+
+## 3. Inventário de Componentes e Campos das Telas (`<fields>`)
+
+Detalhamento de cada campo, componente de entrada, texto formatado ou componente customizado (LWC / Aura) inserido dentro das telas:
+
+### 3.1. Campos Nativos e Entradas de Dados
+| Tela Pai (`screen`) | Nome API (`name`) | Tipo do Campo (`fieldType`) | Tipo de Dado (`dataType`) | Obrigatório (`isRequired`) | Somente Leitura (`isReadOnly`) | Rótulo/Texto (`fieldText`) | Texto de Ajuda (`helpText`) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `{screen.name}` | `{field.name}` | `InputField` \| `DropdownBox` \| `RadioButtons` \| `LargeTextField` \| `DisplayText` | `String` \| `Number` \| `Boolean` \| `Date` \| `Currency` | `true/false` | `true/false` | `{field.fieldText}` | `{field.helpText}` |
+
+### 3.2. Componentes Personalizados (LWC / Aura na Tela)
+Componentes Web Lightning ou Aura embarcados na tela (`fieldType = ComponentInstance`):
+
+| Tela (`screen`) | Nome API (`name`) | Nome do Componente LWC/Aura (`extensionName`) | Armazenar Saída Automática (`storeOutputAutomatically`) | Parâmetros de Entrada (`inputParameters`) | Parâmetros de Saída (`outputParameters`) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `{screen.name}` | `{field.name}` | `{field.extensionName}` (ex: `c:customFileUploadLwc`) | `true/false` | `{name=value}` | `{name=variable}` |
+
+### 3.3. Regras de Visibilidade e Validação nos Campos
+* **Regras de Visibilidade Condicional (`visibilityRule`):**
+  * *Lógica de Filtro (`booleanFilter`):* `{visibilityRule.booleanFilter}` (ex: `1 AND 2`)
+  * *Condições (`conditions`):* `{field.name}` `{operator}` `{value}`
+* **Regras de Validação de Campo (`validationRule`):**
+  * *Fórmula de Validação (`formulaExpression`):* `{validationRule.formulaExpression}`
+  * *Mensagem de Erro (`errorMessage`):* `{validationRule.errorMessage}`
+
+---
+
+## 4. Conjuntos de Escolhas e Listas Dinâmicas (`<choices>` e `<dynamicChoiceSets>`)
+
+Definição das opções exibidas em Picklists, Radio Buttons e Checkboxes na tela:
+
+### 4.1. Conjuntos de Escolhas Estáticas (`<choices>`)
+| Nome API (`name`) | Rótulo Exibido (`choiceText`) | Tipo de Dado (`dataType`) | Valor Atribuído (`value`) |
 | :--- | :--- | :--- | :--- |
-| `{filter.field}` | `{filter.operator}` | `{filter.value}` | `{filter.valueType}` |
+| `{choice.name}` | `{choice.choiceText}` | `String` \| `Number` | `{choice.value}` |
+
+### 4.2. Conjuntos de Escolhas Dinâmicas de Registros (`<dynamicChoiceSets>`)
+Consultas automáticas a objetos Salesforce para montar listas de seleção:
+
+| Nome API (`name`) | Objeto Origem (`object`) | Campo do Valor (`valueField`) | Campo do Rótulo (`displayField`) | Filtros da Consulta (`filters`) | Ordenação (`sortField` / `sortOrder`) | Limite (`limit`) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `{dcs.name}` | `{dcs.object}` | `{dcs.valueField}` | `{dcs.displayField}` | `{field operator value}` | `{sortField}` (`ASC/DESC`) | `{dcs.limit}` |
 
 ---
 
-## 3. Caminhos Assíncronos e Agendados (`<scheduledPaths>`)
+## 5. Indicadores de Progresso e Estágios (`<stages>`)
+Se o fluxo utilizar barra de progresso ou indicador de etapas (*Stage Navigation*):
 
-Se o fluxo utilizar execução em segundo plano ou diferida:
+| Nome API (`name`) | Rótulo (`label`) | Ordem (`stageOrder`) | Ativo por Padrão (`isActive`) |
+| :--- | :--- | :--- | :--- |
+| `{stage.name}` | `{stage.label}` | `{stage.stageOrder}` | `true/false` |
 
-| Nome do Caminho (`name`) | Rótulo (`label`) | Tempo de Deslocamento (`offsetNumber`) | Unidade (`offsetUnit`) | Origem do Tempo (`timeSource` / `recordField`) |
+---
+
+## 6. Processamento, Invocações Apex e Subfluxos
+
+Ações executadas nos bastidores entre uma tela e outra:
+
+### 6.1. Chamadas de Ações e Apex (`<actionCalls>`)
+| Elemento (`name`) | Tipo (`actionType`) | Classe/Ação Chamada (`actionName`) | Parâmetros de Entrada (`inputParameters`) | Saídas Capturadas (`outputParameters`) |
 | :--- | :--- | :--- | :--- | :--- |
-| `{path.name}` | `{path.label}` | `0` / `+2` / `-1` | `Minutes` \| `Hours` \| `Days` | `TriggerTime` \| `CreatedDate` \| `CloseDate` |
+| `{action.name}` | `apex` \| `emailAlert` \| `quickAction` | `{action.actionName}` | `{key=value}` | `{key=variable}` |
 
-* **Execução Assíncrona Imediata (`runAsynchronously`):** `true` | `false` *(Caminho 'Run Immediately' rodando em transação separada pós-commit)*.
-
----
-
-## 4. Agendamento Fixo (Caso `triggerType = Scheduled`)
-* **Data de Início (`startDate`):** `{Flow.start.schedule.startDate}`
-* **Hora de Início (`startTime`):** `{Flow.start.schedule.startTime}`
-* **Frequência (`frequency`):** `Once` | `Daily` | `Weekly`
-
----
-
-## 5. Mapeamento de Elementos Internos e Invocações
-
-### 5.1. Ações Apex e Callouts Externa (`<actionCalls>`)
-Invocações de classes Apex (`@InvocableMethod`), envios de e-mail ou integrações:
-
-| Nome do Elemento (`name`) | Tipo de Ação (`actionType`) | Nome da Ação (`actionName`) | Parâmetros de Entrada (`inputParameters`) | Parâmetros de Saída (`outputParameters`) |
-| :--- | :--- | :--- | :--- | :--- |
-| `{action.name}` | `apex` \| `emailAlert` \| `outboundMessage` \| `runExpressionSet` | `{action.actionName}` | `{key=value}` | `{key=variable}` |
-
-### 5.2. Subfluxos Chamados (`<subflows>`)
-| Elemento (`name`) | Fluxo Invocado (`flowName`) | Variáveis Passadas (`inputAssignments`) |
+### 6.2. Subfluxos Aninhados (`<subflows>`)
+| Elemento (`name`) | Fluxo Invocado (`flowName`) | Mapeamento de Entradas (`inputAssignments`) |
 | :--- | :--- | :--- |
 | `{subflow.name}` | `{subflow.flowName}` | `{sourceVar -> targetVar}` |
 
-### 5.3. Operações no Banco de Dados (DML / SOQL)
-* **Consultas (`<recordLookups>`):** Objetos consultados, campos retornados e se traz o primeiro ou todos os registros.
-* **Criações (`<recordCreates>`):** Objetos onde novos registros são inseridos.
-* **Atualizações (`<recordUpdates>`):** Registros alterados (se é o próprio `$Record` ou registros relacionados).
-* **Exclusões (`<recordDeletes>`):** Objetos afetados por exclusão.
+---
+
+## 7. Operações no Banco de Dados (DML e SOQL)
+* **Buscas (`<recordLookups>`):** Registros consultados para preencher a tela ou validar dados.
+* **Criações (`<recordCreates>`):** Registros salvos no banco a partir das entradas da tela.
+* **Atualizações (`<recordUpdates>`):** Registros alterados ao avançar a tela.
+* **Exclusões (`<recordDeletes>`):** Registros removidos durante a execução.
 
 ---
 
-## 6. Mapeamento de Variáveis Globais e Contexto de Dados
-* **Uso de `$Record`:** Relação dos campos lidos/alterados no registro que disparou o fluxo.
-* **Uso de `$RecordWithPrior`:** Verificação de valores anteriores do registro para controle de regras de transição.
-* **Acesso a Variáveis Globais:** Utilização de `$User`, `$Profile`, `$Setup`, `$CustomMetadata` ou `$Permission`.
+## 8. Variáveis, Fórmulas e Entradas/Saídas (`<variables>`, `<formulas>`, `<textTemplates>`)
+* **Variáveis de Entrada (`isInput = true`):** Campos ou IDs recebidos via URL, página de registro ou LWC pai (ex: `recordId`).
+* **Variáveis de Saída (`isOutput = true`):** Valores devolvidos para a tela ou componente chamador.
+* **Fórmulas (`<formulas>`):** Cálculos dinâmicos e validações lógicas utilizadas na tela.
+* **Templates de Texto (`<textTemplates>`):** Textos HTML/Rich Text formatados exibidos em componentes de `DisplayText`.
 
 ---
 
-# 🤖 Esquema de Extração Automatizada (JSON Schema para o Utilitário)
+# 🤖 Esquema de Extração Automatizada para Screen Flow (JSON Schema)
 
-Para que seu utilitário (CLI, Script Python ou Agente de IA) faça o parse automático do XML do Flow e gere a documentação acima, configure o parser para extrair a estrutura JSON abaixo:
+Utilize este esquema para validar e estruturar o parser do utilitário autômato (ex: script Python que lê o arquivo `.flow-meta.xml` de um Screen Flow):
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "SalesforceFlowTriggerDocumentation",
+  "title": "SalesforceScreenFlowDocumentation",
   "type": "object",
   "properties": {
     "metadata": {
@@ -110,47 +134,76 @@ Para que seu utilitário (CLI, Script Python ou Agente de IA) faça o parse auto
       "properties": {
         "fullName": { "type": "string" },
         "label": { "type": "string" },
-        "processType": { "type": "string" },
+        "processType": { "type": "string", "enum": ["Flow"] },
         "status": { "type": "string" },
         "apiVersion": { "type": "string" },
         "description": { "type": "string" },
-        "runInMode": { "type": "string" }
+        "runInMode": { "type": "string" },
+        "startElementReference": { "type": "string" }
       },
       "required": ["fullName", "label", "processType", "status"]
     },
-    "trigger_configuration": {
-      "type": "object",
-      "properties": {
-        "triggerType": { "type": "string" },
-        "sObjectType": { "type": "string" },
-        "recordTriggerType": { "type": "string" },
-        "optimizationMode": { "type": "string", "enum": ["BeforeSave", "AfterSave"] },
-        "filterLogic": { "type": "string" },
-        "doesRequireRecordChangedToMeetCriteria": { "type": "boolean" },
-        "filters": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "field": { "type": "string" },
-              "operator": { "type": "string" },
-              "value": { "type": "string" }
-            }
-          }
-        }
-      }
-    },
-    "scheduled_paths": {
+    "screens": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
           "name": { "type": "string" },
           "label": { "type": "string" },
-          "offsetNumber": { "type": "integer" },
-          "offsetUnit": { "type": "string" },
-          "recordField": { "type": "string" },
-          "timeSource": { "type": "string" }
+          "showHeader": { "type": "boolean" },
+          "showFooter": { "type": "boolean" },
+          "allowBack": { "type": "boolean" },
+          "allowFinish": { "type": "boolean" },
+          "allowPause": { "type": "boolean" },
+          "nextOrFinishButtonLabel": { "type": "string" },
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "fieldType": { "type": "string" },
+                "dataType": { "type": "string" },
+                "isRequired": { "type": "boolean" },
+                "isReadOnly": { "type": "boolean" },
+                "fieldText": { "type": "string" },
+                "helpText": { "type": "string" },
+                "extensionName": { "type": "string" },
+                "storeOutputAutomatically": { "type": "boolean" },
+                "inputParameters": { "type": "object" },
+                "outputParameters": { "type": "object" },
+                "visibilityRule": {
+                  "type": "object",
+                  "properties": {
+                    "booleanFilter": { "type": "string" },
+                    "conditions": { "type": "array" }
+                  }
+                },
+                "validationRule": {
+                  "type": "object",
+                  "properties": {
+                    "formulaExpression": { "type": "string" },
+                    "errorMessage": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "dynamic_choice_sets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "object": { "type": "string" },
+          "valueField": { "type": "string" },
+          "displayField": { "type": "string" },
+          "sortField": { "type": "string" },
+          "sortOrder": { "type": "string" },
+          "limit": { "type": "integer" }
         }
       }
     },
@@ -178,16 +231,16 @@ Para que seu utilitário (CLI, Script Python ou Agente de IA) faça o parse auto
       }
     }
   },
-  "required": ["metadata", "trigger_configuration"]
+  "required": ["metadata", "screens"]
 }
 ```
 
 ---
 
-### 💡 Vantagens desta Evolução para a sua Automação:
+### 💡 Destaques da Ajuste para Screen Flow:
 
-1. **Rastreabilidade Total da Metadata API:** Mapeia exatamente as tags nativas do Salesforce (`<start>`, `<filters>`, `<scheduledPaths>`, `<actionCalls>`).
-2. **Pronto para CI/CD e Agentes:** O utilitário pode rodar o comando `sf project retrieve` para obter o `.flow-meta.xml`, fazer a leitura do arquivo e preencher este modelo em Markdown sem nenhuma intervenção manual.
-3. **Cobertura de Casos Complexos:** Suporta a documentação de regras de atualização rápida (Before-Save), rotinas assíncronas em segundo plano, gatilhos de Platform Events e chamadas de Apex/Integrações.
+1. **Foco em Componentes da UI (`<screens>` e `<fields>`):** Mapeia individualmente os campos e suas regras de visibilidade e validação.
+2. **Componentes LWC/Aura Embarcados:** Captura a tag `<extensionName>` para documentar quando um desenvolvedor colocou um componente customizado dentro do fluxo de tela.
+3. **Listas Dinâmicas (`<dynamicChoiceSets>`):** Mapeia quais objetos e consultas SOQL implícitas o fluxo faz para alimentar Radio Buttons e Picklists na tela.
 
-Deseja que eu crie um script em Python para fazer o parse do XML do Flow e gerar esse Markdown automaticamente?
+Quer que eu monte o script em Python que lê um arquivo `.flow-meta.xml` de Screen Flow e gera exatamente este relatório formatado em Markdown?
