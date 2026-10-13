@@ -1,4 +1,4 @@
-Abaixo está o detalhamento completo e evoluído para a **Onda 08: Sales Cloud**, contemplando os metadados de **Processos de Venda (`BusinessProcess` em Opportunity)**, **Configurações e Mapeamento de Conversão de Leads (`LeadConfigSettings` / `Lead.settings`)**, **Gestão de Territórios de Vendas 2.0 (`Territory2Model`, `Territory2Rule`)** e **Tipos de Divisão de Oportunidade (`OpportunitySplitType`)**.
+Abaixo está o detalhamento completo e evoluído para a **Onda 08: Sales Cloud**, contemplando os metadados de **Processos de Venda (`BusinessProcess` em Opportunity)**, **Configurações e Mapeamento de Conversão de Leads (`LeadConfigSettings` / `Lead.settings`)**, **Ges⁶⁵etão de Territórios de Vendas 2.0 (`Territory2Model`, `Territory2Rule`)** e **Tipos de Divisão de Oportunidade (`OpportunitySplitType`)**.
 
 Cada modelo segue o padrão estabelecido, mapeando a estrutura de arquivos no repositório SFDX, tabelas de atributos XML, seções de **Rastreio de Acesso, Segurança, Perfis e Permissões**, finalizando com o **JSON Schema** dedicado para o **Claude Code** ou utilitários de automação.
 
