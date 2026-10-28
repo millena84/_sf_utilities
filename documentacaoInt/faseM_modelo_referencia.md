@@ -11,7 +11,7 @@ Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
 - Modelo de referência: arquivos em `<DIR_TRABALHO>/_entradas/modelo_referencia/` (preferência: `.md` ou `.html`; `.docx` e `.pdf` são aceitos)
 - SIGLA_MODELO: `<sigla documentada no modelo>`
 - ORG_DO_MODELO: `<org a que o modelo se refere>`
-- ASSUNTOS_DO_MODELO: `<nomes dos assuntos de assuntos.csv cobertos pelo modelo, separados por |, ou "não sei">`
+- Assuntos do modelo: **lidos de `_entradas/assuntos.csv`**, nas linhas em que a coluna `sigla` = SIGLA_MODELO
 - MODO_TESTE: `<sim|não>`
 
 ## Objetivo
@@ -67,7 +67,7 @@ Liste todos os componentes Salesforce citados no modelo:
 `_modelo/gabarito_modelo.csv`
 `sigla,assunto,documento,secao,tipo_provavel,nome_componente,trecho_do_modelo`
 
-- `assunto`: use ASSUNTOS_DO_MODELO. Se for "não sei", proponha o assunto de `assuntos.csv` mais próximo e registre a dúvida em `questions.md`.
+- `assunto`: escolha entre os assuntos de `assuntos.csv` com `sigla` = SIGLA_MODELO. Se a coluna `sigla` não existir ou nenhuma linha tiver essa sigla, proponha o assunto mais próximo da lista inteira e registre a dúvida em `questions.md` (ALERTA).
 - O gabarito é convertido em IDs do inventário na Fase 3 (da ORG_DO_MODELO).
 
 ### M.5 Tipos de metadata exigidos pelo modelo

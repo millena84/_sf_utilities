@@ -8,7 +8,7 @@ Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`. Em caso
 - CAMINHO_ORG: `<CAMINHO_ORG>`
 - DIR_TRABALHO: `<DIR_TRABALHO>`
 - Lista de tipos de metadata em escopo: `<DIR_TRABALHO>/_entradas/tipos_metadata.txt` (um tipo por linha, nome da Metadata API, ex.: ApexClass)
-- Lista de assuntos: `<DIR_TRABALHO>/_entradas/assuntos.csv` (coluna obrigatória `assunto`; coluna opcional `descricao`)
+- Lista de assuntos: `<DIR_TRABALHO>/_entradas/assuntos.csv` (coluna obrigatória `assunto`; colunas opcionais `descricao` e `sigla`)
 - MODO_TESTE: `<sim|não>`
 
 ## Objetivo
@@ -81,12 +81,12 @@ Para cada regra: rode a extração numa **amostra de 30 componentes** de tipos v
 - `fase0/termos_genericos_proposto.csv` `termo,qtd_componentes,motivo,status_revisao,comentario_revisao`
 
 ### 0.5 Perfil semântico dos assuntos
-Para cada assunto: conceito de negócio em 1–2 frases, termos núcleo, sinônimos (pt/en/abreviações), termos da org que correspondem
+Leve a coluna `sigla` (quando existir) para o glossário. Para cada assunto: conceito de negócio em 1–2 frases, termos núcleo, sinônimos (pt/en/abreviações), termos da org que correspondem
 (**somente termos presentes em `org_lexicon.csv`**), termos ambíguos (aparecem em mais de um assunto) e termos excludentes.
 
 **Saídas:**
 - `fase0/glossario_proposto.csv`
-  `id_assunto,assunto,conceito,termos_nucleo,sinonimos,termos_da_org,qtd_componentes_alcancados,termos_ambiguos,termos_excludentes,status_revisao,comentario_revisao`
+  `id_assunto,assunto,sigla,conceito,termos_nucleo,sinonimos,termos_da_org,qtd_componentes_alcancados,termos_ambiguos,termos_excludentes,status_revisao,comentario_revisao`
   (listas internas separadas por `|`)
 - `fase0/subject_overlap.csv` `id_assunto_a,id_assunto_b,termos_compartilhados,qtd`
 - `fase0/revisao/alcance_assuntos.csv` — para cada assunto, os até 10 componentes mais fortemente alcançados pelos termos (prévia para o teste de gabarito):

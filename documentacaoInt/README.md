@@ -15,11 +15,17 @@
 1. Crie `<DIR_TRABALHO>/_projeto/` e copie para lá `00_regras_gerais.md` e `template_jornada.md`.
 2. Crie `<DIR_TRABALHO>/_entradas/` com:
    - `tipos_metadata.txt`: um tipo por linha, com o nome da Metadata API (ex.: `ApexClass`, `ApexTrigger`, `Flow`, `CustomObject`, `NamedCredential`…)
-   - `assuntos.csv`: coluna `assunto` obrigatória e `descricao` opcional (ajuda muito)
+   - `assuntos.csv`: coluna `assunto` obrigatória; `descricao` (ajuda muito) e `sigla` opcionais. Exemplo:
+     ```
+     assunto,descricao,sigla
+     Geração de QR code para pix,Gera QR code de cobrança via gateway,FNN
+     Retomada de bem,Processo de retomada de garantia,
+     ```
+     A coluna `sigla` liga cada assunto à sua sigla de documentação. As linhas da sigla do modelo são usadas na Fase M, e a Fase 4 de cada sigla lê seus assuntos daqui. Pode ficar vazia para assuntos ainda sem sigla.
    - `modelo_referencia/`: os documentos do modelo do time (de preferência exportados em `.md` ou `.html`)
 4. Tipos de metadata recomendados para `tipos_metadata.txt` (a Fase M aponta os que faltarem):
    `CustomObject, ApexClass, ApexTrigger, Flow, LightningComponentBundle, AuraDefinitionBundle, ApexPage, CustomMetadata, NamedCredential, ExternalCredential, ExternalClientApplication, ConnectedApp, Certificate, RemoteSiteSetting, CspTrustedSite, Workflow, PlatformEventChannel, ExternalServiceRegistration, Profile, PermissionSet, PermissionSetGroup`
-3. Placeholders a substituir em cada prompt: `<ORG>`, `<CAMINHO_ORG>`, `<DIR_TRABALHO>`, `<sim|não>` (MODO_TESTE), `<AAAA-MM-DD>` (DATA_REFERENCIA, fases 1 e 5), e, na fase 4, `<SIGLA>` e a lista de assuntos da sigla.
+3. Placeholders a substituir em cada prompt: `<ORG>`, `<CAMINHO_ORG>`, `<DIR_TRABALHO>`, `<sim|não>` (MODO_TESTE), `<AAAA-MM-DD>` (DATA_REFERENCIA, fases 1 e 5), e, na fase 4, `<SIGLA>` (os assuntos vêm da coluna `sigla` do `assuntos.csv`).
 
 ## Ordem de execução (uma org por vez)
 
