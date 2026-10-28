@@ -26,6 +26,9 @@ Cada execução trabalha com **uma org por vez**.
 | Jornada | Sequência de etapas que começa num gatilho e termina num resultado de negócio. Um assunto pode ter várias jornadas |
 | Infraestrutura (INFRA) | Componente técnico transversal (logger, wrapper HTTP, trigger handler base) usado por muitos assuntos |
 | Hub de dados | Objeto/campo usado por muitos assuntos (ex.: Account, Contact) que não indica assunto sozinho |
+| Sigla | Unidade de documentação usada pelo time (agrupa um ou mais assuntos). Tem uma visão geral e um documento por integração |
+| Integração | Troca com um sistema externo com gatilho e resultado próprios. Uma sigla tem uma ou mais integrações, que juntas formam a jornada completa |
+| Modelo de referência | Documentação de uma sigla feita pelo time. Serve de inspiração de estrutura e estilo para as demais (Fase M) |
 
 ## 3. Restrições de ambiente — INEGOCIÁVEIS
 
@@ -94,8 +97,10 @@ Cada execução trabalha com **uma org por vez**.
 
 ## 9. Segurança
 
-- Nunca copie para nenhum artefato: senhas, tokens, chaves, client secrets, certificados, valores de Custom Settings/Custom Metadata
+- Nunca copie para nenhum artefato: senhas, tokens, chaves, client secrets, conteúdo de certificados, valores de Custom Settings/Custom Metadata
   que pareçam credenciais, nem URLs com usuário/senha/token.
+- Certificados: registre apenas o **nome** e a **data de vencimento**.
+- Profiles e Permission Sets: registre apenas os acessos a componentes relevantes para a análise, nunca o arquivo inteiro.
 - Endpoints: registre apenas o **nome** da Named Credential/Remote Site e o **domínio** (host) — nunca query strings ou caminhos com parâmetros.
 - Toda fase valida que nenhum artefato gerado contém padrões como `password`, `secret`, `token=`, `Bearer `, `client_secret`, `://usuario:senha@`
   (com valores) — check obrigatório em todas as fases.
@@ -112,23 +117,33 @@ Cada execução trabalha com **uma org por vez**.
 | `FATOR_RELACAO_FRACA` | 0.5 | Fase 3 — arestas dinâmicas/textuais |
 | `LIMIAR_ALTA` / `LIMIAR_MEDIA` | 0.7 / 0.4 | Fase 3 — confiança |
 | `ALERTA_ASSUNTO_GIGANTE` | 15% dos componentes em escopo | Fase 3 |
+| `DATA_REFERENCIA` | data de execução informada no prompt (AAAA-MM-DD) | Fases 1, 4 e 5 — vencimento de certificados (não use a data do sistema, para manter a idempotência) |
+| `ALERTA_VENCIMENTO_DIAS` | 90 | Certificados a vencer |
 
 ## 11. Estrutura de pastas
 
 ```
 <DIR_TRABALHO>/
-  _projeto/            00_regras_gerais.md, template_jornada.md
+  _projeto/            00_regras_gerais.md, template_jornada.md, template_extraido.md (Fase M)
   _entradas/           tipos_metadata.txt, assuntos.csv, gabarito_<ORG>.csv (criado na revisão da fase 0)
+    modelo_referencia/ documentos do modelo feito pelo time
+  _modelo/             saídas da Fase M (estrutura, mapa de seções, gabarito do modelo)
   <ORG>/
     tools/fase0..fase5/   scripts
     fase0/ .. fase5/      artefatos de trabalho + revisao/ + validation_report.md + RESUMO_FASEN.md
-    docs/                 documentação final (fases 4 e 5)
+    docs/                 documentação final: docs/<SIGLA>/ (fase 4) + índice e catálogos (fase 5)
     decisions.md
     questions.md
   _consolidado/        consolidação entre orgs (fase 5B)
 ```
 
-## 12. Entrega padrão de toda fase
+## 12. Precedência de templates
+
+1. `_projeto/template_extraido.md` (gerado na Fase M a partir do modelo do time) — **prevalece** em estrutura, ordem, formato e estilo.
+2. `_projeto/template_jornada.md` — fallback e lista de conteúdos mínimos.
+3. O modelo de referência é **inspiração**: nunca copie texto dele para outra sigla.
+
+## 13. Entrega padrão de toda fase
 
 `faseN/RESUMO_FASEN.md` com as seções, nesta ordem:
 1. O que foi feito (5–10 linhas)

@@ -17,6 +17,32 @@
 
 ---
 
+## FASE M — Modelo de referência (uma vez, antes da Fase 0)
+
+### A. Portão
+| ID | Verificar | Aceite |
+|---|---|---|
+| FM-G1 ⭐ | `_modelo/validation_report.md`: APROVADO, com 11 checks (FM-A01 a FM-A11) | Sim |
+| FM-G2 | FM-A01: todos os arquivos do modelo foram lidos | Sim |
+
+### B. Revisão humana
+| ID | O que verificar | Arquivo | Como | Aceite | Se falhar |
+|---|---|---|---|---|---|
+| FM-H01 ⭐ | Estrutura capturada | `_modelo/revisao/comparativo_secoes.md` | Compare com o modelo: faltou alguma seção? A ordem está certa? | Igual ao modelo | Peça a correção |
+| FM-H02 ⭐ | Regras das seções | `_projeto/template_extraido.md` | Cada regra descreve o que o time espera daquela seção (ex.: Profiles = só os acessos da integração)? | Sim | Edite o template direto ou peça a correção |
+| FM-H03 | Guia de estilo | `template_extraido.md` | Tom, tamanho e nomenclatura batem com o modelo? | Sim | Edite |
+| FM-H04 ⭐ | Mapa de seções | `_modelo/mapa_secoes_proposto.csv` | A fonte de cada seção faz sentido? | Nenhum pendente | Salve como `mapa_secoes_aprovado.csv` |
+| FM-H05 ⭐ | Tipos faltantes | `_modelo/tipos_faltantes.csv` | Inclua em `_entradas/tipos_metadata.txt` os que fizerem sentido | Lista atualizada | — |
+| FM-H06 | Lacunas | `_modelo/lacunas_modelo.md` | Alguma seção do modelo que o pipeline não consegue preencher? Aceite ou ajuste | Decidido | — |
+| FM-H07 | Gabarito | `_modelo/gabarito_modelo.csv` | Os assuntos atribuídos estão corretos? | Sim | Corrija a coluna `assunto` |
+
+### C. Liberação para a Fase 0
+- [ ] `template_extraido.md` revisado
+- [ ] `mapa_secoes_aprovado.csv` sem `pendente`
+- [ ] `tipos_metadata.txt` atualizado
+
+---
+
 ## FASE 0 — Reconhecimento
 
 ### A. Portão
@@ -58,7 +84,7 @@
 ### A. Portão
 | ID | Verificar | Aceite |
 |---|---|---|
-| F1-G1 ⭐ | `fase1/validation_report.md`: APROVADO, com 15 checks (F1-A01 a F1-A15) | Sim |
+| F1-G1 ⭐ | `fase1/validation_report.md`: APROVADO, com 17 checks (F1-A01 a F1-A17) | Sim |
 | F1-G2 | Sem `PRECHECK_FALHOU.md` | Sim |
 
 ### B. Revisão humana
@@ -72,6 +98,7 @@
 | F1-H06 | Inbound presumido | `revisao/inbound_presumido.csv` | Faz sentido como entrada externa? | Revisado | — |
 | F1-H07 | Dinâmicos e desconhecidos | `validation_report.md` (F1-A11) | % alto? Você sabe a quem pertencem? | Revisado | Responda em `questions.md` |
 | F1-H08 | Dúvidas | `questions.md` | Responda | — | — |
+| F1-H09 ⭐ | Certificados e vencimentos | `componentes_integracao.csv` | Os certificados conhecidos estão lá? Vencimentos corretos? Muitos `nao_disponivel`? | Coerente | `nao_disponivel` em massa → a data não vem no export; registre em lacunas |
 
 ### C. Liberação para a Fase 2
 - [ ] `sistemas_externos_aprovado.csv` sem `pendente`
@@ -112,7 +139,7 @@
 ### B. Revisão humana
 | ID | O que verificar | Arquivo | Como | Aceite | Se falhar |
 |---|---|---|---|---|---|
-| F3-H01 ⭐ | **Recall do gabarito** | `recall_gabarito.csv` | Os componentes esperados foram encontrados com ALTA ou MEDIA? | ≥ 80% | Falta termo → ajuste o glossário (fase 0) e rode as fases 3 em diante |
+| F3-H01 ⭐ | **Recall do gabarito** (do time e do modelo) | `recall_gabarito.csv` e `gabarito_resolvido.csv` | Os componentes esperados foram encontrados com ALTA ou MEDIA? Nomes do modelo não resolvidos são erro de digitação no modelo ou componente fora do escopo? | ≥ 80% | Falta termo → ajuste o glossário (fase 0) e rode da fase 3 em diante |
 | F3-H02 ⭐ | Tamanho dos assuntos | `resumo_assuntos.csv` | GIGANTE = vazamento (provável infra não marcada). Muito pequeno = vocabulário fraco | Plausível | GIGANTE → revise F2-H01. Pequeno → revise o glossário |
 | F3-H03 | Assuntos SEM_INTEGRACAO | `resumo_assuntos.csv` | É verdade que o assunto não tem integração nesta org? | Confirmado | Se tem, falta sinal (fase 1) ou vocabulário |
 | F3-H04 ⭐ | Conflitos | `conflitos_proposto.csv` | Compartilhado ou assunto principal? | Nenhum pendente | — |
@@ -127,30 +154,33 @@
 
 ---
 
-## FASE 4 — Jornadas (por assunto)
+## FASE 4 — Documentação por sigla
 
-> **Estratégia para revisar sozinha:** faça a revisão **completa** (todos os itens) nos 2 ou 3 primeiros assuntos para calibrar. Nos demais, faça só os itens ⭐.
+> **Estratégia para revisar sozinha:** rode primeiro a **sigla do modelo**. Ela tem comparação automática com o documento do time (F4-H01), o que calibra todo o resto. Depois revise completas mais 1 ou 2 siglas; nas demais, faça só os itens ⭐.
 
 ### A. Portão
 | ID | Verificar | Aceite |
 |---|---|---|
-| F4-G1 ⭐ | `fase4/<ID>/validation_report.md`: APROVADO, com 13 checks | Sim |
-| F4-G2 | F4-A11 (% de inferidos) sem alerta, ou alerta justificado | Sim |
+| F4-G1 ⭐ | `fase4/<SIGLA>/validation_report.md`: APROVADO, com 17 checks | Sim |
+| F4-G2 | F4-A14 (% de inferidos) sem alerta, ou alerta justificado | Sim |
+| F4-G3 ⭐ | F4-A12 (nada copiado do modelo) PASSOU | Sim |
 
 ### B. Revisão humana
 | ID | O que verificar | Arquivo | Como | Aceite | Se falhar |
 |---|---|---|---|---|---|
-| F4-H01 ⭐ | Resumo de negócio compreensível | `docs/jornadas/<ID>/J0n.md` (seção 1) | Alguém de negócio entenderia? | Sim | Peça reescrita |
-| F4-H02 ⭐ | Gatilho e resultado corretos | Ficha rápida | Bate com o que você conhece? | Sim | Comente e peça a correção |
-| F4-H03 ⭐ | Todos os [INFERIDO] | `revisao/inferidos.csv` | Cada inferência é plausível? | Todos revisados | Rejeitados → peça correção da etapa |
-| F4-H04 | Evidências das etapas | `revisao/amostra_etapas.csv` | Confira os trechos | Todos ok | Peça a correção |
-| F4-H05 | Diagrama coerente com a tabela de etapas | Seções 3, 4 e 5 | Mesma ordem e mesmos participantes | Sim | Peça a correção |
-| F4-H06 | Possivelmente relacionados | `revisao/possiveis.csv` | Promover algum? | Revisado | Promovidos → rodar a fase 4 do assunto de novo |
-| F4-H07 | Renderização | Abra o `.md` num visualizador com Mermaid | Diagramas aparecem | Sim | Peça a correção |
-| F4-H08 | Nada sensível | Busca por "token", "senha", "secret", "password" | Nada encontrado | — | Remova e peça para corrigir o filtro |
+| F4-H01 ⭐ | (sigla do modelo) **Comparação com o modelo** | `comparacao_modelo.md` | Recall por seção, integrações iguais, componentes extras são acertos ou ruído? | Recall ≥ 80% por seção | Seção fraca → veja a fonte em `mapa_secoes` e a fase correspondente |
+| F4-H02 ⭐ | Visão geral conta a jornada completa | `docs/<SIGLA>/README.md` | Alguém de negócio entende o processo de ponta a ponta? A ordem das integrações está certa? | Sim | Peça reescrita |
+| F4-H03 ⭐ | Mesma "cara" do modelo | Um documento de integração ao lado do modelo | Estrutura, tabelas, tom e nível de detalhe parecidos | Sim | Ajuste o `template_extraido.md` e rode a fase 4 de novo |
+| F4-H04 ⭐ | Todos os [INFERIDO] | `revisao/inferidos.csv` | Cada inferência é plausível? | Todos revisados | Rejeitados → peça correção |
+| F4-H05 | Evidências das etapas | `revisao/amostra_etapas.csv` | Confira os trechos | Todos ok | Peça a correção |
+| F4-H06 | Profiles e Permission Sets | Seção de acessos | Aparecem só os acessos ligados à integração? O usuário de integração foi identificado? | Sim | Peça a correção |
+| F4-H07 | Custom Metadata por ambiente | Seção de Custom Metadata | Registros por ambiente aparecem e não há valores sensíveis | Sim | Peça a correção |
+| F4-H08 | Certificados | `revisao/certificados.csv` | Vencimentos coerentes | Sim | — |
+| F4-H09 | Possivelmente relacionados | `revisao/possiveis.csv` | Promover algum? | Revisado | Promovidos → rodar a fase 4 da sigla de novo |
+| F4-H10 | Renderização e nada sensível | Abra os `.md`; busque "token", "senha", "secret", "password" | Diagramas aparecem e nada sensível foi encontrado | Ok | Peça a correção |
 
 ### C. Liberação
-- [ ] Assunto marcado como validado no `registro_validacao.md`
+- [ ] Sigla marcada como validada no `registro_validacao.md`
 
 ---
 
@@ -169,6 +199,7 @@
 | F5-H03 | Catálogo de sistemas | `docs/sistemas/` | Nomes e descrições corretos | Sim | Peça a correção |
 | F5-H04 | Catálogo de infraestrutura | `docs/infraestrutura/` | Descrições corretas | Sim | Peça a correção |
 | F5-H05 | Status no índice | `docs/README.md` | Assuntos não validados aparecem como pendentes ou NÃO VALIDADO | Sim | Peça a correção |
+| F5-H07 ⭐ | Certificados | `docs/certificados.md` | Vencidos e a vencer estão destacados? Encaminhe os vencidos | Revisado | — |
 | F5-H06 | (5B) Integrações entre orgs | `_consolidado/integracoes_entre_orgs.md` | Batem com o conhecimento do time? | Sim | Comente |
 
 ---

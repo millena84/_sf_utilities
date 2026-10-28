@@ -54,7 +54,11 @@ Descubra, **a partir do que existe nesta org**, como um tipo referencia outro. C
 Apex→Apex (instanciação, chamada estática, extends/implements), Apex→Objeto/Campo (SOQL, DML, referência tipada),
 Apex→NamedCredential (`callout:`), Apex→CustomMetadata/CustomSetting, `Type.forName` (dinâmica),
 Trigger→Objeto, Flow→Apex (`actionCalls`), Flow→Flow (`subflows`), Flow→Objeto, Workflow→OutboundMessage,
-LWC/Aura/Visualforce→Apex, registros de CustomMetadata cujo valor é nome de componente (textual).
+LWC/Aura/Visualforce→Apex, registros de CustomMetadata cujo valor é nome de componente (textual),
+NamedCredential→ExternalCredential, NamedCredential/ExternalClientApplication/ConnectedApp→Certificate,
+Profile/PermissionSet/PermissionSetGroup→ApexClass (`classAccesses`), →Objeto/Campo (`objectPermissions`/`fieldPermissions`),
+→ExternalCredential (`externalCredentialPrincipalAccesses`), →CustomMetadata (`customMetadataTypeAccesses`), →Flow (`flowAccesses`).
+Considere só os acessos concedidos (`enabled`/`allowRead`/`readable` = true).
 Inclua padrões adicionais que encontrar.
 
 Para cada regra: rode a extração numa **amostra de 30 componentes** de tipos variados (seed=42) e registre exemplos reais.
@@ -62,7 +66,7 @@ Para cada regra: rode a extração numa **amostra de 30 componentes** de tipos v
 **Saídas:**
 - `fase0/relation_rules_proposto.csv`
   `id_regra,tipo_origem,tipo_destino,padrao,natureza,qtd_ocorrencias_amostra,exemplos,status_revisao,comentario_revisao`
-  (`natureza`: estrutural | explicita | dinamica | textual; `exemplos`: até 3 `caminho:linha`; regra sem ocorrência → `qtd=0` e observação "não ocorre na amostra")
+  (`natureza`: estrutural | explicita | dinamica | textual | acesso — `acesso` é usada para as concessões de Profile/PermissionSet; `exemplos`: até 3 `caminho:linha`; regra sem ocorrência → `qtd=0` e observação "não ocorre na amostra")
 - `fase0/relation_sample.csv` `origem,destino,id_regra,evidencia`
 - `fase0/unresolved_refs.csv` `origem,referencia_textual,id_regra,evidencia,motivo_provavel`
   (`motivo_provavel`: fora_do_escopo | pacote_gerenciado | padrao_padrao_salesforce | desconhecido)

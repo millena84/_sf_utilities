@@ -5,6 +5,7 @@ Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
 
 ## Parâmetros desta execução
 - ORG: `<ORG>` · CAMINHO_ORG: `<CAMINHO_ORG>` · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
+- DATA_REFERENCIA: `<AAAA-MM-DD>`
 
 ## Objetivo
 Encontrar **todos os pontos onde a org troca dados com o mundo externo**, classificar direção e mecanismo,
@@ -36,7 +37,7 @@ Monte `fase1/catalogo_sinais.csv` (`id_sinal,categoria,padrao,direcao_padrao,tip
 | Outbound Apex | `new HttpRequest`, `Http().send`, `setEndpoint(`, `callout:`, `WebServiceCallout.invoke`, classes geradas de WSDL |
 | Eventos | `EventBus.publish`, triggers em objetos `__e`, Flows disparados por Platform Event, Change Data Capture (`ChangeEvent`) |
 | Declarativo | `WorkflowOutboundMessage`, Flow `actionCalls` do tipo externalService/apex que levam a callout, `ExternalServiceRegistration` |
-| Configuração | `NamedCredential`, `ExternalCredential`, `RemoteSiteSetting`, `CspTrustedSite`, `ConnectedApp`, `AuthProvider`, `ExternalDataSource` |
+| Configuração | `NamedCredential`, `ExternalCredential`, `ExternalClientApplication` (e configurações OAuth associadas), `ConnectedApp`, `Certificate`, `RemoteSiteSetting`, `CspTrustedSite`, `AuthProvider`, `ExternalDataSource` |
 | Inbound presumido | Campos `externalId=true`, Permission Sets/Profiles com nome contendo integra/api/mule/sap/etc., campos de controle de integração (status/id externo/data de sincronização) |
 
 Inclua sinais adicionais descobertos na fase 0. Se um sinal depende de um tipo **fora do escopo**, registre como lacuna em `fase1/lacunas.csv`.
@@ -61,7 +62,16 @@ Inclua sinais adicionais descobertos na fase 0. Se um sinal depende de um tipo *
   `sistema_externo_id,nome_proposto,hosts,credenciais,qtd_pontos,direcoes,evidencias,status_revisao,comentario_revisao`
 - Configurações sem uso (Named Credential/Remote Site não referenciados por nenhum componente em escopo) → `fase1/config_sem_uso.csv`.
 
-### 1.4 Material de revisão humana (`fase1/revisao/`, seed=42)
+### 1.4 Componentes de integração
+Consolide todos os componentes de configuração de integração:
+`fase1/componentes_integracao.csv`
+`componente_id,tipo,host,tipo_autenticacao,certificado,vencimento_certificado,status_vencimento(valido|a_vencer|vencido|nao_disponivel),usado_por,evidencia`
+- `vencimento_certificado`: lido do XML do certificado (ex.: `expirationDate`). Se não existir na base → `nao_disponivel`.
+- `status_vencimento`: calculado a partir de `DATA_REFERENCIA` e `ALERTA_VENCIMENTO_DIAS`.
+- `tipo_autenticacao`: apenas o tipo (ex.: OAuth client credentials, JWT, senha, mTLS), **nunca valores**.
+- `usado_por`: componentes que referenciam (via relações aprovadas).
+
+### 1.5 Material de revisão humana (`fase1/revisao/`, seed=42)
 - `amostra_pontos.csv` — `AMOSTRA_REVISAO` pontos estratificados por direção, com `trecho_da_linha,ok,comentario`
 - `amostra_descartes.csv` — 5 descartes com `trecho_da_linha,ok,comentario`
 - `inbound_presumido.csv` — todos os INBOUND_PRESUMIDO com `ok,comentario`
@@ -82,7 +92,9 @@ Inclua sinais adicionais descobertos na fase 0. Se um sinal depende de um tipo *
 | F1-A10 | `host` contém só domínio (sem path, query, credencial) | BLOQUEANTE |
 | F1-A11 | % de pontos `DINAMICO` e `SIS::DESCONHECIDO` reportados | ALERTA |
 | F1-A12 | Lacunas (sinais em tipos fora do escopo) listadas | ALERTA |
-| F1-A13 | Nenhum segredo nos artefatos | BLOQUEANTE |
+| F1-A13 | Nenhum segredo nos artefatos (incluindo conteúdo de certificado) | BLOQUEANTE |
+| F1-A16 | Todo componente de configuração do inventário está em `componentes_integracao.csv`; todo certificado tem vencimento ou `nao_disponivel` | BLOQUEANTE |
+| F1-A17 | Certificados vencidos ou a vencer listados | ALERTA |
 | F1-A14 | CSVs bem formados | BLOQUEANTE |
 | F1-A15 | Idempotência | BLOQUEANTE |
 

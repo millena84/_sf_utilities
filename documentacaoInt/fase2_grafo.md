@@ -45,6 +45,8 @@ Proponha, com justificativa:
 - **INFRA**: fan-in ≥ `LIMIAR_INFRA_FAN_IN` + nome com termos genéricos aprovados ou sem referência a objetos de negócio (logger, wrappers HTTP, trigger handlers, utils).
 - **HUB_DADOS**: objetos/campos com fan-in ≥ `LIMIAR_INFRA_FAN_IN` (ex.: Account, Contact, Case, User).
 
+- **ACESSO**: Profiles, Permission Sets e Permission Set Groups são classificados automaticamente como ACESSO (sem necessidade de revisão). Suas arestas (natureza `acesso`) ficam no grafo para a documentação, mas **nunca propagam assunto**.
+
 `fase2/infra_hubs_proposto.csv`
 `id,classificacao(INFRA|HUB_DADOS),fan_in,motivo,exemplos_de_quem_usa,status_revisao,comentario_revisao`
 

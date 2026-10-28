@@ -18,6 +18,7 @@ Associar componentes a assuntos de forma **explicável**: cada associação deve
 - `fase1/integration_points.csv`, `fase1/sistemas_externos_aprovado.csv`
 - `fase2/edges.csv`, `fase2/nodes.csv`, `fase2/infra_hubs_aprovado.csv`
 - Opcional: `_entradas/gabarito_<ORG>.csv` (`id_assunto,assunto,componente_id_esperado`)
+- Opcional (se esta org for a ORG_DO_MODELO): `_modelo/gabarito_modelo.csv`
 - `fase2/validation_report.md`
 
 ## P. Pré-checagem
@@ -40,6 +41,7 @@ Para cada assunto, pontue cada componente pelos termos aprovados:
 - A partir das sementes, propague pelas arestas (ambas as direções) até `MAX_SALTOS`.
 - Score propagado = score da semente × `DECAIMENTO`^saltos × (`FATOR_RELACAO_FRACA` para cada aresta dinâmica/textual no caminho).
 - **INFRA e HUB_DADOS aprovados podem receber score, mas nunca são intermediários do caminho** (não propagam).
+- Arestas de natureza `acesso` (Profiles/Permission Sets) **não propagam** e esses componentes não entram na matriz. Eles são levantados na Fase 4.
 - Nós `SIS::` propagam apenas se o sistema já tiver ≥1 ponto de integração com semente do mesmo assunto.
 - Score final = max(score léxico, maior score propagado) + 0.1 por semente independente adicional que alcança o componente (máx. 1.0).
 - Confiança: ≥ `LIMIAR_ALTA` → ALTA; ≥ `LIMIAR_MEDIA` → MEDIA; abaixo → BAIXA (registrar só se ≥ 0.2).
@@ -56,7 +58,8 @@ Para cada assunto, pontue cada componente pelos termos aprovados:
 - `fase3/resumo_assuntos.csv`
   `id_assunto,assunto,qtd_alta,qtd_media,qtd_baixa,qtd_pontos_integracao,sistemas_externos,direcoes,pct_do_escopo,alerta`
   (`alerta`: SEM_INTEGRACAO | GIGANTE | SEM_SEMENTE | vazio)
-- Se houver gabarito: `fase3/recall_gabarito.csv` `id_assunto,componente_id_esperado,encontrado(sim|não),confianca,score`
+- Se esta org for a ORG_DO_MODELO: converta os nomes de `_modelo/gabarito_modelo.csv` em IDs do inventário → `fase3/gabarito_resolvido.csv` `sigla,assunto,nome_componente,componente_id,resolvido(sim|não|ambiguo)`. Some esse gabarito ao `gabarito_<ORG>.csv`.
+- Se houver gabarito: `fase3/recall_gabarito.csv` `id_assunto,componente_id_esperado,origem(time|modelo),encontrado(sim|não),confianca,score`
 
 ### 3.4 Material de revisão humana (`fase3/revisao/`, seed=42)
 - `amostra_baixa.csv` — `AMOSTRA_REVISAO` associações BAIXA com caminho, `deveria_entrar(sim|não),comentario`

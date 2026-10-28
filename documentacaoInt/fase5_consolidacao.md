@@ -5,6 +5,7 @@ Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
 
 ## Parâmetros desta execução
 - ORG: `<ORG>` (ou `AMBAS` para a 5B) · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
+- DATA_REFERENCIA: `<AAAA-MM-DD>`
 
 ## Objetivo
 Transformar as jornadas em uma documentação navegável: índice, catálogos e lacunas.
@@ -13,14 +14,15 @@ Transformar as jornadas em uma documentação navegável: índice, catálogos e 
 - Todos os artefatos aprovados das fases 0–3 e os docs/CSVs da fase 4 desta org.
 
 ## P. Pré-checagem
-- Todo assunto com status aprovado na fase 3 tem pasta na fase 4 com `validation_report.md` aprovado; os que não têm são listados (ALERTA — não bloqueia, entram em "Pendentes" no índice).
+- Toda sigla prevista tem pasta na fase 4 com `validation_report.md` aprovado; as que não têm são listadas (ALERTA — não bloqueia, entram em "Pendentes" no índice).
+- Todo assunto aprovado na fase 3 pertence a alguma sigla documentada ou é listado como "assunto sem sigla" (ALERTA).
 - Falhou de forma bloqueante → `fase5/PRECHECK_FALHOU.md` e encerre.
 
 ## Etapas (por org)
 
 ### 5.1 Índice — `docs/README.md`
 - Como ler esta documentação (5 linhas).
-- Tabela de assuntos: assunto, nº de jornadas, direções, sistemas externos, confiança, status (Documentado | Pendente | Sem integração detectada), link.
+- Tabela de siglas: sigla, assuntos, nº de integrações, direções, sistemas externos, confiança, status (Documentado | Pendente | Sem integração detectada), link para `docs/<SIGLA>/README.md`.
 - Atalhos: por sistema externo, por direção.
 
 ### 5.2 Catálogo de sistemas externos — `docs/sistemas/<sistema_externo_id>.md` + `docs/sistemas/README.md`
@@ -28,6 +30,9 @@ Por sistema: nome, hosts (só domínio), credenciais (nomes), mecanismos, direç
 
 ### 5.3 Catálogo de infraestrutura — `docs/infraestrutura/README.md`
 Componentes INFRA aprovados: o que fazem (1–2 frases), quem usa (assuntos), evidência. Documentados uma única vez.
+
+### 5.3B Certificados — `docs/certificados.md`
+Todos os certificados da org, com vencimento e `status_vencimento` (a partir de `fase1/componentes_integracao.csv`), ordenados por vencimento, com as siglas/integrações que dependem de cada um.
 
 ### 5.4 Lacunas — `docs/lacunas.md`
 Consolidar: INBOUND_PRESUMIDO, endpoints `DINAMICO`, `SIS::DESCONHECIDO`, pontos órfãos, configurações sem uso, assuntos sem integração detectada, assuntos pendentes, sinais em tipos fora do escopo, `questions.md` em aberto. Cada item com origem (fase/arquivo) e ação sugerida.
@@ -48,7 +53,7 @@ Termos de negócio dos assuntos e siglas técnicas usadas nos docs.
 | ID | Verificação | Severidade |
 |---|---|---|
 | F5-A01 | Pré-checagem executada | BLOQUEANTE |
-| F5-A02 | Todo assunto aprovado aparece no índice com status correto | BLOQUEANTE |
+| F5-A02 | Toda sigla aparece no índice com status correto; todo assunto aprovado está ligado a uma sigla ou listado como "sem sigla" | BLOQUEANTE |
 | F5-A03 | Todos os links internos (de todos os docs) resolvem para arquivos existentes | BLOQUEANTE |
 | F5-A04 | Todo sistema externo aprovado tem página; toda página referencia jornadas existentes ou está em lacunas | BLOQUEANTE |
 | F5-A05 | Todo componente INFRA citado nas jornadas está no catálogo de infraestrutura | BLOQUEANTE |
@@ -56,6 +61,7 @@ Termos de negócio dos assuntos e siglas técnicas usadas nos docs.
 | F5-A07 | Fechamento de lacunas: todo item pendente/órfão/dinâmico/desconhecido das fases anteriores está em `lacunas.md` | BLOQUEANTE |
 | F5-A08 | Nenhum segredo; hosts só com domínio | BLOQUEANTE |
 | F5-A09 | Docs em MODO_TESTE marcados como NÃO VALIDADO | BLOQUEANTE |
+| F5-A11 | Todo certificado de `componentes_integracao.csv` está em `certificados.md` com o vencimento | BLOQUEANTE |
 | F5-A10 | (5B) Todo assunto das duas orgs aparece no consolidado | BLOQUEANTE |
 
 ## Entrega

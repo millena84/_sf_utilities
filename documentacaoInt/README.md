@@ -5,7 +5,8 @@
 | Arquivo | Uso |
 |---|---|
 | `00_regras_gerais.md` | Regras de todas as fases. Coloque em `<DIR_TRABALHO>/_projeto/` (ou no Knowledge do Devin) |
-| `template_jornada.md` | Template dos documentos finais. Coloque em `<DIR_TRABALHO>/_projeto/` |
+| `template_jornada.md` | Template base (fallback e conteúdos mínimos). Coloque em `<DIR_TRABALHO>/_projeto/` |
+| `faseM_modelo_referencia.md` | Prompt que analisa o modelo feito pelo time e gera `template_extraido.md` (que prevalece sobre o template base) |
 | `fase0_reconhecimento.md` … `fase5_consolidacao.md` | Prompts. Cole um por sessão do Devin, depois de trocar os placeholders |
 | `checklist_validacao.md` | Seu checklist de revisão, com portão, revisão humana e liberação |
 
@@ -15,21 +16,25 @@
 2. Crie `<DIR_TRABALHO>/_entradas/` com:
    - `tipos_metadata.txt`: um tipo por linha, com o nome da Metadata API (ex.: `ApexClass`, `ApexTrigger`, `Flow`, `CustomObject`, `NamedCredential`…)
    - `assuntos.csv`: coluna `assunto` obrigatória e `descricao` opcional (ajuda muito)
-3. Placeholders a substituir em cada prompt: `<ORG>`, `<CAMINHO_ORG>`, `<DIR_TRABALHO>`, `<sim|não>` (MODO_TESTE) e, na fase 4, `<ID_ASSUNTO>`.
+   - `modelo_referencia/`: os documentos do modelo do time (de preferência exportados em `.md` ou `.html`)
+4. Tipos de metadata recomendados para `tipos_metadata.txt` (a Fase M aponta os que faltarem):
+   `CustomObject, ApexClass, ApexTrigger, Flow, LightningComponentBundle, AuraDefinitionBundle, ApexPage, CustomMetadata, NamedCredential, ExternalCredential, ExternalClientApplication, ConnectedApp, Certificate, RemoteSiteSetting, CspTrustedSite, Workflow, PlatformEventChannel, ExternalServiceRegistration, Profile, PermissionSet, PermissionSetGroup`
+3. Placeholders a substituir em cada prompt: `<ORG>`, `<CAMINHO_ORG>`, `<DIR_TRABALHO>`, `<sim|não>` (MODO_TESTE), `<AAAA-MM-DD>` (DATA_REFERENCIA, fases 1 e 5), e, na fase 4, `<SIGLA>` e a lista de assuntos da sigla.
 
 ## Ordem de execução (uma org por vez)
 
 ```
+Fase M (uma vez, sem org) → revisão
 Fase 0 → revisão → Fase 1 → revisão → Fase 2 → revisão → Fase 3 → revisão
-      → Fase 4 (uma sessão por assunto) → revisão → Fase 5 → revisão
+      → Fase 4 (uma sessão por sigla; comece pela sigla do modelo) → revisão → Fase 5 → revisão
 Depois da outra org: Fase 5 com ORG=AMBAS (5B)
 ```
 
 ## Teste de amanhã (execução em sequência, sem revisão entre fases)
 
 - Use `MODO_TESTE=sim` em todos os prompts. As fases aceitam os arquivos `_proposto` sem aprovação, e tudo sai marcado como **NÃO VALIDADO**.
-- Na fase 4, teste com **2 assuntos**: um que você conhece bem e um difícil.
-- Depois do teste, use o checklist para avaliar a **qualidade do método**, e não a documentação em si. Os pontos que mais revelam problemas: F0-H04, F1-H02, F2-H01, F3-H01 e F3-H02.
+- Na fase 4, teste primeiro com a **sigla do modelo** (gera `comparacao_modelo.md`, a melhor medida de qualidade) e depois com 1 sigla difícil.
+- Depois do teste, use o checklist para avaliar a **qualidade do método**, e não a documentação em si. Os pontos que mais revelam problemas: FM-H01, F0-H04, F1-H02, F2-H01, F3-H01, F3-H02 e F4-H01.
 
 ## Se uma fase falhar
 
