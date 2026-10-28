@@ -56,8 +56,7 @@ Como você vai continuar na mesma sessão do Devin em que o modelo foi criado, h
   | DATA_REFERENCIA | data de hoje (AAAA-MM-DD) |
   | SIGLA_MODELO | |
   | ORG_DO_MODELO | |
-  | ASSUNTOS_DO_MODELO | |
-  | Siglas → assuntos | (lista para a Fase 4) |
+  | Coluna `sigla` no `assuntos.csv` | preenchida (ex.: `FNN` nos assuntos do modelo) — substitui ASSUNTOS_DO_MODELO e a lista siglas → assuntos |
 
 ## 3. Reorientar a sessão do Devin (≈2 min)
 
