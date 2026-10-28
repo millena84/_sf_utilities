@@ -189,7 +189,7 @@
 ### A. Portão
 | ID | Verificar | Aceite |
 |---|---|---|
-| F5-G1 ⭐ | `fase5/validation_report.md`: APROVADO, com F5-A01 a F5-A09 (e F5-A10 na 5B) | Sim |
+| F5-G1 ⭐ | `fase5/validation_report.md`: APROVADO, com F5-A01 a F5-A09 e F5-A11 (e F5-A10 na 5B) | Sim |
 
 ### B. Revisão humana
 | ID | O que verificar | Arquivo | Como | Aceite | Se falhar |
