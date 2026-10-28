@@ -64,7 +64,7 @@
 | F0-H06 | Referências não resolvidas | `revisao/top_nao_resolvidas.csv` | Classifique como ruído, pacote, tipo faltante ou erro | Nenhum "erro" ou "tipo faltante" relevante | Tipo faltante → F0-H01. Erro → correção |
 | F0-H07 ⭐ | Aprovar regras de relação | `relation_rules_proposto.csv` | Preencha `status_revisao` de todas as linhas | Nenhum pendente | — |
 | F0-H08 | Termos genéricos | `termos_genericos_proposto.csv` e `revisao/top_termos.csv` | Um termo genérico NÃO pode ser termo de negócio (ex.: "pix" nunca é genérico) | Lista coerente | Ajuste o status |
-| F0-H09 ⭐ | **Gabarito** | `revisao/gabarito_<ORG>_MODELO.csv` | Para 3 a 5 assuntos, liste 2 ou 3 componentes que com certeza pertencem a cada um. Salve como `_entradas/gabarito_<ORG>.csv` | Arquivo criado | — (será usado na fase 3) |
+| F0-H09 ⭐ | **Gabarito** | `revisao/gabarito_<ORG>_PARA_PREENCHER.csv` | Para 3 a 5 assuntos, liste 2 ou 3 componentes que com certeza pertencem a cada um. Salve como `_entradas/gabarito_<ORG>.csv` | Arquivo criado | — (será usado na fase 3) |
 | F0-H10 ⭐ | Vocabulário alcança o gabarito | `revisao/alcance_assuntos.csv` | Os componentes do gabarito aparecem? Os top 10 fazem sentido? | Maioria sim | Acrescente termos em `glossario_proposto.csv` (`termos_da_org`/`sinonimos`, status `ajustado`) |
 | F0-H11 ⭐ | Aprovar glossário | `glossario_proposto.csv` | Revise conceito, termos e excludentes; resolva duplicatas via `subject_overlap.csv` | Nenhum pendente | — |
 | F0-H12 | Assuntos sem alcance | `validation_report.md` (F0-A13) | Para cada um: falta vocabulário ou o assunto não existe nesta org? | Decidido | Ajuste o glossário ou marque como `rejeitado` com comentário |

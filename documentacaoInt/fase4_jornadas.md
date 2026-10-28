@@ -36,7 +36,7 @@ Produzir a documentação da sigla no formato do modelo do time: **uma visão ge
 ## P. Pré-checagem
 - Existe ≥1 assunto com `sigla` = SIGLA em `assuntos.csv` (ou lista informada no parâmetro opcional).
 - Todos os assuntos da sigla existem no glossário aprovado e têm ≥1 componente ALTA/MEDIA aprovado; os que não têm são listados (ALERTA) e entram em "Pontos em aberto" da visão geral.
-- `template_extraido.md` e `mapa_secoes_aprovado.csv` existem. Sem eles: usar o template base e registrar ALERTA (não bloqueia).
+- `template_extraido.md` existe e há mapa de seções: `mapa_secoes_aprovado.csv` ou, em MODO_TESTE, `mapa_secoes_proposto.csv`. Só na ausência de ambos: usar o template base e registrar ALERTA (não bloqueia).
 - Fase 3 aprovada; nenhum `_aprovado` com `pendente` (exceto MODO_TESTE).
 - Falhou → `fase4/<SIGLA>/PRECHECK_FALHOU.md` e encerre.
 

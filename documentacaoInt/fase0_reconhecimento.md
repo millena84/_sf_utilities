@@ -17,6 +17,10 @@ Entender, para esta org:
 2. **Como os componentes se relacionam** entre tipos de metadata (regras de relação, comprovadas com exemplos reais).
 3. **Como os assuntos aparecem na linguagem da org** (léxico e perfil semântico dos assuntos).
 
+## Escopo dos assuntos — IMPORTANTE
+- Esta fase trata **TODOS os assuntos de `assuntos.csv`**, com ou sem sigla. A coluna `sigla` **não filtra nada** aqui; ela só é repassada ao glossário.
+- O modelo de referência e os artefatos de `_modelo/` **não são insumo desta fase**. Não os leia nem use o que estiver na memória da conversa sobre eles.
+
 ## Esta fase NÃO faz
 - Não monta o grafo completo de dependências (fase 2).
 - Não atribui componentes a assuntos (fase 3).
@@ -98,7 +102,7 @@ Gere em `fase0/revisao/` (seed=42, `AMOSTRA_REVISAO` linhas):
 - `amostra_relacoes.csv` — `origem,destino,id_regra,evidencia,trecho_da_linha,ok,comentario` (o `trecho_da_linha` é o texto da linha citada, para conferência sem abrir o arquivo; mascarar segredos)
 - `top_nao_resolvidas.csv` — 20 referências não resolvidas mais frequentes, com `ok,comentario`
 - `top_termos.csv` — 50 termos mais frequentes com a marcação genérico sim/não
-- `gabarito_<ORG>_MODELO.csv` — modelo vazio com colunas `id_assunto,assunto,componente_id_esperado` para a revisora preencher
+- `gabarito_<ORG>_PARA_PREENCHER.csv` — arquivo para a revisora preencher, com **uma linha para cada assunto de `assuntos.csv`** e as colunas `id_assunto,assunto,componente_id_esperado` (esta última vazia; não preencha)
 
 ## Autovalidação — `tools/fase0/validate_fase0.py`
 
@@ -115,12 +119,13 @@ Gere em `fase0/revisao/` (seed=42, `AMOSTRA_REVISAO` linhas):
 | F0-A09 | Reverificação: todo `caminho:linha` de exemplos e da amostra existe e contém o padrão citado | BLOQUEANTE |
 | F0-A10 | Taxa de referências não resolvidas calculada; acima de `ALERTA_REFS_NAO_RESOLVIDAS` gera alerta | ALERTA |
 | F0-A11 | Todo termo do léxico aparece em ≥1 componente; contagens recalculáveis a partir do inventário | BLOQUEANTE |
-| F0-A12 | Todo assunto de `assuntos.csv` tem linha no glossário; todo termo em `termos_da_org` existe no léxico | BLOQUEANTE |
+| F0-A12 | Nº de linhas do glossário = nº de assuntos em `assuntos.csv` (todos, independentemente da sigla); todo termo em `termos_da_org` existe no léxico | BLOQUEANTE |
 | F0-A13 | Assuntos com `qtd_componentes_alcancados = 0` listados | ALERTA |
 | F0-A14 | Nenhum segredo nos artefatos gerados | BLOQUEANTE |
 | F0-A15 | CSVs bem formados: cabeçalho exato, mesmo nº de colunas em todas as linhas, UTF-8 | BLOQUEANTE |
 | F0-A16 | Idempotência: rodar os scripts 2x gera arquivos idênticos | BLOQUEANTE |
 | F0-A17 | Nenhum comando sf/sfdx foi utilizado (declarar no relatório) | BLOQUEANTE |
+| F0-A18 | Nenhum arquivo de `_modelo/` ou `modelo_referencia/` foi lido; `gabarito_<ORG>_PARA_PREENCHER.csv` tem uma linha por assunto e a coluna `componente_id_esperado` vazia | BLOQUEANTE |
 
 ## Entrega
 - Todos os arquivos acima + `fase0/validation_report.md` + `fase0/recon.md` + `fase0/RESUMO_FASE0.md`.

@@ -20,6 +20,9 @@ Entender o modelo criado pelo time (estrutura, nível de detalhe e estilo) e tra
 2. um **mapa** de onde cada seção do template busca seus dados no pipeline;
 3. um **gabarito** com os componentes citados no modelo, para medir a qualidade das fases 3 e 4.
 
+## Escopo
+A Fase M trata **somente os assuntos do modelo** (linhas com `sigla` = SIGLA_MODELO). Isso é esperado: aqui se extrai a *estrutura* da documentação, que depois é aplicada a todos os assuntos a partir da Fase 0.
+
 ## Esta fase NÃO faz
 - Não altera o modelo.
 - Não copia conteúdo do modelo para outras siglas. O modelo é **inspiração de estrutura e estilo**, não texto a ser reaproveitado.
@@ -94,7 +97,7 @@ Use sempre o **nome exato da Metadata API** (ex.: `LightningComponentBundle`, n�
 | FM-A05 | Toda seção com cobertura `parcial` ou `nenhuma` está em `lacunas_modelo.md` | BLOQUEANTE |
 | FM-A06 | O template contém `Pontos em aberto` e `Apêndice — Rastreabilidade` | BLOQUEANTE |
 | FM-A07 | Todo componente do gabarito aparece literalmente no texto do modelo (nada inventado) | BLOQUEANTE |
-| FM-A08 | Nenhum nome de componente do gabarito aparece no `template_extraido.md` (inspirar, não copiar) | BLOQUEANTE |
+| FM-A08 | Nenhum nome de componente do gabarito aparece no `template_extraido.md` nem na coluna `regra_de_preenchimento` de `mapa_secoes_proposto.csv` (regras genéricas; inspirar, não copiar) | BLOQUEANTE |
 | FM-A09 | Tipos faltantes listados; nenhum tipo de `tipos_faltantes.csv` existe em `tipos_metadata.txt` (comparação exata) | BLOQUEANTE |
 | FM-A10 | Nenhum segredo (inclusive conteúdo de certificado ou URL com credencial) nos artefatos | BLOQUEANTE |
 | FM-A11 | CSVs bem formados; idempotência | BLOQUEANTE |
