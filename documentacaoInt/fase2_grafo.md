@@ -51,7 +51,7 @@ Proponha, com justificativa:
 `id,classificacao(INFRA|HUB_DADOS),fan_in,motivo,exemplos_de_quem_usa,status_revisao,comentario_revisao`
 
 ### 2.4 Material de revisão humana (`fase2/revisao/`, seed=42)
-- `amostra_arestas.csv` — `AMOSTRA_REVISAO` arestas estratificadas por natureza, com `trecho_da_linha,ok,comentario`
+- `amostra_arestas.csv` — 1 aresta de cada regra aplicada (mínimo `AMOSTRA_REVISAO`), estratificada por regra e natureza, com `trecho_da_linha,ok,comentario`
 - `vizinhanca_pontos.md` — para os 3 pontos de integração de maior grau: diagrama Mermaid `flowchart LR` com vizinhança de 2 saltos (sem INFRA/HUB), com legenda
 - `amostra_isolados.csv` — `AMOSTRA_REVISAO` componentes isolados com `ok,comentario` (isolado de verdade?)
 - `top_nao_resolvidas.csv` — 20 mais frequentes

@@ -59,7 +59,7 @@
 | F0-H01 ⭐ | Tipos fora do escopo relevantes para integração | `fase0/recon.md` e `metadata_profile.csv` (na_lista=não) | Procure NamedCredential, RemoteSiteSetting, ConnectedApp, ExternalServiceRegistration, CustomMetadata, PlatformEventChannel, ExternalCredential | Nenhum tipo relevante ficou de fora | Inclua o tipo em `tipos_metadata.txt` e **rode a fase 0 de novo** |
 | F0-H02 | Inventário correto | `revisao/amostra_inventario.csv` | Preencha `ok` em todas as linhas | ≥ 9 de 10 ok | Descreva o erro no comentário e peça a correção |
 | F0-H03 ⭐ | Componentes conhecidos estão no inventário | `inventory.csv` | Procure 5 componentes que você sabe que existem | 5 de 5 | Erro no extrator: peça a correção |
-| F0-H04 ⭐ | Relações extraídas são reais | `revisao/amostra_relacoes.csv` | Leia o `trecho_da_linha` e confirme se a ligação existe | ≥ 9 de 10 ok | Rejeite ou ajuste a regra correspondente em `relation_rules_proposto.csv` |
+| F0-H04 ⭐ | Relações extraídas são reais | `revisao/amostra_relacoes.csv` | Leia o `trecho_da_linha` e confirme se a ligação existe (2 linhas por regra) | ≥ 90% ok e nenhuma regra com as 2 linhas erradas | Rejeite ou ajuste a regra correspondente em `relation_rules_proposto.csv` |
 | F0-H05 | Relações esperadas foram encontradas | `relation_sample.csv` | Escolha 2 componentes conhecidos e veja se as ligações que você espera aparecem | Aparecem | Falta uma regra: anote em comentário e peça para incluir |
 | F0-H06 | Referências não resolvidas | `revisao/top_nao_resolvidas.csv` | Classifique como ruído, pacote, tipo faltante ou erro | Nenhum "erro" ou "tipo faltante" relevante | Tipo faltante → F0-H01. Erro → correção |
 | F0-H07 ⭐ | Aprovar regras de relação | `relation_rules_proposto.csv` | Preencha `status_revisao` de todas as linhas | Nenhum pendente | — |
@@ -118,7 +118,7 @@
 | ID | O que verificar | Arquivo | Como | Aceite | Se falhar |
 |---|---|---|---|---|---|
 | F2-H01 ⭐ | **Infra e hubs** (o item mais importante da fase) | `infra_hubs_proposto.csv` | Algo marcado como INFRA tem regra de negócio? Se sim, rejeite. Algum utilitário óbvio ficou de fora? | Revisado | Rejeite ou ajuste. Infra errada estraga a fase 3 |
-| F2-H02 | Arestas corretas | `revisao/amostra_arestas.csv` | Confira o trecho | ≥ 9 de 10 | Corrija a regra e rode a fase 2 de novo |
+| F2-H02 | Arestas corretas | `revisao/amostra_arestas.csv` | Confira o trecho (1 por regra) | ≥ 90% ok | Corrija a regra e rode a fase 2 de novo |
 | F2-H03 ⭐ | Vizinhanças fazem sentido | `revisao/vizinhanca_pontos.md` | Os diagramas representam o que você conhece? | Sim | Comente o que falta ou sobra |
 | F2-H04 | Isolados | `revisao/amostra_isolados.csv` | É isolado de verdade? | Maioria sim | Isolado falso = regra faltando: volte à fase 0 |
 | F2-H05 | Não resolvidas | `revisao/top_nao_resolvidas.csv` | Mesma análise de F0-H06 | Revisado | — |

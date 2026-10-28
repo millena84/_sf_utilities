@@ -65,7 +65,8 @@ Profile/PermissionSet/PermissionSetGroup→ApexClass (`classAccesses`), →Objet
 Considere só os acessos concedidos (`enabled`/`allowRead`/`readable` = true).
 Inclua padrões adicionais que encontrar.
 
-Para cada regra: rode a extração numa **amostra de 30 componentes** de tipos variados (seed=42) e registre exemplos reais.
+Para cada regra: rode a extração numa **amostra estratificada por tipo** (seed=42): até 5 componentes de cada tipo em escopo que tenha código ou XML com referências (Apex, Trigger, Flow, LWC/Aura, Visualforce, Workflow, CustomMetadata, Profile/PermissionSet, NamedCredential etc.), com no mínimo 30 componentes no total. Registre exemplos reais.
+Se uma regra não ocorrer na amostra, faça uma busca dirigida no inventário inteiro pelo padrão dela antes de marcar "não ocorre".
 
 **Saídas:**
 - `fase0/relation_rules_proposto.csv`
@@ -99,7 +100,7 @@ Leve a coluna `sigla` (quando existir) para o glossário. Para cada assunto: con
 ### 0.6 Material de revisão humana
 Gere em `fase0/revisao/` (seed=42, `AMOSTRA_REVISAO` linhas):
 - `amostra_inventario.csv` — `id,tipo,caminho,label,is_test,is_generated,ok,comentario`
-- `amostra_relacoes.csv` — `origem,destino,id_regra,evidencia,trecho_da_linha,ok,comentario` (o `trecho_da_linha` é o texto da linha citada, para conferência sem abrir o arquivo; mascarar segredos)
+- `amostra_relacoes.csv` — **estratificada por regra**: 2 relações de cada regra com ocorrência (1 se só houver 1), sem limite de 10 linhas. `origem,destino,id_regra,evidencia,trecho_da_linha,ok,comentario` (o `trecho_da_linha` é o texto da linha citada, para conferência sem abrir o arquivo; mascarar segredos)
 - `top_nao_resolvidas.csv` — 20 referências não resolvidas mais frequentes, com `ok,comentario`
 - `top_termos.csv` — 50 termos mais frequentes com a marcação genérico sim/não
 - `gabarito_<ORG>_PARA_PREENCHER.csv` — arquivo para a revisora preencher, com **uma linha para cada assunto de `assuntos.csv`** e as colunas `id_assunto,assunto,componente_id_esperado` (esta última vazia; não preencha)
@@ -115,7 +116,8 @@ Gere em `fase0/revisao/` (seed=42, `AMOSTRA_REVISAO` linhas):
 | F0-A05 | Tipos compostos: qtd de tags filhas no XML = qtd de subcomponentes inventariados por pai | BLOQUEANTE |
 | F0-A06 | Pares arquivo/`-meta.xml` completos (listar quebrados) | ALERTA |
 | F0-A07 | XML com erro de parse listados | ALERTA |
-| F0-A08 | Toda regra de relação tem ≥1 exemplo real ou está marcada "não ocorre" | BLOQUEANTE |
+| F0-A08 | Toda regra de relação tem ≥1 exemplo real ou está marcada "não ocorre" após busca dirigida | BLOQUEANTE |
+| F0-A19 | Toda regra com ocorrência aparece em `revisao/amostra_relacoes.csv` | BLOQUEANTE |
 | F0-A09 | Reverificação: todo `caminho:linha` de exemplos e da amostra existe e contém o padrão citado | BLOQUEANTE |
 | F0-A10 | Taxa de referências não resolvidas calculada; acima de `ALERTA_REFS_NAO_RESOLVIDAS` gera alerta | ALERTA |
 | F0-A11 | Todo termo do léxico aparece em ≥1 componente; contagens recalculáveis a partir do inventário | BLOQUEANTE |
