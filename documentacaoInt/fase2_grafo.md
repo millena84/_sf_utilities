@@ -1,0 +1,77 @@
+# Fase 2 — Grafo de relações (org <ORG>)
+
+## Antes de começar
+Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
+
+## Parâmetros desta execução
+- ORG: `<ORG>` · CAMINHO_ORG: `<CAMINHO_ORG>` · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
+
+## Objetivo
+Aplicar as regras de relação aprovadas sobre **todo** o inventário, ligar os pontos de integração aos sistemas externos
+e identificar **infraestrutura** e **hubs de dados**, que não podem propagar assunto na fase 3.
+
+## Esta fase NÃO faz
+- Não atribui assuntos.
+
+## Insumos
+- `fase0/inventory.csv`, `fase0/relation_rules_aprovado.csv`, `fase0/relation_sample.csv`
+- `fase1/integration_points.csv`, `fase1/sistemas_externos_aprovado.csv`
+- `fase1/validation_report.md`
+
+## P. Pré-checagem
+- Insumos existem, colunas esperadas, `_aprovado` sem `pendente` (exceto MODO_TESTE).
+- `fase1/validation_report.md` aprovado.
+- Falhou → `fase2/PRECHECK_FALHOU.md` e encerre.
+
+## Etapas
+
+### 2.1 Arestas
+- Aplique cada regra aprovada a todos os componentes do inventário (exceto `is_test=true`, que só entram em `test_edges.csv`).
+- Para cada ponto de integração, crie aresta `componente → SIS::<id>` (OUTBOUND) ou `SIS::<id> → componente` (INBOUND/INBOUND_PRESUMIDO); EVENTO conforme publicação/assinatura.
+- Remova duplicatas exatas; mantenha a evidência mais forte.
+
+**Saídas:**
+- `fase2/edges.csv` `origem,destino,id_regra,natureza,evidencia`
+- `fase2/test_edges.csv` (mesmo formato)
+- `fase2/unresolved_refs.csv` `origem,referencia_textual,id_regra,evidencia,motivo_provavel`
+
+### 2.2 Métricas por nó
+`fase2/nodes.csv`
+`id,tipo,fan_in,fan_out,is_integration_point,sistemas_externos,distancia_ponto_integracao,isolado,so_referenciado_por_teste`
+- `distancia_ponto_integracao`: menor nº de saltos (em qualquer direção) até um ponto de integração; sem caminho → vazio.
+
+### 2.3 Infraestrutura e hubs de dados
+Proponha, com justificativa:
+- **INFRA**: fan-in ≥ `LIMIAR_INFRA_FAN_IN` + nome com termos genéricos aprovados ou sem referência a objetos de negócio (logger, wrappers HTTP, trigger handlers, utils).
+- **HUB_DADOS**: objetos/campos com fan-in ≥ `LIMIAR_INFRA_FAN_IN` (ex.: Account, Contact, Case, User).
+
+`fase2/infra_hubs_proposto.csv`
+`id,classificacao(INFRA|HUB_DADOS),fan_in,motivo,exemplos_de_quem_usa,status_revisao,comentario_revisao`
+
+### 2.4 Material de revisão humana (`fase2/revisao/`, seed=42)
+- `amostra_arestas.csv` — `AMOSTRA_REVISAO` arestas estratificadas por natureza, com `trecho_da_linha,ok,comentario`
+- `vizinhanca_pontos.md` — para os 3 pontos de integração de maior grau: diagrama Mermaid `flowchart LR` com vizinhança de 2 saltos (sem INFRA/HUB), com legenda
+- `amostra_isolados.csv` — `AMOSTRA_REVISAO` componentes isolados com `ok,comentario` (isolado de verdade?)
+- `top_nao_resolvidas.csv` — 20 mais frequentes
+
+## Autovalidação — `tools/fase2/validate_fase2.py`
+
+| ID | Verificação | Severidade |
+|---|---|---|
+| F2-A01 | Pré-checagem executada e aprovada | BLOQUEANTE |
+| F2-A02 | Toda regra aprovada foi aplicada; contagem de arestas por regra (regras com 0 → listar) | BLOQUEANTE |
+| F2-A03 | Origem e destino de toda aresta existem no inventário ou são `SIS::` aprovados | BLOQUEANTE |
+| F2-A04 | Reverificação de evidência em amostra de 50 arestas (seed=42): 100% válidas | BLOQUEANTE |
+| F2-A05 | Regressão: toda relação de `fase0/relation_sample.csv` (de regras aprovadas) está em `edges.csv` | BLOQUEANTE |
+| F2-A06 | Todo ponto de integração tem aresta para/de um `SIS::` | BLOQUEANTE |
+| F2-A07 | Sem arestas duplicadas; auto-referências listadas | ALERTA |
+| F2-A08 | Métricas de `nodes.csv` recalculáveis a partir de `edges.csv` | BLOQUEANTE |
+| F2-A09 | Taxa de não resolvidas acima de `ALERTA_REFS_NAO_RESOLVIDAS` | ALERTA |
+| F2-A10 | % de componentes isolados e % sem caminho até ponto de integração reportados | ALERTA |
+| F2-A11 | Nenhum segredo nos artefatos | BLOQUEANTE |
+| F2-A12 | CSVs bem formados; Mermaid com sintaxe estruturalmente válida (nós declarados, setas válidas) | BLOQUEANTE |
+| F2-A13 | Idempotência | BLOQUEANTE |
+
+## Entrega
+Arquivos acima + `fase2/graph.json` (nós e arestas, para reuso) + `fase2/validation_report.md` + `fase2/RESUMO_FASE2.md`.
+Atualize `decisions.md` e `questions.md`.
