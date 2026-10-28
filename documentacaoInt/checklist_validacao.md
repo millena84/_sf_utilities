@@ -32,7 +32,7 @@
 | FM-H02 ⭐ | Regras das seções | `_projeto/template_extraido.md` | Cada regra descreve o que o time espera daquela seção (ex.: Profiles = só os acessos da integração)? | Sim | Edite o template direto ou peça a correção |
 | FM-H03 | Guia de estilo | `template_extraido.md` | Tom, tamanho e nomenclatura batem com o modelo? | Sim | Edite |
 | FM-H04 ⭐ | Mapa de seções | `_modelo/mapa_secoes_proposto.csv` | A fonte de cada seção faz sentido? | Nenhum pendente | Salve como `mapa_secoes_aprovado.csv` |
-| FM-H05 ⭐ | Tipos faltantes | `_modelo/tipos_faltantes.csv` | Inclua em `_entradas/tipos_metadata.txt` os que fizerem sentido | Lista atualizada | — |
+| FM-H05 ⭐ | Tipos faltantes | `_modelo/tipos_faltantes.csv` (só os que faltam) e `tipos_nome_divergente.csv` | Inclua em `_entradas/tipos_metadata.txt` os que fizerem sentido e corrija os nomes divergentes | Lista atualizada | — |
 | FM-H06 | Lacunas | `_modelo/lacunas_modelo.md` | Alguma seção do modelo que o pipeline não consegue preencher? Aceite ou ajuste | Decidido | — |
 | FM-H07 | Gabarito | `_modelo/gabarito_modelo.csv` | Os assuntos atribuídos estão corretos? | Sim | Corrija a coluna `assunto` |
 

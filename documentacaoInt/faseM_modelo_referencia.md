@@ -75,7 +75,10 @@ Liste os tipos de metadata necessários para preencher o template e compare com 
 Considere no mínimo: CustomObject, ApexClass, ApexTrigger, Flow, LightningComponentBundle, CustomMetadata (tipos `__mdt` e registros),
 NamedCredential, ExternalCredential, ExternalClientApplication, ConnectedApp, Certificate, RemoteSiteSetting, CspTrustedSite, Profile, PermissionSet, PermissionSetGroup.
 
-`_modelo/tipos_faltantes.csv` `tipo,motivo(qual seção precisa),presente_na_lista(sim|não)`
+Use sempre o **nome exato da Metadata API** (ex.: `LightningComponentBundle`, não `LWC`). Gere dois arquivos:
+- `_modelo/tipos_exigidos.csv` `tipo,motivo(qual seção precisa),presente_na_lista(sim|não)`: **todos** os tipos que o modelo exige (referência).
+- `_modelo/tipos_faltantes.csv` `tipo,motivo`: **somente** os tipos com `presente_na_lista = não`. É o único arquivo que pede ação humana.
+- Se um nome da lista de entrada não for um nome válido da Metadata API mas parecer equivalente a um tipo exigido, registre em `_modelo/tipos_nome_divergente.csv` `nome_na_lista,nome_correto`.
 
 ### M.6 Material de revisão humana (`_modelo/revisao/`)
 - `comparativo_secoes.md`: para cada seção, à esquerda o que o modelo mostra (resumo) e à direita a regra que foi extraída para o template.
@@ -92,7 +95,7 @@ NamedCredential, ExternalCredential, ExternalClientApplication, ConnectedApp, Ce
 | FM-A06 | O template contém `Pontos em aberto` e `Apêndice — Rastreabilidade` | BLOQUEANTE |
 | FM-A07 | Todo componente do gabarito aparece literalmente no texto do modelo (nada inventado) | BLOQUEANTE |
 | FM-A08 | Nenhum nome de componente do gabarito aparece no `template_extraido.md` (inspirar, não copiar) | BLOQUEANTE |
-| FM-A09 | Tipos faltantes listados | ALERTA |
+| FM-A09 | Tipos faltantes listados; nenhum tipo de `tipos_faltantes.csv` existe em `tipos_metadata.txt` (comparação exata) | BLOQUEANTE |
 | FM-A10 | Nenhum segredo (inclusive conteúdo de certificado ou URL com credencial) nos artefatos | BLOQUEANTE |
 | FM-A11 | CSVs bem formados; idempotência | BLOQUEANTE |
 

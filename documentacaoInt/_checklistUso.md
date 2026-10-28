@@ -67,7 +67,7 @@ Como você vai continuar na mesma sessão do Devin em que o modelo foi criado, h
 
 Depois de cada fase, faça só o **portão** do checklist (cerca de 2 min): abra o `validation_report.md` e confira se a primeira linha diz APROVADO. Se aparecer `PRECHECK_FALHOU.md` ou REPROVADO, resolva antes de seguir.
 
-- [ ] **Fase M:** depois dela, inclua em `tipos_metadata.txt` o que estiver em `_modelo/tipos_faltantes.csv`. É o único ajuste obrigatório antes da Fase 0, mesmo em modo teste.
+- [ ] **Fase M:** depois dela, inclua em `tipos_metadata.txt` o que estiver em `_modelo/tipos_faltantes.csv` (esse arquivo traz só o que falta; a lista completa fica em `tipos_exigidos.csv`) e corrija os nomes de `tipos_nome_divergente.csv`, se houver. É o único ajuste obrigatório antes da Fase 0, mesmo em modo teste.
 - [ ] **Fase 0:** ao terminar, anote 2 ou 3 componentes que com certeza pertencem a cada um de 3 a 5 assuntos e salve em `_entradas/gabarito_<ORG>.csv`, usando o modelo gerado em `fase0/revisao/`. Leva 15 minutos e é a base da medição de qualidade.
 - [ ] **Fase 1.**
 - [ ] **Fase 2.**
