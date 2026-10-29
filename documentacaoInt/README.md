@@ -36,6 +36,13 @@ Fase 0 → revisão → Fase 1 → revisão → Fase 2 → revisão → Fase 3 �
 Depois da outra org: Fase 5 com ORG=AMBAS (5B)
 ```
 
+## Fase 4 para todos os assuntos
+
+A Fase 4 roda **uma vez por sigla**. Para cobrir todos os assuntos:
+1. Liste as siglas distintas da coluna `sigla` do `assuntos.csv` e rode a Fase 4 para cada uma.
+2. Para cada assunto **sem sigla**, rode a Fase 4 com `SIGLA = <id_assunto>` (ex.: `ASS-007`).
+3. A Fase 5 mostra no índice o status de **todos** os assuntos; qualquer um como "Não documentado" indica uma execução que faltou.
+
 ## Teste de amanhã (execução em sequência, sem revisão entre fases)
 
 - Use `MODO_TESTE=sim` em todos os prompts. As fases aceitam os arquivos `_proposto` sem aprovação, e tudo sai marcado como **NÃO VALIDADO**.

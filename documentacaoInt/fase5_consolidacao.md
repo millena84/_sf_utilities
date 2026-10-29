@@ -53,7 +53,7 @@ Termos de negócio dos assuntos e siglas técnicas usadas nos docs.
 | ID | Verificação | Severidade |
 |---|---|---|
 | F5-A01 | Pré-checagem executada | BLOQUEANTE |
-| F5-A02 | Toda sigla aparece no índice com status correto; todo assunto aprovado está ligado a uma sigla ou listado como "sem sigla" | BLOQUEANTE |
+| F5-A02 | Toda sigla aparece no índice com status correto; **todo assunto de `assuntos.csv`** aparece no índice com status: Documentado (sigla e integrações) \| Sem integração detectada \| Não documentado (motivo) | BLOQUEANTE |
 | F5-A03 | Todos os links internos (de todos os docs) resolvem para arquivos existentes | BLOQUEANTE |
 | F5-A04 | Todo sistema externo aprovado tem página; toda página referencia jornadas existentes ou está em lacunas | BLOQUEANTE |
 | F5-A05 | Todo componente INFRA citado nas jornadas está no catálogo de infraestrutura | BLOQUEANTE |

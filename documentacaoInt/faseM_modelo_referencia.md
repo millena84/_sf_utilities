@@ -52,6 +52,8 @@ Para cada tipo de documento, liste as seções **na ordem do modelo**. Para cada
 - **Obrigatoriedade**: `sempre` ou `se houver`
 - **Texto quando não houver conteúdo**
 
+O template descreve **a estrutura de um documento de cada tipo**. Ele **não fixa** quantidade de integrações, nomes de integrações nem nomes de assuntos do modelo.
+
 Inclua também:
 - **Guia de estilo**: tom, pessoa verbal, tamanho típico, como os componentes são nomeados, como os diagramas são usados e como os nomes dos arquivos são formados.
 - **Seções obrigatórias do projeto** que o modelo não tiver, ao final: `Pontos em aberto` e `Apêndice — Rastreabilidade` (evidências `arquivo:linha`).

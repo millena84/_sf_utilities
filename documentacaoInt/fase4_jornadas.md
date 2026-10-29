@@ -12,12 +12,17 @@ Leia e siga integralmente:
 
 ## Parâmetros desta execução
 - ORG: `<ORG>` · CAMINHO_ORG: `<CAMINHO_ORG>` · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
-- SIGLA: `<SIGLA>`
+- SIGLA: `<SIGLA>` — para um assunto **sem sigla** em `assuntos.csv`, use o próprio id do assunto (ex.: `ASS-007`); ele é documentado como uma sigla isolada
 - Assuntos desta sigla: **lidos de `_entradas/assuntos.csv`** (linhas com `sigla` = SIGLA). Opcional: `<lista de assuntos para sobrescrever, ou vazio>`
 - É a sigla do modelo de referência: `<sim|não>`
 
 ## Objetivo
 Produzir a documentação da sigla no formato do modelo do time: **uma visão geral** (resumo da jornada completa) e **um documento por integração/jornada**, legíveis para negócio e rastreáveis para técnicos.
+
+## Escopo — IMPORTANTE
+- Esta execução documenta **todos os assuntos da sigla**, não apenas os do modelo de referência.
+- **O número de integrações e de documentos do modelo NÃO define quantas integrações esta sigla tem.** O modelo define a estrutura de cada documento; a quantidade vem dos dados das fases 1 a 3.
+- Ao final, `RESUMO.md` deve trazer a tabela **assunto → integrações documentadas** (ou o motivo de não haver nenhuma).
 
 ## Regra de inspiração
 - Siga a **estrutura, a ordem das seções, os formatos de tabela, o tom e o nível de detalhe** do modelo.
@@ -34,7 +39,8 @@ Produzir a documentação da sigla no formato do modelo do time: **uma visão ge
 - Código-fonte em `CAMINHO_ORG` (leitura)
 
 ## P. Pré-checagem
-- Existe ≥1 assunto com `sigla` = SIGLA em `assuntos.csv` (ou lista informada no parâmetro opcional).
+- Existe ≥1 assunto com `sigla` = SIGLA em `assuntos.csv`, ou SIGLA é um `id_assunto` existente (assunto sem sigla), ou foi informada a lista opcional.
+- Pontos de `fase3/pontos_orfaos.csv` cuja decisão seja anexar a um assunto desta sigla são incluídos no recorte; órfãos sem decisão são listados (ALERTA).
 - Todos os assuntos da sigla existem no glossário aprovado e têm ≥1 componente ALTA/MEDIA aprovado; os que não têm são listados (ALERTA) e entram em "Pontos em aberto" da visão geral.
 - `template_extraido.md` existe e há mapa de seções: `mapa_secoes_aprovado.csv` ou, em MODO_TESTE, `mapa_secoes_proposto.csv`. Só na ausência de ambos: usar o template base e registrar ALERTA (não bloqueia).
 - Fase 3 aprovada; nenhum `_aprovado` com `pendente` (exceto MODO_TESTE).
@@ -43,17 +49,20 @@ Produzir a documentação da sigla no formato do modelo do time: **uma visão ge
 ## Etapas
 
 ### 4.1 Recorte
-- Una os componentes dos assuntos da sigla. Núcleo = ALTA; apoio = MEDIA; possivelmente relacionados = BAIXA (só em apêndice).
+- Una os componentes de **cada** assunto da sigla. Núcleo = ALTA; apoio = MEDIA; possivelmente relacionados = BAIXA (só em apêndice).
+- Liste os pontos de integração de cada assunto (componentes do recorte com `is_integration_point = sim`).
 - INFRA/HUB_DADOS: apenas citados, com link para o catálogo de infraestrutura.
 
 `fase4/<SIGLA>/recorte.csv` `componente_id,id_assunto,papel(nucleo|apoio|possivel|infra),confianca`
 
 ### 4.2 Integrações e jornada completa
 - **Integração** = troca com um sistema externo com gatilho e resultado próprios (normalmente 1 ou mais pontos de integração do mesmo sistema e da mesma finalidade).
+- **Todo assunto da sigla com ≥1 ponto de integração gera ≥1 integração.** Nunca una assuntos diferentes numa mesma integração só porque usam o mesmo sistema externo ou o mesmo middleware. Uma integração só pode atender a mais de um assunto se `conflitos_aprovado.csv` indicar os componentes como `compartilhado`.
+- Assunto sem ponto de integração ou sem componentes ALTA/MEDIA: não gera documento; entra em "Pontos em aberto" da visão geral, com o motivo.
 - **Jornada completa** = a ordem em que as integrações acontecem do início ao fim do processo de negócio da sigla.
 - Para cada integração, identifique o gatilho: endpoint exposto, trigger, Flow record-triggered, agendamento, ação de usuário (LWC/Aura/Visualforce/botão), Platform Event.
 
-`fase4/<SIGLA>/integracoes.csv` `id_integracao(INTnn),nome,ordem_na_jornada,gatilho,componente_gatilho,resultado,direcao,sistema_externo_id,pontos_integracao`
+`fase4/<SIGLA>/integracoes.csv` `id_integracao(INTnn),id_assunto,nome,ordem_na_jornada,gatilho,componente_gatilho,resultado,direcao,sistema_externo_id,pontos_integracao`
 
 ### 4.3 Etapas de cada integração
 Percorra o grafo a partir do gatilho e **leia o código** para ordenar as etapas. Marque síncrono/assíncrono (`@future`, Queueable, Batch, Schedulable, Platform Event, Outbound Message) e o tratamento de erro (try/catch, log, retentativa, reprocessamento).
@@ -119,6 +128,9 @@ Compare a documentação gerada com o modelo do time:
 | F4-A15 | (sigla do modelo) Recall do gabarito por seção reportado; abaixo de 80% gera alerta | ALERTA |
 | F4-A16 | Nenhum segredo; hosts só com domínio; nenhum conteúdo de certificado | BLOQUEANTE |
 | F4-A17 | Idempotência dos CSVs | BLOQUEANTE |
+| F4-A18 | **Cobertura de assuntos:** todo assunto da sigla tem ≥1 integração em `integracoes.csv` ou aparece em "Pontos em aberto" com motivo (sem ponto de integração / sem componentes ALTA-MEDIA) | BLOQUEANTE |
+| F4-A19 | **Cobertura de pontos:** todo ponto de integração associado (ALTA/MEDIA) a um assunto da sigla está em alguma integração | BLOQUEANTE |
+| F4-A20 | Nenhuma integração junta assuntos diferentes sem componentes `compartilhado` em `conflitos_aprovado.csv` | BLOQUEANTE |
 
 ## Entrega
 Docs + CSVs + `fase4/<SIGLA>/validation_report.md` + `fase4/<SIGLA>/RESUMO.md` (+ `comparacao_modelo.md` quando aplicável).
