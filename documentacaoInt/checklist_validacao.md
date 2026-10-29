@@ -117,6 +117,7 @@
 ### B. Revisão humana
 | ID | O que verificar | Arquivo | Como | Aceite | Se falhar |
 |---|---|---|---|---|---|
+| F2-H00 ⭐ | **Diagnóstico** | `revisao/diagnostico.md` | Não resolvidas são quase todas nativas? Isolados são quase todos campos? | Sim | Muitas customizadas não resolvidas ou muitas classes isoladas → ajustar regras/tipos e rodar Fases 0 e 2 de novo |
 | F2-H01 ⭐ | **Infra e hubs** (o item mais importante da fase) | `infra_hubs_proposto.csv` | Algo marcado como INFRA tem regra de negócio? Se sim, rejeite. Algum utilitário óbvio ficou de fora? | Revisado | Rejeite ou ajuste. Infra errada estraga a fase 3 |
 | F2-H02 | Arestas corretas | `revisao/amostra_arestas.csv` | Confira o trecho (1 por regra) | ≥ 90% ok | Corrija a regra e rode a fase 2 de novo |
 | F2-H03 ⭐ | Vizinhanças fazem sentido | `revisao/vizinhanca_pontos.md` | Os diagramas representam o que você conhece? | Sim | Comente o que falta ou sobra |

@@ -55,6 +55,11 @@ Proponha, com justificativa:
 - `vizinhanca_pontos.md` — para os 3 pontos de integração de maior grau: diagrama Mermaid `flowchart LR` com vizinhança de 2 saltos (sem INFRA/HUB), com legenda
 - `amostra_isolados.csv` — `AMOSTRA_REVISAO` componentes isolados com `ok,comentario` (isolado de verdade?)
 - `top_nao_resolvidas.csv` — 20 mais frequentes
+- `diagnostico.md` — leitura obrigatória antes da revisão:
+  1. Referências não resolvidas: as 30 mais frequentes (com contagem); distribuição por `motivo_provavel` e por `id_regra`; quantas são nativas do Apex ou do Salesforce (namespaces `System`, `Schema`, `Database`, tipos primitivos, coleções, objetos padrão) × quantas têm cara de customizadas (`__c`, `__mdt`, `__e`, `__x`, nomes com prefixo do projeto).
+  2. Nós isolados por tipo de metadata (contagem e %) e lista das `ApexClass`, `ApexTrigger` e `Flow` isolados que não são de teste.
+  3. Propostas de `infra_hubs_proposto.csv` agrupadas por classificação e tipo de metadata, com fan-in mínimo, médio e máximo.
+  4. Conclusão: "grafo consistente" ou "suspeita de regra faltando/ampla demais", com a justificativa.
 
 ## Autovalidação — `tools/fase2/validate_fase2.py`
 
