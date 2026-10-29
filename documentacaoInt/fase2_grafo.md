@@ -26,6 +26,7 @@ e identificar **infraestrutura** e **hubs de dados**, que não podem propagar as
 ## Etapas
 
 ### 2.1 Arestas
+- Leia as regras **a cada execução** a partir do arquivo de regras (`_aprovado`, ou `_proposto` em MODO_TESTE). Se houver regra nova ou alterada desde a última execução, **implemente-a no extrator antes de rodar**. Não reaproveite scripts que tenham as regras fixas no código.
 - Aplique cada regra aprovada a todos os componentes do inventário (exceto `is_test=true`, que só entram em `test_edges.csv`).
 - Para cada ponto de integração, crie aresta `componente → SIS::<id>` (OUTBOUND) ou `SIS::<id> → componente` (INBOUND/INBOUND_PRESUMIDO); EVENTO conforme publicação/assinatura.
 - Remova duplicatas exatas; mantenha a evidência mais forte.
@@ -66,7 +67,7 @@ Proponha, com justificativa:
 | ID | Verificação | Severidade |
 |---|---|---|
 | F2-A01 | Pré-checagem executada e aprovada | BLOQUEANTE |
-| F2-A02 | Toda regra aprovada foi aplicada; contagem de arestas por regra (regras com 0 → listar) | BLOQUEANTE |
+| F2-A02 | Toda regra `aprovado`/`ajustado` do arquivo de regras tem código correspondente no extrator e foi aplicada; o relatório traz uma **tabela de arestas por `id_regra`** (inclusive as com 0, explicando se o padrão não ocorre na org ou se há falha) | BLOQUEANTE |
 | F2-A03 | Origem e destino de toda aresta existem no inventário ou são `SIS::` aprovados | BLOQUEANTE |
 | F2-A04 | Reverificação de evidência em amostra de 50 arestas (seed=42): 100% válidas | BLOQUEANTE |
 | F2-A05 | Regressão: toda relação de `fase0/relation_sample.csv` (de regras aprovadas) está em `edges.csv` | BLOQUEANTE |
