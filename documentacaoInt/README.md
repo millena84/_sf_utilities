@@ -9,6 +9,7 @@
 | `faseM_modelo_referencia.md` | Prompt que analisa o modelo feito pelo time e gera `template_extraido.md` (que prevalece sobre o template base) |
 | `fase0_reconhecimento.md` … `fase5_consolidacao.md` | Prompts. Cole um por sessão do Devin, depois de trocar os placeholders |
 | `checklist_validacao.md` | Seu checklist de revisão, com portão, revisão humana e liberação |
+| `base_conhecimento/desenhos_integracao/` | Base de consulta: 52 desenhos de integração Salesforce (IN/OUT, SYNC/ASYNC, middleware) em 374 variantes, com metadata types, papel, ordem e quem aciona quem. Ver o README da pasta |
 
 ## Preparação (uma vez)
 
