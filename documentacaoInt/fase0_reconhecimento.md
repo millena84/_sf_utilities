@@ -57,13 +57,14 @@ Entender, para esta org:
 Descubra, **a partir do que existe nesta org**, como um tipo referencia outro. Considere no mínimo:
 Apex→Apex (instanciação, chamada estática, extends/implements), Apex→Objeto/Campo (SOQL, DML, referência tipada),
 Apex→NamedCredential (`callout:`), Apex→CustomMetadata/CustomSetting, `Type.forName` (dinâmica),
-Trigger→Objeto, Flow→Apex (`actionCalls`), Flow→Flow (`subflows`), Flow→Objeto, Workflow→OutboundMessage,
+Trigger→Objeto, Flow→Apex (`actionCalls` do tipo apex), Flow→Flow (`subflows`/`flowName`), Flow→Objeto (objeto do `<start>`; `object` em `recordLookups`/`recordCreates`/`recordUpdates`/`recordDeletes`), Flow→Campo (`field` em filtros, `inputAssignments`, `outputAssignments`), Flow→PlatformEvent, CustomField→CustomObject (estrutural: todo campo liga-se ao objeto pai, para que referências em nível de campo e de objeto se encontrem), Workflow→OutboundMessage,
 LWC/Aura/Visualforce→Apex, registros de CustomMetadata cujo valor é nome de componente (textual),
 NamedCredential→ExternalCredential, NamedCredential/ExternalClientApplication/ConnectedApp→Certificate,
 Profile/PermissionSet/PermissionSetGroup→ApexClass (`classAccesses`), →Objeto/Campo (`objectPermissions`/`fieldPermissions`),
 →ExternalCredential (`externalCredentialPrincipalAccesses`), →CustomMetadata (`customMetadataTypeAccesses`), →Flow (`flowAccesses`).
 Considere só os acessos concedidos (`enabled`/`allowRead`/`readable` = true).
 Inclua padrões adicionais que encontrar.
+**Não** crie regra a partir de `sourceTemplate` de Flow: ele indica de qual modelo o Flow foi criado, não uma dependência em execução.
 
 Para cada regra: rode a extração numa **amostra estratificada por tipo** (seed=42): até 5 componentes de cada tipo em escopo que tenha código ou XML com referências (Apex, Trigger, Flow, LWC/Aura, Visualforce, Workflow, CustomMetadata, Profile/PermissionSet, NamedCredential etc.), com no mínimo 30 componentes no total. Registre exemplos reais.
 Se uma regra não ocorrer na amostra, faça uma busca dirigida no inventário inteiro pelo padrão dela antes de marcar "não ocorre".
