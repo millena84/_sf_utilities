@@ -1,14 +1,15 @@
 # Fase 3 — Clusterização por assunto (org <ORG>)
 
 ## Antes de começar
-Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
+Leia o `config.json` na raiz da pasta de trabalho e siga integralmente `<DIR_TRABALHO> [busque no arquivo config.json]/_projeto/00_regras_gerais.md`.
 
 ## Parâmetros desta execução
-- ORG: `<ORG>` · CAMINHO_ORG: `<CAMINHO_ORG>` · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
-- Parâmetros de calibração: conforme regras gerais (seção 10), salvo ajuste aqui: `<ajustes ou "nenhum">`
+- ORG: `<ORG> [busque no arquivo config.json]` · CAMINHO_ORG: `<CAMINHO_ORG> [busque no arquivo config.json]` · DIR_TRABALHO: `<DIR_TRABALHO> [busque no arquivo config.json]` · MODO_TESTE: `<MODO_TESTE> [busque no arquivo config.json]`
+- ORG_DO_MODELO: `<ORG_DO_MODELO> [busque no arquivo config.json]` · Calibração: `CALIBRACAO` [busque no arquivo config.json]
 
 ## Objetivo
 Associar componentes a assuntos de forma **explicável**: cada associação deve mostrar o caminho que a justifica.
+O resultado decide **quais pontos de integração pertencem a cada assunto** (e, pela coluna `sigla`, a cada sigla). Ele **não** limita o conteúdo da documentação: isso é papel do dossiê da Fase 4.
 
 ## Esta fase NÃO faz
 - Não escreve documentação de jornada.
@@ -53,13 +54,17 @@ Para cada assunto, pontue cada componente pelos termos aprovados:
 ### 3.3 Conflitos, órfãos e resumo
 - `fase3/conflitos_proposto.csv` — componentes com ALTA/MEDIA em ≥2 assuntos:
   `componente_id,assuntos_e_scores,proposta(compartilhado|assunto_principal:<id>),motivo,status_revisao,comentario_revisao`
-- `fase3/pontos_orfaos.csv` — pontos de integração sem assunto ALTA/MEDIA:
-  `id_ponto,componente_id,sistema_externo_id,direcao,assunto_mais_proximo,score,sugestao(novo_assunto|anexar|ignorar)`
+- `fase3/pontos_orfaos_proposto.csv` — pontos de integração sem assunto ALTA/MEDIA:
+  `id_ponto,componente_id,sistema_externo_id,direcao,assunto_mais_proximo,score,sugestao(novo_assunto|anexar:<id_assunto>|ignorar),motivo,status_revisao,comentario_revisao`
+  A revisora decide cada linha (salva como `_aprovado`). **A Fase 4 só roda com todos os órfãos decididos.**
 - `fase3/resumo_assuntos.csv`
   `id_assunto,assunto,qtd_alta,qtd_media,qtd_baixa,qtd_pontos_integracao,sistemas_externos,direcoes,pct_do_escopo,alerta`
   (`alerta`: SEM_INTEGRACAO | GIGANTE | SEM_SEMENTE | vazio)
 - Se esta org for a ORG_DO_MODELO: converta os nomes de `_modelo/gabarito_modelo.csv` em IDs do inventário → `fase3/gabarito_resolvido.csv` `sigla,assunto,nome_componente,componente_id,resolvido(sim|não|ambiguo)`. Some esse gabarito ao `gabarito_<ORG>.csv`.
-- Se houver gabarito: `fase3/recall_gabarito.csv` `id_assunto,componente_id_esperado,origem(time|modelo),encontrado(sim|não),confianca,score`
+- Se houver gabarito: `fase3/recall_gabarito.csv` `id_assunto,componente_id_esperado,tipo,origem(time|modelo),classificavel(sim|não),encontrado(sim|não),assunto_encontrado,confianca,score,motivo_falha`
+  - `classificavel = não` para tipos que não entram na matriz por definição (Profile, PermissionSet, PermissionSetGroup, Certificate, RemoteSiteSetting, CspTrustedSite, NamedCredential, ExternalCredential, ConnectedApp, ExternalClientApplication). O recall é calculado **só sobre os classificáveis**.
+  - `motivo_falha` (quando não encontrado): `outro_assunto` | `infra_hub` | `sem_caminho` | `nome_nao_resolvido`.
+  - O `RESUMO_FASE3.md` traz o recall por origem e por tipo.
 
 ### 3.4 Material de revisão humana (`fase3/revisao/`, seed=42)
 - `amostra_baixa.csv` — `AMOSTRA_REVISAO` associações BAIXA com caminho, `deveria_entrar(sim|não),comentario`
@@ -76,10 +81,12 @@ Para cada assunto, pontue cada componente pelos termos aprovados:
 | F3-A04 | Nenhum caminho tem INFRA/HUB_DADOS como nó intermediário | BLOQUEANTE |
 | F3-A05 | Nenhum componente com termo excludente associado ao respectivo assunto | BLOQUEANTE |
 | F3-A06 | Scores e confianças recalculáveis com os parâmetros declarados | BLOQUEANTE |
-| F3-A07 | Fechamento: todo ponto de integração está associado (ALTA/MEDIA) a algum assunto ou em `pontos_orfaos.csv` | BLOQUEANTE |
+| F3-A07 | Fechamento: todo ponto de integração está associado (ALTA/MEDIA) a algum assunto ou em `pontos_orfaos_proposto.csv` | BLOQUEANTE |
 | F3-A08 | Assunto com `pct_do_escopo` > `ALERTA_ASSUNTO_GIGANTE` | ALERTA |
 | F3-A09 | Componente ALTA em >3 assuntos (provável infra não aprovada) | ALERTA |
-| F3-A10 | Recall do gabarito (se houver) reportado por assunto; recall < 80% | ALERTA |
+| F3-A10 | Recall do gabarito (só tipos classificáveis) reportado por origem e por tipo; recall < 80% | ALERTA |
+| F3-A14 | Se a matriz `_proposto` for regenerada, todos os derivados (recall, conflitos, órfãos, resumo, mapa) são regenerados na mesma execução | BLOQUEANTE |
+| F3-A15 | Entrada da Fase 3 em `decisions.md` | BLOQUEANTE |
 | F3-A11 | Nenhum componente `is_test=true` na matriz | BLOQUEANTE |
 | F3-A12 | Nenhum segredo; CSVs bem formados; Mermaid estruturalmente válido | BLOQUEANTE |
 | F3-A13 | Idempotência | BLOQUEANTE |

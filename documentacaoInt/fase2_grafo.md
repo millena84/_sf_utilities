@@ -1,14 +1,16 @@
 # Fase 2 — Grafo de relações (org <ORG>)
 
 ## Antes de começar
-Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
+Leia o `config.json` na raiz da pasta de trabalho e siga integralmente `<DIR_TRABALHO> [busque no arquivo config.json]/_projeto/00_regras_gerais.md`.
 
 ## Parâmetros desta execução
-- ORG: `<ORG>` · CAMINHO_ORG: `<CAMINHO_ORG>` · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
+- ORG: `<ORG> [busque no arquivo config.json]` · CAMINHO_ORG: `<CAMINHO_ORG> [busque no arquivo config.json]` · DIR_TRABALHO: `<DIR_TRABALHO> [busque no arquivo config.json]` · MODO_TESTE: `<MODO_TESTE> [busque no arquivo config.json]`
 
 ## Objetivo
 Aplicar as regras de relação aprovadas sobre **todo** o inventário, ligar os pontos de integração aos sistemas externos
 e identificar **infraestrutura** e **hubs de dados**, que não podem propagar assunto na fase 3.
+
+> INFRA e HUB_DADOS valem **só para a Fase 3**. O grafo (`edges.csv`) é sempre completo; a Fase 4 o usa **sem esse filtro** para montar a documentação.
 
 ## Esta fase NÃO faz
 - Não atribui assuntos.

@@ -1,15 +1,34 @@
 # Regras gerais do projeto — Documentação de Jornadas de Integração
 
 > Este arquivo vale para TODAS as fases. Toda sessão do Devin deve lê-lo antes de qualquer ação.
-> Pode ser colado no Knowledge do Devin ou mantido em `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
+> Fica em `<DIR_TRABALHO> [busque no arquivo config.json]/_projeto/00_regras_gerais.md`.
 
 ---
+
+## 0. Configuração — `config.json`
+
+- Todos os parâmetros das execuções ficam no arquivo **`config.json`, na raiz da pasta de trabalho** (`DIR_TRABALHO`). Modelo: `config.exemplo.json`.
+- Nos prompts, `<CHAVE> [busque no arquivo config.json]` significa: **leia o valor da chave no `config.json`**. Nunca suponha valores.
+- No início de toda fase, leia o `config.json` e registre no relatório os valores usados. Chave obrigatória ausente ou vazia → `PRECHECK_FALHOU.md` e encerre.
+
+| Chave | Uso | Fases |
+|---|---|---|
+| `ORG` | Apelido da org; nome da subpasta de resultados | Todas |
+| `CAMINHO_ORG` | Pasta com os metadados da org (somente leitura) | 0–4 |
+| `DIR_TRABALHO` | Pasta onde o Devin escreve tudo | Todas |
+| `ALIAS_REPO` | Nome do repositório exibido no cabeçalho dos documentos | 4, 5 |
+| `MODO_TESTE` | `sim` / `não` (ver seção 7) | Todas |
+| `DATA_REFERENCIA` | Data da execução (AAAA-MM-DD). Usada no vencimento de certificados e na "Data revisão" dos documentos | 1, 4, 5 |
+| `SIGLA_MODELO` | Sigla documentada no modelo de referência. **Não muda entre execuções** | M, 3, 4 |
+| `ORG_DO_MODELO` | Org do modelo de referência | M, 3 |
+| `SIGLA` | Sigla documentada nesta execução da Fase 4 (ou id de assunto sem sigla) | 4 |
+| `CALIBRACAO` | Parâmetros numéricos (seção 10) | 0–3 |
 
 ## 1. Contexto
 
 Estamos documentando as integrações de orgs Salesforce antigas e complexas, a partir da cópia local do
 repositório Flosum de produção de cada org (estrutura de projeto Salesforce: uma pasta por tipo de metadata).
-O objetivo final é documentar **jornadas de integração por assunto de negócio**, não componentes isolados.
+O objetivo final são **dois tipos de documento por sigla**: o **inventário técnico da sigla** ("o que existe") e um **documento por integração** ("como funciona").
 Cada execução trabalha com **uma org por vez**.
 
 ## 2. Definições
@@ -17,142 +36,116 @@ Cada execução trabalha com **uma org por vez**.
 | Termo | Definição |
 |---|---|
 | Componente | Item de metadata identificável (classe, trigger, flow, objeto, campo, named credential etc.) |
-| Assunto | Tema de negócio da lista fornecida (ex.: "Geração de QR Code Pix", "Retomada de bem") |
+| Assunto | Tema de negócio da lista `assuntos.csv` |
+| Sigla | Unidade de documentação do time (coluna `sigla` do `assuntos.csv`); agrupa um ou mais assuntos |
 | Ponto de integração | Componente onde há troca de dados com o mundo externo à org |
-| INBOUND | Sistema externo → Salesforce |
-| OUTBOUND | Salesforce → sistema externo |
+| Integração | Troca com um sistema externo com gatilho e resultado próprios. Uma sigla tem uma ou mais integrações, que juntas formam a jornada |
+| INBOUND / OUTBOUND | Externo → Salesforce / Salesforce → externo |
 | EVENTO | Troca via Platform Event / Change Data Capture |
 | INBOUND_PRESUMIDO | Indício de entrada via API padrão (ex.: campo External ID), sem código que comprove |
-| Jornada | Sequência de etapas que começa num gatilho e termina num resultado de negócio. Um assunto pode ter várias jornadas |
-| Infraestrutura (INFRA) | Componente técnico transversal (logger, wrapper HTTP, trigger handler base) usado por muitos assuntos |
-| Hub de dados | Objeto/campo usado por muitos assuntos (ex.: Account, Contact) que não indica assunto sozinho |
-| Sigla | Unidade de documentação usada pelo time (agrupa um ou mais assuntos). Tem uma visão geral e um documento por integração |
-| Integração | Troca com um sistema externo com gatilho e resultado próprios. Uma sigla tem uma ou mais integrações, que juntas formam a jornada completa |
-| Modelo de referência | Documentação de uma sigla feita pelo time. Serve de inspiração de estrutura e estilo para as demais (Fase M) |
+| Infraestrutura (INFRA) | Componente técnico transversal (logger, wrapper HTTP, trigger handler base) |
+| Hub de dados (HUB_DADOS) | Objeto/campo usado por muitos assuntos (ex.: Account) |
+| Dossiê da integração | Conjunto completo de componentes, configurações e evidências de uma integração, montado na Fase 4 **sem os filtros da Fase 3** |
+| Modelo de referência | Documentação feita pelo time (sigla `SIGLA_MODELO`). Fonte de **estilo e exemplos**, nunca de texto |
+| Esqueletos oficiais | `_projeto/templates/01_inventario_tecnico_sigla.md` e `02_documento_por_integracao.md`. Definem a **estrutura** dos documentos |
+
+**Importante:** INFRA, HUB_DADOS, limiares e confiança existem **apenas para a Fase 3** (não espalhar assunto). Eles **nunca** limitam o que entra na documentação.
 
 ## 3. Restrições de ambiente — INEGOCIÁVEIS
 
 - **PROIBIDO** executar `sf`, `sfdx` ou qualquer Salesforce CLI.
 - **PROIBIDO** conectar a qualquer org, fazer deploy/retrieve ou chamar endpoints encontrados no código.
-- A única fonte de verdade são os arquivos locais em `<CAMINHO_ORG>`. **Somente leitura** — nunca altere a origem.
-- Ferramentas: Python 3 com biblioteca padrão (`xml.etree.ElementTree`, `re`, `csv`, `json`, `pathlib`, `collections`, `random`), `grep`, `find`.
-  Se precisar instalar qualquer pacote, registre em `decisions.md` com o motivo.
+- A única fonte de verdade são os arquivos locais em `<CAMINHO_ORG> [busque no arquivo config.json]`. **Somente leitura**.
+- Ferramentas: Python 3 com biblioteca padrão, `grep`, `find`. Pacote extra → registrar em `decisions.md`.
 - Todo processamento é feito por **scripts reexecutáveis** em `<DIR_TRABALHO>/<ORG>/tools/faseN/`.
-  Não produza saídas "à mão" quando um script puder produzi-las.
+  **Leia os insumos a cada execução**; nunca deixe regras ou listas fixas no código quando elas vêm de um arquivo.
 
-## 4. Autonomia
+## 4. Autonomia e registro
 
 - Execute a fase inteira **sem parar para perguntar**.
-- Diante de uma decisão não trivial: escolha a opção **mais conservadora**, registre em `decisions.md`
-  (decisão, alternativas, motivo) e siga.
-- Dúvidas que só o time pode responder vão para `questions.md` com: id, pergunta, contexto, impacto, opção adotada provisoriamente.
-- Nunca invente: se não encontrou evidência, registre a ausência.
+- Decisão não trivial: escolha a opção **mais conservadora** e registre em `<ORG>/decisions.md` (fase, decisão, alternativas, motivo).
+- Dúvida que só o time responde: `<ORG>/questions.md` (fase, pergunta, contexto, impacto, opção adotada provisoriamente).
+- **Toda fase registra pelo menos uma entrada** em `decisions.md` (nem que seja "nenhuma decisão não trivial nesta fase"). O validador verifica.
+- Nunca invente: sem evidência, registre a ausência e o que foi pesquisado.
 
 ## 5. Evidência e confiança
 
-- Toda afirmação técnica cita evidência no formato `caminho/relativo/arquivo:linha` (caminho relativo à raiz da org).
-- Níveis de confiança:
-  - **ALTA** — evidência direta no código/XML.
-  - **MEDIA** — inferida por relação comprovada entre componentes.
-  - **BAIXA** — apenas indício textual/semântico.
-- Afirmações sem evidência direta recebem a marca **[INFERIDO]** + justificativa de 1 frase.
+- Toda afirmação técnica cita evidência `caminho/relativo/arquivo:linha` (relativo à raiz da org).
+- Confiança: **ALTA** (evidência direta), **MEDIA** (relação comprovada entre componentes), **BAIXA** (indício textual).
+- Afirmação sem evidência direta → **[INFERIDO]** + justificativa de 1 frase.
 
-## 6. Convenções de arquivos
+## 6. Convenções de arquivos de trabalho
 
-- IDs de componente: `Tipo::NomeApi` (ex.: `ApexClass::PixQrCodeService`).
-- IDs de subcomponente: `Tipo::Pai.Nome` (ex.: `CustomField::Account.CPF__c`).
-- IDs de sistema externo: `SIS::NomeCurto` (ex.: `SIS::GatewayPix`).
-- IDs de assunto: `ASS-001`, `ASS-002`… na ordem da lista de assuntos fornecida (determinístico).
-- CSV: UTF-8, separador vírgula, aspas duplas quando necessário, cabeçalho na 1ª linha, **ordenação determinística** (por id).
-- Nomes de colunas exatamente como especificados nos prompts.
-- Reexecutar um script deve produzir arquivos **idênticos** (sem timestamps dentro dos CSV; amostras aleatórias com `seed=42`).
+- IDs: `Tipo::NomeApi`; subcomponente `Tipo::Pai.Nome`; sistema externo `SIS::NomeCurto`; assunto `ASS-001`…; integração `INTnn`.
+- CSV: UTF-8, vírgula, aspas quando necessário, cabeçalho, ordenação determinística. Listas dentro de uma célula separadas por `|`.
+- Reexecutar um script produz arquivos **idênticos** (amostras com `seed=42`; sem timestamps nos CSV).
 
 ## 7. Revisão humana e aprovações
 
-- Arquivos que exigem decisão humana têm sufixo `_proposto` e as colunas:
-  `status_revisao` (`pendente` | `aprovado` | `rejeitado` | `ajustado`) e `comentario_revisao`.
-  O Devin sempre gera com `status_revisao = pendente`.
-- A revisora preenche o status e salva o arquivo com o sufixo `_aprovado` (mesmo conteúdo, status preenchidos).
-- Fases seguintes leem **somente** linhas `aprovado` ou `ajustado` dos arquivos `_aprovado`.
-- Materiais de amostragem para revisão ficam em `faseN/revisao/` com colunas `ok` (`sim`|`não`) e `comentario`.
-- **MODO_TESTE**: se o prompt da fase informar `MODO_TESTE=sim`, na ausência de `_aprovado` use o `_proposto`
-  tratando `pendente` como `aprovado`, e escreva no topo de TODO relatório e documento gerado:
-  `⚠ NÃO VALIDADO — gerado em MODO_TESTE`.
+- Arquivos de decisão humana têm sufixo `_proposto` e colunas `status_revisao` (`pendente`|`aprovado`|`rejeitado`|`ajustado`) e `comentario_revisao`. O Devin sempre gera com `pendente`.
+- A revisora salva como `_aprovado`. **Nenhuma fase escreve em arquivos `_aprovado`.** Fases seguintes leem só linhas `aprovado`/`ajustado` do `_aprovado`.
+- **MODO_TESTE = sim:** na ausência do `_aprovado`, use o `_proposto` tratando `pendente` como `aprovado`, e marque todo relatório e documento com `⚠ NÃO VALIDADO — gerado em MODO_TESTE`.
 
-## 8. Autochecagem (obrigatória em todas as fases)
+## 8. Autochecagem (todas as fases)
 
-1. **Pré-checagem (etapa P):** antes de qualquer processamento, verifique se os insumos existem, têm as colunas
-   esperadas, se os arquivos `_aprovado` não têm `pendente` (exceto MODO_TESTE) e se o `validation_report.md`
-   da fase anterior não tem BLOQUEANTE com FALHOU.
-   Se algo falhar: **pare**, gere `faseN/PRECHECK_FALHOU.md` listando o que falta e como corrigir, e encerre.
-2. **Validação final:** escreva e rode `tools/faseN/validate_faseN.py`, cobrindo todas as verificações listadas no prompt (IDs `FN-Axx`).
-3. Severidade: **BLOQUEANTE** (invalida a fase) ou **ALERTA** (segue, mas destaca para revisão).
-4. Se um BLOQUEANTE falhar: corrija e rode novamente (até 3 tentativas). Persistindo, entregue com resultado REPROVADO e explicação.
-5. **Reverificação de evidências:** sempre que a fase citar `arquivo:linha`, o validador abre o arquivo e confirma que a linha existe
-   e contém o símbolo/padrão citado.
-6. Formato de `faseN/validation_report.md`:
-   - Linha 1: `Resultado geral: APROVADO PARA REVISÃO HUMANA` ou `Resultado geral: REPROVADO`
-   - Tabela: `| ID | Verificação | Severidade | Resultado (PASSOU/FALHOU) | Números | Observação |`
-   - Ao final: lista de ALERTAS com o arquivo onde a revisora deve olhar.
+1. **Pré-checagem (etapa P):** `config.json` lido; insumos existem com as colunas esperadas; `_aprovado` sem `pendente` (exceto MODO_TESTE); `validation_report.md` da fase anterior sem BLOQUEANTE com FALHOU. Falhou → `faseN/PRECHECK_FALHOU.md` e encerre.
+2. **Validação final:** `tools/faseN/validate_faseN.py`, cobrindo todos os checks `FN-Axx` do prompt.
+3. Severidade: **BLOQUEANTE** ou **ALERTA**. BLOQUEANTE falhou → corrigir e rodar de novo (até 3 tentativas); persistindo, entregar REPROVADO com explicação.
+4. **Reverificação de evidências:** todo `arquivo:linha` citado existe e contém o símbolo citado.
+5. `faseN/validation_report.md`: linha 1 `Resultado geral: APROVADO PARA REVISÃO HUMANA` ou `REPROVADO`; tabela `| ID | Verificação | Severidade | Resultado | Números | Observação |`; lista de ALERTAS com o arquivo a olhar.
 
 ## 9. Segurança
 
-- Nunca copie para nenhum artefato: senhas, tokens, chaves, client secrets, conteúdo de certificados, valores de Custom Settings/Custom Metadata
-  que pareçam credenciais, nem URLs com usuário/senha/token.
-- Certificados: registre apenas o **nome** e a **data de vencimento**.
-- Profiles e Permission Sets: registre apenas os acessos a componentes relevantes para a análise, nunca o arquivo inteiro.
-- Endpoints: registre apenas o **nome** da Named Credential/Remote Site e o **domínio** (host) — nunca query strings ou caminhos com parâmetros.
-- Toda fase valida que nenhum artefato gerado contém padrões como `password`, `secret`, `token=`, `Bearer `, `client_secret`, `://usuario:senha@`
-  (com valores) — check obrigatório em todas as fases.
+- Nunca copie senhas, tokens, chaves, client secrets, conteúdo de certificados, valores de Custom Settings/Custom Metadata que pareçam credenciais, nem URLs com credencial.
+- Endpoints: apenas nome do componente/registro e **domínio** (host). Certificados: apenas nome e data de vencimento.
+- Profiles/Permission Sets: apenas os acessos relevantes, nunca o arquivo inteiro.
+- Toda fase valida que nenhum artefato contém esses padrões.
 
-## 10. Parâmetros de calibração (valores iniciais — podem ser ajustados no prompt da fase)
+## 10. Calibração
 
-| Parâmetro | Valor | Uso |
-|---|---|---|
-| `AMOSTRA_REVISAO` | 10 | Linhas por amostra de revisão humana |
-| `ALERTA_REFS_NAO_RESOLVIDAS` | 20% | Fases 0 e 2 |
-| `LIMIAR_INFRA_FAN_IN` | percentil 95 do fan-in | Fase 2 |
-| `MAX_SALTOS` | 3 | Fase 3 — propagação no grafo |
-| `DECAIMENTO` | 0.6 por salto | Fase 3 |
-| `FATOR_RELACAO_FRACA` | 0.5 | Fase 3 — arestas dinâmicas/textuais |
-| `LIMIAR_ALTA` / `LIMIAR_MEDIA` | 0.7 / 0.4 | Fase 3 — confiança |
-| `ALERTA_ASSUNTO_GIGANTE` | 15% dos componentes em escopo | Fase 3 |
-| `DATA_REFERENCIA` | data de execução informada no prompt (AAAA-MM-DD) | Fases 1, 4 e 5 — vencimento de certificados (não use a data do sistema, para manter a idempotência) |
-| `ALERTA_VENCIMENTO_DIAS` | 90 | Certificados a vencer |
+Valores em `config.json` → `CALIBRACAO`. Se ausentes, usar: `AMOSTRA_REVISAO`=10 · `ALERTA_REFS_NAO_RESOLVIDAS`=20% · `LIMIAR_INFRA_FAN_IN`=percentil 95 · `MAX_SALTOS`=3 · `DECAIMENTO`=0.6 · `FATOR_RELACAO_FRACA`=0.5 · `LIMIAR_ALTA`/`LIMIAR_MEDIA`=0.7/0.4 · `ALERTA_ASSUNTO_GIGANTE`=15% · `ALERTA_VENCIMENTO_DIAS`=90.
 
 ## 11. Estrutura de pastas
 
 ```
 <DIR_TRABALHO>/
-  _projeto/            00_regras_gerais.md, template_jornada.md, template_extraido.md (Fase M)
-  _entradas/           tipos_metadata.txt, assuntos.csv, gabarito_<ORG>.csv (criado na revisão da fase 0)
+  config.json
+  _projeto/            00_regras_gerais.md
+    templates/         01_inventario_tecnico_sigla.md, 02_documento_por_integracao.md (esqueletos oficiais)
+    guia_estilo.md     (gerado na Fase M)
+    base_de_conhecimento/  (cópia de documentacaoInt/base_de_conhecimento/, seção 14)
+  _entradas/           tipos_metadata.txt, assuntos.csv, gabarito_<ORG>.csv
     modelo_referencia/ documentos do modelo feito pelo time
-  _modelo/             saídas da Fase M (estrutura, mapa de seções, gabarito do modelo)
+  _modelo/             saídas da Fase M
   <ORG>/
-    tools/fase0..fase5/   scripts
-    fase0/ .. fase5/      artefatos de trabalho + revisao/ + validation_report.md + RESUMO_FASEN.md
-    docs/                 documentação final: docs/<SIGLA>/ (fase 4) + índice e catálogos (fase 5)
-    decisions.md
-    questions.md
-  _consolidado/        consolidação entre orgs (fase 5B)
+    tools/faseN/       scripts
+    fase0/ .. fase5/   artefatos de trabalho + revisao/ + validation_report.md + RESUMO_FASEN.md
+    docs/<SIGLA>/      documentos finais (Fase 4)
+    docs/              índice e catálogos (Fase 5)
+    decisions.md, questions.md
+  _consolidado/        consolidação entre orgs (Fase 5B)
 ```
 
-## 12. Precedência de templates
+## 12. Templates e modelo
 
-1. `_projeto/template_extraido.md` (gerado na Fase M a partir do modelo do time) — **prevalece** em estrutura, ordem, formato e estilo.
-2. `_projeto/template_jornada.md` — fallback e lista de conteúdos mínimos.
-3. O modelo de referência é **inspiração**: nunca copie texto dele para outra sigla.
+1. **Estrutura:** os esqueletos oficiais em `_projeto/templates/`. Seções, ordem e títulos são seguidos exatamente.
+2. **Estilo e exemplos:** `_projeto/guia_estilo.md` (gerado na Fase M a partir do modelo do time).
+3. **Proibido copiar** texto do modelo de referência para qualquer documento.
 
-## 13. Entrega padrão de toda fase
+## 13. Regras de escrita dos documentos finais
 
-`faseN/RESUMO_FASEN.md` com as seções, nesta ordem:
-1. O que foi feito (5–10 linhas)
-2. Números principais
-3. Resultado da validação (copiar a linha "Resultado geral" + quantidade de ALERTAS)
-4. **Pontos para revisão humana** — para cada item do checklist humano da fase (`FN-Hxx`): arquivo a abrir e o que olhar
-5. Decisões tomadas (resumo de `decisions.md` desta fase)
-6. Dúvidas abertas (resumo de `questions.md` desta fase)
-7. Recomendação para a próxima fase
+- **Marcações** (sintaxe idêntica à do modelo, registrada em `_modelo/sintaxe_blocos.md`):
+
+| Marcação | Quando | Conteúdo obrigatório |
+|---|---|---|
+| `!!!SUCCESS` | O componente **é usado**, com evidência | Por que a integração o usa |
+| `!!!ABSTRACT` | O componente **não é usado**, com justificativa técnica | Por que, no funcionamento técnico, ele não é necessário |
+| `!!!DANGER` | O repositório **não permite confirmar** | O que foi encontrado, por que não dá para confirmar e o que verificar na org. Todo DANGER entra também na seção 7.1 do documento da sigla |
+
+- **Proibido** nos documentos: "não identificado na base analisada" como resposta pronta; remissões genéricas ("ver CSVs", "a lacuna permanece explícita", "conteúdo detalhado nos arquivos de seção"); menção a arquivos de trabalho (`*.csv`, pastas `faseN/`); o mesmo parágrafo repetido em seções diferentes.
+- **Teste anti-genérico:** se o texto continuar fazendo sentido trocando o nome da integração por outro, ele está genérico e deve ser reescrito com fatos (sistema externo pelo nome, objeto pelo label, gatilho, o que é enviado/recebido, resultado).
+- **Tabelas Markdown:** escapar `|` dentro das células (`\|`) ou trocar por `; `. Todas as linhas com o mesmo número de colunas.
+- **Tabelas são geradas por script** a partir do dossiê; **textos explicativos** são escritos a partir da leitura do código.
 
 ## 14. Base de conhecimento de integração
 
@@ -175,3 +168,8 @@ Regras de uso:
 - Regra de ligação do tipo **heurística** nunca sustenta sozinha uma afirmação ALTA.
 - Itens marcados na base como "não confirmado" ou ⚠️ não podem ser usados como fato.
 - Cite os IDs da base (`Cnn`, `Lnn`, `Snn`, `Ann`, `Nnn`, id de variante) nas colunas de observação e em `decisions.md`, para rastrear de onde veio cada decisão.
+- **Marcações SUCCESS/ABSTRACT/DANGER (seção 13):** use a variante escolhida em `desenho_base` como referência do que a integração precisa. Componente que a variante não usa → ABSTRACT citando a variante (ex.: "no desenho `D.1.v2` o endpoint vem da Named Credential; Remote Site não é necessário"). Componente obrigatório na variante e não encontrado, ou informação que o repositório não mostra (`Nnn` de `limites_da_fonte.md`) → DANGER citando o id.
+
+## 15. Entrega padrão de toda fase
+
+`faseN/RESUMO_FASEN.md`: 1. O que foi feito · 2. Números principais · 3. Resultado da validação · 4. Pontos para revisão humana (item do checklist, arquivo, o que olhar) · 5. Decisões tomadas · 6. Dúvidas abertas · 7. Recomendação para a próxima fase.

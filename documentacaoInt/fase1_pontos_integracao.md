@@ -1,12 +1,12 @@
 # Fase 1 — Pontos de integração (org <ORG>)
 
 ## Antes de começar
-Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
+Leia o `config.json` na raiz da pasta de trabalho e siga integralmente `<DIR_TRABALHO> [busque no arquivo config.json]/_projeto/00_regras_gerais.md`.
 Consulte a base de conhecimento (seção 14 das regras): `_projeto/base_de_conhecimento/guia_evidencias.md`, `regras_ligacao.md`, `diagnostico.md`, `limites_da_fonte.md`.
 
 ## Parâmetros desta execução
-- ORG: `<ORG>` · CAMINHO_ORG: `<CAMINHO_ORG>` · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
-- DATA_REFERENCIA: `<AAAA-MM-DD>`
+- ORG: `<ORG> [busque no arquivo config.json]` · CAMINHO_ORG: `<CAMINHO_ORG> [busque no arquivo config.json]` · DIR_TRABALHO: `<DIR_TRABALHO> [busque no arquivo config.json]` · MODO_TESTE: `<MODO_TESTE> [busque no arquivo config.json]`
+- DATA_REFERENCIA: `<DATA_REFERENCIA> [busque no arquivo config.json]`
 
 ## Objetivo
 Encontrar **todos os pontos onde a org troca dados com o mundo externo**, classificar direção e mecanismo,
@@ -77,7 +77,17 @@ Consolide todos os componentes de configuração de integração:
 - Não copie o valor de nenhum campo listado como sensível no guia (coluna "Campos sensíveis").
 - `usado_por`: componentes que referenciam (via relações aprovadas).
 
-### 1.5 Material de revisão humana (`fase1/revisao/`, seed=42)
+### 1.5 Configuração por ponto de integração
+Para cada ponto de integração, registre **o que foi encontrado** para cada um dos 6 tipos de configuração dos documentos finais. **Só fatos**; a marcação SUCCESS/ABSTRACT/DANGER é decidida na Fase 4, com o desenho da integração.
+
+`fase1/config_por_ponto.csv`
+`id_ponto,tipo_config(ConnectedApp_ExternalClientApp|Certificado|RemoteSite|Endpoint|NamedCredential|ExternalCredential),componente_id,como_se_liga,evidencia,observacao`
+- Uma linha por ponto × tipo, **inclusive quando nada foi encontrado** (`componente_id` vazio e `observacao` com o que foi pesquisado).
+- **Endpoint:** onde o endpoint está configurado — Named Credential, registro de Custom Metadata (nome do registro e se há um por ambiente), Custom Setting (`N06`: valor não está no repositório) ou fixo no código — e o domínio.
+- **Connected App / External Client App:** relevante para INBOUND com OAuth; para OUTBOUND, registre "não se aplica ao sentido" na observação.
+- Use as regras `L..` de `regras_ligacao.md` para ligar ponto → configuração e cite o id em `como_se_liga`.
+
+### 1.6 Material de revisão humana (`fase1/revisao/`, seed=42)
 - `amostra_pontos.csv` — `AMOSTRA_REVISAO` pontos estratificados por direção, com `trecho_da_linha,ok,comentario`
 - `amostra_descartes.csv` — 5 descartes com `trecho_da_linha,ok,comentario`
 - `inbound_presumido.csv` — todos os INBOUND_PRESUMIDO com `ok,comentario`
@@ -101,6 +111,8 @@ Consolide todos os componentes de configuração de integração:
 | F1-A13 | Nenhum segredo nos artefatos (incluindo conteúdo de certificado) | BLOQUEANTE |
 | F1-A16 | Todo componente de configuração do inventário está em `componentes_integracao.csv`; todo certificado tem vencimento ou `nao_disponivel` | BLOQUEANTE |
 | F1-A17 | Certificados vencidos ou a vencer listados | ALERTA |
+| F1-A18 | `config_por_ponto.csv` tem exatamente 6 linhas por ponto de integração | BLOQUEANTE |
+| F1-A19 | Entrada da Fase 1 em `decisions.md` | BLOQUEANTE |
 | F1-A14 | CSVs bem formados | BLOQUEANTE |
 | F1-A15 | Idempotência | BLOQUEANTE |
 

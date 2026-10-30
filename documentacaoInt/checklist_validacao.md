@@ -22,23 +22,19 @@
 ### A. Portão
 | ID | Verificar | Aceite |
 |---|---|---|
-| FM-G1 ⭐ | `_modelo/validation_report.md`: APROVADO, com 11 checks (FM-A01 a FM-A11) | Sim |
-| FM-G2 | FM-A01: todos os arquivos do modelo foram lidos | Sim |
+| FM-G1 ⭐ | `_modelo/validation_report.md`: APROVADO, com FM-A01 a FM-A09 | Sim |
 
 ### B. Revisão humana
 | ID | O que verificar | Arquivo | Como | Aceite | Se falhar |
 |---|---|---|---|---|---|
-| FM-H01 ⭐ | Estrutura capturada | `_modelo/revisao/comparativo_secoes.md` | Compare com o modelo: faltou alguma seção? A ordem está certa? | Igual ao modelo | Peça a correção |
-| FM-H02 ⭐ | Regras das seções | `_projeto/template_extraido.md` | Cada regra descreve o que o time espera daquela seção (ex.: Profiles = só os acessos da integração)? | Sim | Edite o template direto ou peça a correção |
-| FM-H03 | Guia de estilo | `template_extraido.md` | Tom, tamanho e nomenclatura batem com o modelo? | Sim | Edite |
-| FM-H04 ⭐ | Mapa de seções | `_modelo/mapa_secoes_proposto.csv` | A fonte de cada seção faz sentido? | Nenhum pendente | Salve como `mapa_secoes_aprovado.csv` |
-| FM-H05 ⭐ | Tipos faltantes | `_modelo/tipos_faltantes.csv` (só os que faltam) e `tipos_nome_divergente.csv` | Inclua em `_entradas/tipos_metadata.txt` os que fizerem sentido e corrija os nomes divergentes | Lista atualizada | — |
-| FM-H06 | Lacunas | `_modelo/lacunas_modelo.md` | Alguma seção do modelo que o pipeline não consegue preencher? Aceite ou ajuste | Decidido | — |
-| FM-H07 | Gabarito | `_modelo/gabarito_modelo.csv` | Os assuntos atribuídos estão corretos? | Sim | Corrija a coluna `assunto` |
+| FM-H01 ⭐ | Sintaxe dos blocos | `_modelo/sintaxe_blocos.md` | Os exemplos de `!!!SUCCESS`/`!!!ABSTRACT` estão idênticos aos do seu modelo (recuo, quebras)? | Idênticos | Peça a correção. Todos os documentos usam essa sintaxe |
+| FM-H02 ⭐ | Guia de estilo | `_projeto/guia_estilo.md` | Para cada seção dos esqueletos: o objetivo está certo? O exemplo genérico representa o que você espera? Há nomes reais da FNN (não pode)? | Sim | Edite o guia direto ou peça a correção |
+| FM-H03 ⭐ | Mapa de seções | `_modelo/mapa_secoes_proposto.csv` | Uma linha por seção dos esqueletos; coluna `esqueleto` só `01`/`02`; fonte e tipo (tabela_script / texto_interpretado / bloco_marcacao) coerentes | Nenhum pendente | Salve como `mapa_secoes_aprovado.csv` |
+| FM-H04 ⭐ | Tipos faltantes | `_modelo/tipos_faltantes.csv` e `tipos_nome_divergente.csv` | Inclua em `tipos_metadata.txt` os que fizerem sentido; corrija nomes | Lista atualizada | — |
+| FM-H05 | Gabarito | `_modelo/gabarito_modelo.csv` | Assuntos e marcações (SUCCESS/ABSTRACT) batem com o modelo? | Sim | Corrija |
 
 ### C. Liberação para a Fase 0
-- [ ] `template_extraido.md` revisado
-- [ ] `mapa_secoes_aprovado.csv` sem `pendente`
+- [ ] `guia_estilo.md` revisado e `mapa_secoes_aprovado.csv` sem `pendente`
 - [ ] `tipos_metadata.txt` atualizado
 
 ---
@@ -98,6 +94,7 @@
 | F1-H06 | Inbound presumido | `revisao/inbound_presumido.csv` | Faz sentido como entrada externa? | Revisado | — |
 | F1-H07 | Dinâmicos e desconhecidos | `validation_report.md` (F1-A11) | % alto? Você sabe a quem pertencem? | Revisado | Responda em `questions.md` |
 | F1-H08 | Dúvidas | `questions.md` | Responda | — | — |
+| F1-H10 | Configuração por ponto | `config_por_ponto.csv` | Para 2–3 integrações conhecidas: o endpoint e as credenciais encontrados estão certos? | Sim | Peça correção |
 | F1-H09 ⭐ | Certificados e vencimentos | `componentes_integracao.csv` | Os certificados conhecidos estão lá? Vencimentos corretos? Muitos `nao_disponivel`? | Coerente | `nao_disponivel` em massa → a data não vem no export; registre em lacunas |
 
 ### C. Liberação para a Fase 2
@@ -141,11 +138,11 @@
 ### B. Revisão humana
 | ID | O que verificar | Arquivo | Como | Aceite | Se falhar |
 |---|---|---|---|---|---|
-| F3-H01 ⭐ | **Recall do gabarito** (do time e do modelo) | `recall_gabarito.csv` e `gabarito_resolvido.csv` | Os componentes esperados foram encontrados com ALTA ou MEDIA? Nomes do modelo não resolvidos são erro de digitação no modelo ou componente fora do escopo? | ≥ 80% | Falta termo → ajuste o glossário (fase 0) e rode da fase 3 em diante |
+| F3-H01 ⭐ | **Recall do gabarito** (só tipos classificáveis; por origem e por tipo) | `RESUMO_FASE3.md`, `recall_gabarito.csv` (coluna `motivo_falha`) e `gabarito_resolvido.csv` | Os componentes esperados foram encontrados com ALTA ou MEDIA? Nomes do modelo não resolvidos são erro de digitação no modelo ou componente fora do escopo? | ≥ 80% | Falta termo → ajuste o glossário (fase 0) e rode da fase 3 em diante |
 | F3-H02 ⭐ | Tamanho dos assuntos | `resumo_assuntos.csv` | GIGANTE = vazamento (provável infra não marcada). Muito pequeno = vocabulário fraco | Plausível | GIGANTE → revise F2-H01. Pequeno → revise o glossário |
 | F3-H03 | Assuntos SEM_INTEGRACAO | `resumo_assuntos.csv` | É verdade que o assunto não tem integração nesta org? | Confirmado | Se tem, falta sinal (fase 1) ou vocabulário |
 | F3-H04 ⭐ | Conflitos | `conflitos_proposto.csv` | Compartilhado ou assunto principal? | Nenhum pendente | — |
-| F3-H05 ⭐ | Pontos órfãos | `pontos_orfaos.csv` | Novo assunto, anexar a um existente ou ignorar? | Decidido | Novo assunto → inclua em `assuntos.csv` e no glossário |
+| F3-H05 ⭐ | Pontos órfãos | `pontos_orfaos_proposto.csv` (salvar como `_aprovado`; a Fase 4 exige todos decididos) | Novo assunto, anexar a um existente ou ignorar? | Decidido | Novo assunto → inclua em `assuntos.csv` e no glossário |
 | F3-H06 | Calibração (BAIXA) | `revisao/amostra_baixa.csv` | Algum deveria entrar? | Poucos sim | Muitos sim → baixe `LIMIAR_MEDIA` |
 | F3-H07 | Calibração (MEDIA) | `revisao/amostra_media.csv` | Estão corretos? | ≥ 8 de 10 | Muitos errados → suba `LIMIAR_MEDIA` ou reduza `MAX_SALTOS` |
 | F3-H08 ⭐ | Aprovar a matriz | `matriz_componente_assunto_proposto.csv` | Para agilizar: aprove em bloco todas as ALTA e revise as MEDIA por assunto usando `mapa_assuntos.md` | Nenhum pendente | — |
@@ -156,34 +153,42 @@
 
 ---
 
-## FASE 4 — Documentação por sigla
+## FASE 4 — Documentação da sigla
 
-> **Estratégia para revisar sozinha:** rode primeiro a **sigla do modelo**. Ela tem comparação automática com o documento do time (F4-H01), o que calibra todo o resto. Depois revise completas mais 1 ou 2 siglas; nas demais, faça só os itens ⭐.
+> Rode primeiro a sigla do modelo (`SIGLA` = `SIGLA_MODELO`): a comparação automática calibra o resto. Revise completas mais 1–2 siglas; nas demais, só os itens ⭐.
 
 ### A. Portão
 | ID | Verificar | Aceite |
 |---|---|---|
-| F4-G1 ⭐ | `fase4/<SIGLA>/validation_report.md`: APROVADO, com 17 checks | Sim |
-| F4-G2 | F4-A14 (% de inferidos) sem alerta, ou alerta justificado | Sim |
-| F4-G3 ⭐ | F4-A12 (nada copiado do modelo) PASSOU | Sim |
+| F4-G1 ⭐ | `fase4/<SIGLA>/validation_report.md`: APROVADO, com F4-A01 a F4-A25 | Sim |
+| F4-G2 ⭐ | F4-A06 (dados → documento), F4-A07 (frases proibidas) e F4-A13 (anti-genérico) PASSOU | Sim |
+| F4-G3 | `RESUMO.md`: todo assunto da sigla aparece na tabela assunto → integrações | Sim |
 
-### B. Revisão humana
-| ID | O que verificar | Arquivo | Como | Aceite | Se falhar |
-|---|---|---|---|---|---|
-| F4-H01 ⭐ | (sigla do modelo) **Comparação com o modelo** | `comparacao_modelo.md` | Recall por seção, integrações iguais, componentes extras são acertos ou ruído? | Recall ≥ 80% por seção | Seção fraca → veja a fonte em `mapa_secoes` e a fase correspondente |
-| F4-H02 ⭐ | Visão geral conta a jornada completa | `docs/<SIGLA>/README.md` | Alguém de negócio entende o processo de ponta a ponta? A ordem das integrações está certa? | Sim | Peça reescrita |
-| F4-H03 ⭐ | Mesma "cara" do modelo | Um documento de integração ao lado do modelo | Estrutura, tabelas, tom e nível de detalhe parecidos | Sim | Ajuste o `template_extraido.md` e rode a fase 4 de novo |
-| F4-H04 ⭐ | Todos os [INFERIDO] | `revisao/inferidos.csv` | Cada inferência é plausível? | Todos revisados | Rejeitados → peça correção |
-| F4-H05 | Evidências das etapas | `revisao/amostra_etapas.csv` | Confira os trechos | Todos ok | Peça a correção |
-| F4-H06 | Profiles e Permission Sets | Seção de acessos | Aparecem só os acessos ligados à integração? O usuário de integração foi identificado? | Sim | Peça a correção |
-| F4-H07 | Custom Metadata por ambiente | Seção de Custom Metadata | Registros por ambiente aparecem e não há valores sensíveis | Sim | Peça a correção |
-| F4-H08 | Certificados | `revisao/certificados.csv` | Vencimentos coerentes | Sim | — |
-| F4-H09 | Possivelmente relacionados | `revisao/possiveis.csv` | Promover algum? | Revisado | Promovidos → rodar a fase 4 da sigla de novo |
-| F4-H11 ⭐ | Desenho de cada integração | `integracoes.csv` (`desenho_base`) ao lado da variante em `base_de_conhecimento/` | A variante descreve o que você conhece da integração? Os `nenhum` fazem sentido? | Sim | Corrija o desenho ou registre um desenho novo para a base |
-| F4-H12 | Riscos | `secoes/riscos.csv` e a seção correspondente do documento | Os anti-padrões apontados existem? Os limites citados têm data? | Revisado | Peça a correção |
-| F4-H10 | Renderização e nada sensível | Abra os `.md`; busque "token", "senha", "secret", "password" | Diagramas aparecem e nada sensível foi encontrado | Ok | Peça a correção |
+### B. Revisão humana — documento por integração
+| ID | O que verificar | Como | Aceite | Se falhar |
+|---|---|---|---|---|
+| F4-H01 ⭐ | (sigla do modelo) Comparação com o modelo | `comparacao_modelo.md`: recall, marcações iguais às do time, integrações iguais | ≥ 80% | Seção fraca → veja o dossiê e a interpretação dessa integração |
+| F4-H02 ⭐ | Cartão e Visão geral por passo | Lendo só o Cartão, dá para saber do que se trata (sistema, objeto, gatilho)? Os passos estão na ordem certa? | Sim | Peça reescrita da interpretação |
+| F4-H03 ⭐ | Ciclo de vida e objetos do workflow | "Quem atua" está certo (usuário × sistema)? A explicação dos objetos ajuda a ler a dinâmica? | Sim | Peça reescrita |
+| F4-H04 ⭐ | Marcações | `revisao/marcacoes.csv`: cada SUCCESS/ABSTRACT/DANGER e o motivo fazem sentido? | Todas revisadas | Peça correção da marcação |
+| F4-H05 | Diagrama da seção 3.1 | Componentes reais, numerados, com eventos nas setas | Sim | Peça correção |
+| F4-H06 | Papel das classes | Cada classe tem um papel próprio e correto | Sim | Peça correção |
+| F4-H07 | Sucesso, falha e retry | O que acontece em cada caso está explicado no documento | Sim | Peça correção |
+| F4-H08 ⭐ | Todos os [INFERIDO] | `revisao/inferidos.csv` | Revisados | Peça correção |
+| F4-H09 | Desenho de cada integração | `integracoes.csv` (`desenho_base`) ao lado da variante em `base_de_conhecimento/`: a variante descreve a integração? | Sim | Corrija o desenho ou registre um novo para a base |
+| F4-H10 | Riscos | `dossie/riscos.csv` e a seção correspondente: os anti-padrões existem? Os limites têm data? | Revisado | Peça correção |
 
-### C. Liberação
+### C. Revisão humana — inventário técnico da sigla
+| ID | O que verificar | Como | Aceite | Se falhar |
+|---|---|---|---|---|
+| F4-H11 ⭐ | Índice | Toda seção e todo documento da sigla com link | Sim | Peça correção |
+| F4-H12 ⭐ | Resumo e cadeia | Caminho → Entrada → Saída faz sentido para cada integração; o Mermaid mostra a jornada com os sistemas pelo nome | Sim | Peça reescrita |
+| F4-H13 | Modelo de dados | Só objetos de negócio, cada um com o papel na sigla | Sim | Peça correção |
+| F4-H14 ⭐ | Configurações | As marcações são as mesmas dos documentos por integração | Sim | Peça correção |
+| F4-H15 ⭐ | Seção 7.1 | Todos os DANGER estão lá, cada um dizendo o que verificar na org | Sim | Encaminhe as verificações |
+| F4-H16 | Nada sensível | Busque "token", "senha", "secret", "password" | Nada | Peça correção |
+
+### D. Liberação
 - [ ] Sigla marcada como validada no `registro_validacao.md`
 
 ---

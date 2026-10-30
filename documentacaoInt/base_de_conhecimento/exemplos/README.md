@@ -6,7 +6,7 @@ Cada exemplo mostra o caminho completo que um agente percorre:
 
 1. **Projeto encontrado:** os arquivos que existiriam no repositório.
 2. **Diagnóstico:** sinais ([diagnostico.md](../diagnostico.md)), cadeia de ligação ([regras_ligacao.md](../regras_ligacao.md)), desenho e variante, confiança.
-3. **Documento final:** no formato B de `documentacaoInt/template_jornada.md` (o `template_extraido.md` do time, quando existir, prevalece).
+3. **Documento final:** no formato do esqueleto `documentacaoInt/modelo_esqueletos/02_documento_por_integracao.md` (estilo conforme o `guia_estilo.md` gerado na Fase M).
 4. **Riscos e limites:** anti-padrões ([antipadroes.md](../antipadroes.md)), limites da plataforma ([limites_plataforma.md](../limites_plataforma.md)) e o que o repositório não mostra ([limites_da_fonte.md](../limites_da_fonte.md)).
 
 | Exemplo | Direção | Desenho · variante |

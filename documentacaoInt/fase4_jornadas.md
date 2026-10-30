@@ -1,146 +1,169 @@
-# Fase 4 — Documentação por sigla (org <ORG>, sigla <SIGLA>)
+# Fase 4 — Documentação da sigla (org <ORG>, sigla <SIGLA>)
 
-> Execute **uma sessão por sigla**.
-> Comece pela **sigla do modelo de referência**: o resultado pode ser comparado automaticamente com o documento feito pelo time.
+> Uma execução por sigla. Comece pela sigla do modelo de referência: o resultado é comparado automaticamente com o documento do time.
 
 ## Antes de começar
-Leia e siga integralmente:
-- `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`
-- `<DIR_TRABALHO>/_projeto/template_extraido.md` (**prevalece**; gerado na Fase M)
-- `<DIR_TRABALHO>/_projeto/template_jornada.md` (fallback e conteúdos mínimos)
-- Os documentos do modelo em `<DIR_TRABALHO>/_entradas/modelo_referencia/`, **como referência de estilo e nível de detalhe**
-- A base de conhecimento (`_projeto/base_de_conhecimento/`, seção 14 das regras), para classificar e completar cada integração
+Leia o `config.json` na raiz da pasta de trabalho e siga integralmente:
+- `<DIR_TRABALHO> [busque no arquivo config.json]/_projeto/00_regras_gerais.md` — em especial as seções **2** (dossiê), **13** (regras de escrita e marcações) e **14** (base de conhecimento)
+- Os esqueletos oficiais: `_projeto/templates/01_inventario_tecnico_sigla.md` e `_projeto/templates/02_documento_por_integracao.md` (**estrutura obrigatória**)
+- `_projeto/guia_estilo.md` e `_modelo/sintaxe_blocos.md` (estilo, exemplos e sintaxe dos blocos)
+- Os documentos do modelo em `_entradas/modelo_referencia/` — **somente como referência de estilo e nível de detalhe**
 
 ## Parâmetros desta execução
-- ORG: `<ORG>` · CAMINHO_ORG: `<CAMINHO_ORG>` · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
-- SIGLA: `<SIGLA>` — para um assunto **sem sigla** em `assuntos.csv`, use o próprio id do assunto (ex.: `ASS-007`); ele é documentado como uma sigla isolada
-- Assuntos desta sigla: **lidos de `_entradas/assuntos.csv`** (linhas com `sigla` = SIGLA). Opcional: `<lista de assuntos para sobrescrever, ou vazio>`
-- É a sigla do modelo de referência: `<sim|não>`
+- ORG: `<ORG> [busque no arquivo config.json]` · CAMINHO_ORG: `<CAMINHO_ORG> [busque no arquivo config.json]` · DIR_TRABALHO: `<DIR_TRABALHO> [busque no arquivo config.json]`
+- ALIAS_REPO: `<ALIAS_REPO> [busque no arquivo config.json]` · DATA_REFERENCIA: `<DATA_REFERENCIA> [busque no arquivo config.json]` · MODO_TESTE: `<MODO_TESTE> [busque no arquivo config.json]`
+- SIGLA: `<SIGLA> [busque no arquivo config.json]` — se for um id de assunto (ex.: `ASS-007`), o assunto é documentado como sigla isolada
+- SIGLA_MODELO: `<SIGLA_MODELO> [busque no arquivo config.json]` — se SIGLA = SIGLA_MODELO, executar também a etapa 4.7
+- Assuntos desta sigla: linhas de `_entradas/assuntos.csv` com `sigla` = SIGLA
 
 ## Objetivo
-Produzir a documentação da sigla no formato do modelo do time: **uma visão geral** (resumo da jornada completa) e **um documento por integração/jornada**, legíveis para negócio e rastreáveis para técnicos.
+Produzir, para a sigla:
+1. **Um documento por integração** (esqueleto 02) — "como funciona".
+2. **O inventário técnico da sigla** (esqueleto 01) — "o que existe" —, montado **por último**, consolidando as integrações.
 
-## Escopo — IMPORTANTE
-- Esta execução documenta **todos os assuntos da sigla**, não apenas os do modelo de referência.
-- **O número de integrações e de documentos do modelo NÃO define quantas integrações esta sigla tem.** O modelo define a estrutura de cada documento; a quantidade vem dos dados das fases 1 a 3.
-- Ao final, `RESUMO.md` deve trazer a tabela **assunto → integrações documentadas** (ou o motivo de não haver nenhuma).
-
-## Regra de inspiração
-- Siga a **estrutura, a ordem das seções, os formatos de tabela, o tom e o nível de detalhe** do modelo.
-- **Não copie texto** do modelo. Todo conteúdo vem da análise desta org, com evidência.
-- Se o modelo e o template base divergirem na estrutura, vale o modelo. Os conteúdos mínimos do template base que o modelo não tiver vão para as seções mais próximas ou para o final.
+## Princípios desta fase
+1. **A Fase 3 decide quais integrações pertencem à sigla. Ela não limita o conteúdo.** O conteúdo vem do **dossiê** de cada integração, montado a partir do grafo **completo**, sem filtro de INFRA, HUB_DADOS ou confiança.
+2. **Entender antes de escrever.** Cada integração é explicada a partir da **leitura do código** dos seus componentes, como faria uma pessoa analisando o repositório.
+3. **Tabelas por script, explicações pela leitura.** Toda tabela dos documentos é gerada por script a partir do dossiê; os textos explicativos vêm da etapa de interpretação.
+4. **A estrutura vem dos esqueletos; a quantidade vem dos dados.** O número de integrações do modelo não define o desta sigla.
 
 ## Insumos
-- `_projeto/template_extraido.md`, `_modelo/mapa_secoes_aprovado.csv`
-- `fase3/matriz_componente_assunto_aprovado.csv`, `fase3/conflitos_aprovado.csv`
-- `fase2/edges.csv`, `fase2/nodes.csv`, `fase2/infra_hubs_aprovado.csv`
-- `fase1/integration_points.csv`, `fase1/sistemas_externos_aprovado.csv`, `fase1/componentes_integracao.csv`
-- `fase0/inventory.csv`, `fase0/glossario_aprovado.csv`
-- Se for a sigla do modelo: `_modelo/gabarito_modelo.csv`, `fase3/gabarito_resolvido.csv`
+- `_projeto/templates/*`, `_projeto/guia_estilo.md`, `_modelo/sintaxe_blocos.md`, `_modelo/mapa_secoes_aprovado.csv` (em MODO_TESTE, o `_proposto`)
+- `fase3/matriz_componente_assunto_aprovado.csv`, `fase3/conflitos_aprovado.csv`, `fase3/pontos_orfaos_aprovado.csv`
+- `fase2/edges.csv`, `fase2/nodes.csv`
+- `fase1/integration_points.csv`, `fase1/sistemas_externos_aprovado.csv`, `fase1/componentes_integracao.csv`, `fase1/config_por_ponto.csv`
+- `fase0/inventory.csv` (colunas `estado` e `atributos`), `fase0/glossario_aprovado.csv`, `_entradas/assuntos.csv` (coluna `descricao`)
+- `_projeto/base_de_conhecimento/` (seção 14 das regras)
+- Se SIGLA = SIGLA_MODELO: `_modelo/gabarito_modelo.csv`, `fase3/gabarito_resolvido.csv`
 - Código-fonte em `CAMINHO_ORG` (leitura)
 
 ## P. Pré-checagem
-- Existe ≥1 assunto com `sigla` = SIGLA em `assuntos.csv`, ou SIGLA é um `id_assunto` existente (assunto sem sigla), ou foi informada a lista opcional.
-- Pontos de `fase3/pontos_orfaos.csv` cuja decisão seja anexar a um assunto desta sigla são incluídos no recorte; órfãos sem decisão são listados (ALERTA).
-- Todos os assuntos da sigla existem no glossário aprovado e têm ≥1 componente ALTA/MEDIA aprovado; os que não têm são listados (ALERTA) e entram em "Pontos em aberto" da visão geral.
-- `template_extraido.md` existe e há mapa de seções: `mapa_secoes_aprovado.csv` ou, em MODO_TESTE, `mapa_secoes_proposto.csv`. Só na ausência de ambos: usar o template base e registrar ALERTA (não bloqueia).
+- `config.json` lido; SIGLA existe em `assuntos.csv` (coluna `sigla`) ou é um `id_assunto` válido.
+- Esqueletos, guia de estilo, sintaxe dos blocos e mapa de seções existem.
+- **Todos os órfãos da Fase 3 decididos** (`pontos_orfaos_aprovado.csv` sem `pendente`; em MODO_TESTE, usar a `sugestao` do `_proposto`).
 - Fase 3 aprovada; nenhum `_aprovado` com `pendente` (exceto MODO_TESTE).
 - Falhou → `fase4/<SIGLA>/PRECHECK_FALHOU.md` e encerre.
 
 ## Etapas
 
-### 4.1 Recorte
-- Una os componentes de **cada** assunto da sigla. Núcleo = ALTA; apoio = MEDIA; possivelmente relacionados = BAIXA (só em apêndice).
-- Liste os pontos de integração de cada assunto (componentes do recorte com `is_integration_point = sim`).
-- INFRA/HUB_DADOS: apenas citados, com link para o catálogo de infraestrutura.
+### 4.1 Integrações da sigla
+- Pontos de integração de cada assunto da sigla: componentes com `is_integration_point = sim` e confiança ALTA/MEDIA na matriz aprovada, mais os órfãos decididos como `anexar:<assunto da sigla>`.
+- **Integração** = troca com um sistema externo com gatilho e resultado próprios. **Todo assunto com ≥1 ponto gera ≥1 integração.** Não una assuntos diferentes só porque usam o mesmo sistema ou middleware; uma integração só atende a mais de um assunto se `conflitos_aprovado.csv` indicar `compartilhado`.
+- Assunto sem ponto de integração: não gera documento; entra na seção 7 do inventário técnico, com o motivo.
+- Escolha o `desenho_base` de cada integração com `diagnostico.md` (sinais e assinatura mínima) e confira na tabela da variante. Sem variante compatível → `nenhum` + motivo em `decisions.md` (e `questions.md` se for um desenho que a base não tem).
+- Identifique integrações relacionadas (uma aciona a outra) para a coluna `relacionada_a`.
 
-`fase4/<SIGLA>/recorte.csv` `componente_id,id_assunto,papel(nucleo|apoio|possivel|infra),confianca`
+`fase4/<SIGLA>/integracoes.csv`
+`id_integracao(INTnn),id_assunto,alias_curto,acao_relacionada,ordem_na_jornada,gatilho,componente_gatilho,resultado,direcao(inbound|outbound),sincronismo(sync|async|misto),sistema_externo_id,pontos_integracao,desenho_base,confianca_desenho,relacionada_a`
 
-### 4.2 Integrações e jornada completa
-- **Integração** = troca com um sistema externo com gatilho e resultado próprios (normalmente 1 ou mais pontos de integração do mesmo sistema e da mesma finalidade).
-- **Todo assunto da sigla com ≥1 ponto de integração gera ≥1 integração.** Nunca una assuntos diferentes numa mesma integração só porque usam o mesmo sistema externo ou o mesmo middleware. Uma integração só pode atender a mais de um assunto se `conflitos_aprovado.csv` indicar os componentes como `compartilhado`.
-- Assunto sem ponto de integração ou sem componentes ALTA/MEDIA: não gera documento; entra em "Pontos em aberto" da visão geral, com o motivo.
-- **Jornada completa** = a ordem em que as integrações acontecem do início ao fim do processo de negócio da sigla.
-- Para cada integração, identifique o gatilho: endpoint exposto, trigger, Flow record-triggered, agendamento, ação de usuário (LWC/Aura/Visualforce/botão), Platform Event.
+### 4.2 Dossiê de cada integração (sem filtro)
+A partir do componente gatilho e dos pontos de integração, percorra `edges.csv` **completo** (inclusive INFRA e HUB_DADOS) nos dois sentidos e junte **tudo o que a integração toca diretamente**. Use a tabela da variante `desenho_base` como roteiro do que procurar.
 
-`fase4/<SIGLA>/integracoes.csv` `id_integracao(INTnn),id_assunto,nome,ordem_na_jornada,gatilho,componente_gatilho,resultado,direcao,sistema_externo_id,pontos_integracao,desenho_base,confianca_desenho`
-- `desenho_base`: variante da base que melhor descreve a integração (ex.: `D.1.v11`), escolhida com `diagnostico.md` (sinais e assinatura mínima) e conferida na tabela da variante; `confianca_desenho` = alta/média/baixa. Sem variante compatível → `nenhum` + motivo em `decisions.md` (pode ser um desenho que a base ainda não tem: registre em `questions.md`).
-- Componentes que a variante marca como **Obrigatório** e não foram achados no projeto: verifique se é limite da fonte (`limites_da_fonte.md`); se não for, investigue antes de seguir.
+Gere em `fase4/<SIGLA>/<INTnn>/dossie/` (todas com coluna `evidencia`):
 
-### 4.3 Etapas de cada integração
-Percorra o grafo a partir do gatilho e **leia o código** para ordenar as etapas. Marque síncrono/assíncrono (`@future`, Queueable, Batch, Schedulable, Platform Event, Outbound Message) e o tratamento de erro (try/catch, log, retentativa, reprocessamento).
-Transição sem aresta no grafo → [INFERIDO] com justificativa.
-A ordem da tabela da variante (`desenho_base`) serve de roteiro; a ordem real vem do código.
+| Arquivo | Conteúdo |
+|---|---|
+| `componentes.csv` | Todos os componentes da integração: `componente_id,tipo,estado,atributos,papel_no_desenho(componente da variante),como_chegou(aresta/regra)` |
+| `objetos.csv` | Objetos e campos lidos/escritos (SOQL/DML/Flow), com o label, External IDs e campos de controle |
+| `classes.csv` | Classes, triggers e seus **papéis** (ver 4.3), com anotações e interfaces |
+| `flows.csv` | Flows com tipo (tela, record-triggered antes/depois, agendado, autolaunched), objeto, disparo e efeito |
+| `ui.csv` | LWC/Aura/FlexiPage/Quick Actions envolvidos, onde aparecem e qual Apex chamam |
+| `custom_metadata.csv` | Tipos `__mdt` e registros usados, finalidade e registros por ambiente (valores sensíveis mascarados; URLs só com domínio) |
+| `acessos.csv` | Profiles/Permission Sets/Permission Set Groups que dão acesso aos componentes da integração, indicando usuário de integração |
+| `marcacoes.csv` | Os 6 tipos de configuração (ver 4.4) com SUCCESS/ABSTRACT/DANGER e motivo |
+| `riscos.csv` | `id_base(Ann\|Nnn\|limite),descricao,evidencia` — anti-padrões (`antipadroes.md`), limites da fonte (`limites_da_fonte.md`) e da plataforma (`limites_plataforma.md`, com data) |
 
-`fase4/<SIGLA>/etapas.csv` `id_integracao,ordem,descricao,componente_id,sync_async,aresta_suporte(id_regra|INFERIDO),evidencia,confianca`
+Componentes que a variante marca como **Obrigatório** e não foram encontrados: verifique `limites_da_fonte.md`; se não for limite da fonte, investigue antes de seguir.
 
-### 4.4 Levantamento por seção
-Gere um CSV por seção em `fase4/<SIGLA>/secoes/`, **por integração**, sempre com a coluna `evidencia`:
+### 4.3 Leitura e interpretação do código
+Para cada integração, **leia o código** dos componentes do dossiê (classes, triggers, Flows, LWC) e registre em `fase4/<SIGLA>/<INTnn>/interpretacao.md`, com evidência em cada afirmação:
 
-| Arquivo | Conteúdo | Regra |
+1. **Objetivo de negócio** — a partir da `descricao` do `assuntos.csv`, do `conceito` do glossário e do que o código faz.
+2. **Passos** (para "Visão geral por passo"): para cada passo, o gatilho, os componentes **na ordem em que atuam** e a saída.
+3. **Ciclo de vida** (fases): o que acontece e **quem atua** (usuário, sistema externo, plataforma, job agendado).
+4. **Dinâmica dos objetos** — como ler a relação entre os objetos do workflow (quem cria, quem atualiza, que status muda).
+5. **Papel de cada classe**, a partir da evidência no código: endpoint REST/SOAP (`@RestResource`, `webservice`), cliente de callout (`HttpRequest`, `callout:`), processamento assíncrono (Queueable, `@future`, Batch, Schedulable), trigger handler, consulta (SOQL/selector), mapeamento de dados (serialização JSON/DTO/wrapper), ação invocável (`@InvocableMethod`), controller de UI (`@AuraEnabled`). Uma frase do que a classe faz **nesta** integração.
+6. **Sucesso, falha e retry** — o que acontece em cada caso, quem tenta de novo e com qual regra.
+7. **Ordem, limites e reprocessamento** — sincronismo, governor limits relevantes (`limites_plataforma.md`), idempotência, como reprocessar.
+
+O texto deve passar no **teste anti-genérico** (seção 13 das regras). A ordem da variante `desenho_base` é roteiro; a ordem real vem do código. Transição sem aresta no grafo → [INFERIDO].
+
+`fase4/<SIGLA>/<INTnn>/etapas.csv` `ordem,passo,gatilho,componentes_em_ordem,saida,quem_atua,sync_async,aresta_suporte(id_regra|INFERIDO),evidencia,confianca`
+
+### 4.4 Marcações das configurações (SUCCESS / ABSTRACT / DANGER)
+Para cada integração e cada tipo — **Connected App / External Client App, Certificado, Remote Site Settings, Endpoints, Named Credential, External Credential** —, a partir de `fase1/config_por_ponto.csv` e da variante `desenho_base`:
+
+| Situação | Marcação | Motivo obrigatório |
 |---|---|---|
-| `objetos.csv` | Objetos e campos principais lidos/escritos, External IDs, campos de controle | Só campos usados pela integração |
-| `classes.csv` | Classes e seus papéis | Sem classes de teste |
-| `gatilhos.csv` | Gatilhos e condições | — |
-| `componentes_integracao.csv` | Named Credential, External Credential, External Client App, Connected App, Certificado (**nome e data de vencimento**), Remote Site, CSP | Hosts só com domínio; nunca conteúdo de certificado ou segredo |
-| `custom_metadata.csv` | Tipos `__mdt` e registros usados, finalidade, campos relevantes **por ambiente** quando houver registros por ambiente | Valores sensíveis mascarados; URLs só com domínio |
-| `flows.csv` | Flows envolvidos | Se houver |
-| `lwc.csv` | LWC/Aura envolvidos | Se houver |
-| `acessos.csv` | Profiles e Permission Sets que concedem acesso aos componentes da integração (classe, objeto, External Credential, Custom Metadata), indicando se parecem ser de usuário de integração | **Somente** acessos a componentes do recorte; nunca a lista inteira do profile |
+| Componente encontrado e ligado à integração com evidência | `SUCCESS` | Por que a integração o usa (ex.: "a classe chama `callout:<NC>`, que fornece endpoint e autenticação") |
+| Não encontrado e, pelo desenho, não é necessário | `ABSTRACT` | Por que, tecnicamente, não é necessário, citando a variante (ex.: "endpoint vem da Named Credential; Remote Site não é exigido") |
+| Encontrado, mas sem prova de ligação; ou obrigatório no desenho e ausente; ou informação fora do repositório (`Nnn`) | `DANGER` | O que foi achado, por que não dá para confirmar e o que verificar na org |
 
-`fase4/<SIGLA>/secoes/riscos.csv` `id_integracao,id_base(Ann|Nnn|limite),descricao,evidencia` — anti-padrões encontrados (`antipadroes.md`), informações que o repositório não mostra (`limites_da_fonte.md`) e limites da plataforma relevantes para o desenho (`limites_plataforma.md`, com a data da consulta).
+`fase4/<SIGLA>/<INTnn>/dossie/marcacoes.csv` `tipo_config,marcacao,componente_id,motivo,id_base,evidencia`
 
-### 4.5 Escrita
-- Siga o `template_extraido.md` e o `mapa_secoes_aprovado.csv`: cada seção é preenchida a partir da fonte mapeada.
-- Gere os arquivos com a mesma convenção de nomes do modelo. Na ausência de convenção:
-  - `docs/<SIGLA>/README.md` — visão geral (resumo da jornada completa)
-  - `docs/<SIGLA>/<INTnn>_<slug>.md` — um por integração/jornada
-- O resumo não usa nomes técnicos (nada de nomes de API ou `__c`) e é escrito em frases curtas.
-- Diagramas: siga o modelo. Se o modelo não tiver diagrama, use Mermaid (`flowchart LR` na visão geral e `sequenceDiagram` nas integrações).
-- Seção do tipo "se houver" sem conteúdo → "Não se aplica a esta integração."; seção do tipo "sempre" sem conteúdo → "Não identificado na base analisada."
-- `riscos.csv` vai para a seção de tratamento de erros ou de pontos em aberto (a mais próxima no template). Os exemplos em `base_de_conhecimento/exemplos/` mostram o resultado esperado, mas são fictícios: não copie texto deles.
+### 4.5 Renderização dos documentos por integração (esqueleto 02)
+- **Script** gera, a partir do dossiê e das etapas: Cartão, Índice, Visão geral por passo, Ciclo de vida, tabelas de Flows e retry, Anexo A (Evidências) e os blocos de marcação (com a sintaxe de `_modelo/sintaxe_blocos.md`).
+- **Textos explicativos** (Objetos do workflow, explicações didáticas ao final das seções, sucesso/falha, ordem/limites) vêm de `interpretacao.md`, no estilo de `guia_estilo.md`.
+- **Seção 3.1 (caminho da integração):** Mermaid `sequenceDiagram` com `autonumber`; participantes = componentes reais na ordem em que atuam (e o sistema externo pelo nome); rótulo de cada seta = evento ou ação (ex.: `after insert`, `enqueueJob`, `POST <recurso>`).
+- **Configurações da integração:** os 6 tipos com as marcações de 4.4 (mesma fonte usada no inventário da sigla).
+- **Integrações relacionadas:** apenas link para o documento da outra integração e o tipo de relação; **nunca** copiar as seções dela.
+- Seção do esqueleto marcada como "se houver" e sem conteúdo: escreva **uma frase que explique por que não se aplica** a esta integração (ex.: "esta integração não usa Flows: o disparo é feito pela trigger X"). Nunca use texto padrão.
+- Nome do arquivo: `docs/<SIGLA>/<SIGLA>_<INTnn>_<acao_relacionada>.md`.
 
-### 4.6 Comparação com o modelo (somente se for a sigla do modelo)
-Compare a documentação gerada com o modelo do time:
-`fase4/<SIGLA>/comparacao_modelo.md`
-- Componentes do gabarito encontrados, não encontrados (com hipótese do motivo) e componentes extras encontrados pelo Devin (podem ser acertos que o modelo não tinha).
-- Recall por seção (objetos, classes, componentes de integração, custom metadata, flows, LWC, acessos).
-- Integrações do modelo × integrações identificadas.
-- Diferenças de estrutura (seções faltantes ou a mais).
+### 4.6 Renderização do inventário técnico da sigla (esqueleto 01) — por último
+Consolide os documentos por integração. Conteúdo do inventário (decisões registradas em `modelo_esqueletos/00_decisoes_estrutura.md`):
+- **Cabeçalho** (`!!!SUCCESS` com repositório `ALIAS_REPO`, comentários relevantes, lista das jornadas com link e `Data revisão` = DATA_REFERENCIA no formato dd/mm/aaaa) e **Índice** (toda seção com link e "o que buscar"; todo documento gerado da sigla com link).
+- **1. Resumo executivo e limites da cadeia:** tabela Caminho | Entrada | Saída (uma linha por integração) + Mermaid básico do fluxo da sigla, com as integrações na ordem da jornada e os sistemas pelo nome.
+- **2. Modelo de dados:** objeto | papel na sigla (só os objetos de negócio; não listar todos os componentes).
+- **Configurações de integração por integração:** os 6 tipos com as **mesmas marcações** dos documentos por integração (mesma fonte `marcacoes.csv`), com link para a explicação detalhada.
+- **Acesso:** usuário de integração, Profiles e Permission Sets relevantes.
+- **Componentes compartilhados entre integrações:** componente | integrações afetadas | link (análise de impacto).
+- **7. Escopo e pontos de validação:** 7.1 recebe **todos os `!!!DANGER`** da sigla como itens a verificar na org; 7.2 observações técnicas (inclui `riscos.csv` e assuntos sem integração, com o motivo).
+- **Anexo A:** fontes principais no repositório.
+- Os catálogos completos de Flows, Apex, Triggers e LWC ficam **nos documentos por integração**, não no inventário.
+- Nome do arquivo: `docs/<SIGLA>/<SIGLA>_inventario_tecnico.md`.
 
-### 4.7 Material de revisão humana (`fase4/<SIGLA>/revisao/`)
+### 4.7 Comparação com o modelo (somente se SIGLA = SIGLA_MODELO)
+`fase4/<SIGLA>/comparacao_modelo.md`:
+- Componentes do gabarito encontrados × não encontrados (com o motivo) × extras encontrados pelo Devin.
+- **Marcações:** para cada configuração com marcação no gabarito, comparar a marcação do Devin com a do time.
+- Integrações do modelo × integrações identificadas; seções do esqueleto preenchidas × vazias.
+
+### 4.8 Material de revisão humana (`fase4/<SIGLA>/revisao/`)
+- `marcacoes.csv` — todas as marcações com motivo, `ok,comentario`
+- `inferidos.csv` — todos os [INFERIDO], `ok,comentario`
 - `amostra_etapas.csv` — 3 etapas por integração com `trecho_da_linha,ok,comentario`
-- `inferidos.csv` — todos os [INFERIDO] com justificativa, `ok,comentario`
-- `possiveis.csv` — componentes BAIXA com `promover(sim|não),comentario`
-- `certificados.csv` — certificados citados, com vencimento e `ok,comentario`
+- `danger.csv` — todos os DANGER (o que verificar na org)
 
 ## Autovalidação — `tools/fase4/validate_fase4.py <SIGLA>`
 
 | ID | Verificação | Severidade |
 |---|---|---|
 | F4-A01 | Pré-checagem executada e aprovada | BLOQUEANTE |
-| F4-A02 | Todo componente citado nos docs existe no inventário e está no recorte (ou justificado) | BLOQUEANTE |
-| F4-A03 | Fechamento: todo componente núcleo aparece em alguma seção de algum documento ou está listado como "não utilizado" com motivo | BLOQUEANTE |
-| F4-A04 | Fechamento: todo ponto de integração do recorte aparece em alguma integração | BLOQUEANTE |
-| F4-A05 | Toda etapa e toda linha dos CSVs de seção têm evidência; reverificação de 100% | BLOQUEANTE |
-| F4-A06 | Toda transição entre etapas consecutivas tem aresta em `edges.csv` ou marca [INFERIDO] | BLOQUEANTE |
-| F4-A07 | Seções obrigatórias: os títulos são lidos de `template_extraido.md` (ou do template base) e todos estão presentes, na ordem, e sem ficar vazios | BLOQUEANTE |
-| F4-A08 | Todo item dos CSVs de seção aparece na seção correspondente do documento (e vice-versa) | BLOQUEANTE |
-| F4-A09 | Todo certificado tem data de vencimento ou "não disponível na base"; vencidos ou a vencer em 90 dias da DATA_REFERENCIA destacados | ALERTA |
-| F4-A10 | Profiles/Permission Sets citados concedem de fato acesso a algum componente do recorte (verificar no XML) | BLOQUEANTE |
-| F4-A11 | Resumo sem nomes técnicos (regex: `__c`, `__e`, `__mdt`, CamelCase técnico) | ALERTA |
-| F4-A12 | Nenhum trecho com mais de 15 palavras copiado literalmente do modelo | BLOQUEANTE |
-| F4-A13 | Diagramas estruturalmente válidos; links internos resolvem | BLOQUEANTE |
-| F4-A14 | % de etapas [INFERIDO] por integração reportado; acima de 30% gera alerta | ALERTA |
-| F4-A15 | (sigla do modelo) Recall do gabarito por seção reportado; abaixo de 80% gera alerta | ALERTA |
-| F4-A16 | Nenhum segredo; hosts só com domínio; nenhum conteúdo de certificado | BLOQUEANTE |
-| F4-A17 | Idempotência dos CSVs | BLOQUEANTE |
-| F4-A18 | **Cobertura de assuntos:** todo assunto da sigla tem ≥1 integração em `integracoes.csv` ou aparece em "Pontos em aberto" com motivo (sem ponto de integração / sem componentes ALTA-MEDIA) | BLOQUEANTE |
-| F4-A19 | **Cobertura de pontos:** todo ponto de integração associado (ALTA/MEDIA) a um assunto da sigla está em alguma integração | BLOQUEANTE |
-| F4-A20 | Nenhuma integração junta assuntos diferentes sem componentes `compartilhado` em `conflitos_aprovado.csv` | BLOQUEANTE |
-| F4-A21 | Toda integração tem `desenho_base` (variante existente na base ou `nenhum` com motivo) | ALERTA |
-| F4-A22 | Nenhum fato do documento vem só de item da base marcado como "não confirmado"/⚠️ ou só de regra `heurística` com confiança ALTA (verificar pelos ids da base citados) | ALERTA |
+| F4-A02 | Cobertura de assuntos: todo assunto da sigla tem ≥1 integração ou aparece na seção 7 do inventário com motivo | BLOQUEANTE |
+| F4-A03 | Cobertura de pontos: todo ponto de integração dos assuntos da sigla está em alguma integração | BLOQUEANTE |
+| F4-A04 | Nenhuma integração junta assuntos diferentes sem `compartilhado` em `conflitos_aprovado.csv` | BLOQUEANTE |
+| F4-A05 | Estrutura: todo documento tem todas as seções do seu esqueleto, na ordem e com os títulos exatos | BLOQUEANTE |
+| F4-A06 | **Dados → documento:** toda linha dos CSVs do dossiê aparece na tabela correspondente; nº de linhas do CSV = nº de linhas da tabela | BLOQUEANTE |
+| F4-A07 | **Frases proibidas** ausentes (lista da seção 13 das regras), inclusive "não identificado na base analisada" e menções a `.csv`/`faseN/` | BLOQUEANTE |
+| F4-A08 | Nenhum parágrafo repetido em seções ou documentos diferentes (exceto blocos de marcação idênticos entre documento da integração e inventário) | BLOQUEANTE |
+| F4-A09 | **Consistência entre seções:** todo componente citado em gatilho, passos ou diagrama aparece na seção do seu tipo (ex.: LWC do gatilho na seção de UI) | BLOQUEANTE |
+| F4-A10 | Marcações: os 6 tipos presentes por integração, cada um com SUCCESS/ABSTRACT/DANGER e motivo não vazio; sintaxe igual à de `sintaxe_blocos.md` | BLOQUEANTE |
+| F4-A11 | Marcações iguais no documento da integração e no inventário da sigla | BLOQUEANTE |
+| F4-A12 | Todo DANGER aparece na seção 7.1 do inventário | BLOQUEANTE |
+| F4-A13 | **Anti-genérico:** o Cartão e o Resumo de cada integração citam o sistema externo pelo nome, ≥1 objeto de negócio e o gatilho | BLOQUEANTE |
+| F4-A14 | Papel das classes: nenhuma classe sem papel; papéis com evidência; não pode haver o mesmo texto de papel para todas as classes de uma integração | BLOQUEANTE |
+| F4-A15 | Diagramas: todo participante/nó existe no dossiê; toda integração aparece no Mermaid da sigla; `autonumber` na seção 3.1 | BLOQUEANTE |
+| F4-A16 | Tabelas Markdown com o mesmo nº de colunas em todas as linhas; `\|` escapado nas células | BLOQUEANTE |
+| F4-A17 | Índice: toda seção e todo documento da sigla listados com link válido | BLOQUEANTE |
+| F4-A18 | Toda afirmação dos dossiês tem evidência; reverificação de 100% | BLOQUEANTE |
+| F4-A19 | Nenhum trecho com mais de 15 palavras copiado do modelo | BLOQUEANTE |
+| F4-A20 | Nenhum segredo; hosts só com domínio; nenhum conteúdo de certificado | BLOQUEANTE |
+| F4-A21 | Toda integração tem `desenho_base` (variante existente ou `nenhum` com motivo) | ALERTA |
+| F4-A22 | Nenhum fato vem só de item da base marcado como "não confirmado"/⚠️ ou só de regra `heurística` com confiança ALTA | ALERTA |
+| F4-A23 | % de etapas [INFERIDO] por integração; acima de 30% gera alerta | ALERTA |
+| F4-A24 | (SIGLA = SIGLA_MODELO) Recall do gabarito e concordância das marcações reportados; abaixo de 80% gera alerta | ALERTA |
+| F4-A25 | Idempotência dos CSVs; entrada da Fase 4 em `decisions.md` | BLOQUEANTE |
 
 ## Entrega
-Docs + CSVs + `fase4/<SIGLA>/validation_report.md` + `fase4/<SIGLA>/RESUMO.md` (+ `comparacao_modelo.md` quando aplicável).
-Atualize `decisions.md` e `questions.md`.
+Documentos em `docs/<SIGLA>/` + dossiês + `fase4/<SIGLA>/validation_report.md` + `fase4/<SIGLA>/RESUMO.md` (com a tabela **assunto → integrações documentadas** e a lista de DANGER) + `comparacao_modelo.md` quando aplicável.

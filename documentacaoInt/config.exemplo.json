@@ -1,0 +1,30 @@
+{
+  "_comentario": "Copie para <DIR_TRABALHO>/config.json e troque os valores. Chaves iniciadas por _ são comentários.",
+
+  "ORG": "prdlalala",
+  "CAMINHO_ORG": "C:/trabalho/aliasOrg-ambiente/force-app/aliasRepo",
+  "DIR_TRABALHO": "C:/trabalho/doc-integracoes",
+  "ALIAS_REPO": "aliasRepo",
+
+  "MODO_TESTE": "sim",
+  "DATA_REFERENCIA": "2026-10-30",
+
+  "SIGLA_MODELO": "FNN",
+  "ORG_DO_MODELO": "prdlalala",
+
+  "_comentario_SIGLA": "Sigla documentada na Fase 4 nesta execução. Troque a cada execução. Para assunto sem sigla, use o id do assunto (ex.: ASS-007). NÃO altere SIGLA_MODELO.",
+  "SIGLA": "FNN",
+
+  "CALIBRACAO": {
+    "AMOSTRA_REVISAO": 10,
+    "ALERTA_REFS_NAO_RESOLVIDAS": 0.20,
+    "LIMIAR_INFRA_FAN_IN": "p95",
+    "MAX_SALTOS": 3,
+    "DECAIMENTO": 0.6,
+    "FATOR_RELACAO_FRACA": 0.5,
+    "LIMIAR_ALTA": 0.7,
+    "LIMIAR_MEDIA": 0.4,
+    "ALERTA_ASSUNTO_GIGANTE": 0.15,
+    "ALERTA_VENCIMENTO_DIAS": 90
+  }
+}

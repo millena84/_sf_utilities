@@ -1,15 +1,15 @@
 # Fase 0 — Reconhecimento (org <ORG>)
 
 ## Antes de começar
-Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`. Em caso de conflito, as regras gerais prevalecem.
+Leia o `config.json` na raiz da pasta de trabalho e siga integralmente `<DIR_TRABALHO> [busque no arquivo config.json]/_projeto/00_regras_gerais.md`. Em caso de conflito, as regras gerais prevalecem.
 
 ## Parâmetros desta execução
-- ORG: `<ORG>`
-- CAMINHO_ORG: `<CAMINHO_ORG>`
-- DIR_TRABALHO: `<DIR_TRABALHO>`
+- ORG: `<ORG> [busque no arquivo config.json]`
+- CAMINHO_ORG: `<CAMINHO_ORG> [busque no arquivo config.json]`
+- DIR_TRABALHO: `<DIR_TRABALHO> [busque no arquivo config.json]`
 - Lista de tipos de metadata em escopo: `<DIR_TRABALHO>/_entradas/tipos_metadata.txt` (um tipo por linha, nome da Metadata API, ex.: ApexClass)
 - Lista de assuntos: `<DIR_TRABALHO>/_entradas/assuntos.csv` (coluna obrigatória `assunto`; colunas opcionais `descricao` e `sigla`)
-- MODO_TESTE: `<sim|não>`
+- MODO_TESTE: `<MODO_TESTE> [busque no arquivo config.json]`
 
 ## Objetivo
 Entender, para esta org:
@@ -51,13 +51,22 @@ Entender, para esta org:
 - `namespace`: prefixo `ns__` quando houver.
 
 **Saída:** `fase0/inventory.csv`
-`id,tipo,nome_api,pai,caminho,formato,linhas,label,descricao,is_test,is_generated,namespace`
+`id,tipo,nome_api,pai,caminho,formato,linhas,label,descricao,is_test,is_generated,namespace,estado,atributos`
+- `estado`: ativo | inativo | rascunho | obsoleto | n.a. (Flow: `status`; Trigger/Classe: `status` do `-meta.xml`; demais: n.a.).
+- `atributos` (pares `chave=valor` separados por `;`), conforme o tipo:
+  - **Flow:** `processType`, tipo de disparo (`triggerType`, `recordTriggerType`), objeto do `<start>`, antes/depois de salvar, se é tela (`Flow` com `screens`).
+  - **ApexTrigger:** objeto e eventos (before/after insert/update/delete/undelete).
+  - **ApexClass:** anotações (`@RestResource`, `webservice`, `@AuraEnabled`, `@InvocableMethod`, `@future`, `@HttpGet`…) e interfaces (`Queueable`, `Database.Batchable`, `Schedulable`, `Database.AllowsCallouts`).
+  - **LWC/Aura:** alvos de exibição (`targets`: record page, app page, tela de Flow, comunidade) e métodos Apex importados (`@salesforce/apex/...`).
+  - **FlexiPage:** objeto e componentes LWC/Aura incluídos.
+  - **CustomMetadata (registro):** tipo `__mdt` e campos não sensíveis; indicar se o nome sugere ambiente (ex.: `_PRD`, `_HML`, `_DEV`).
 
 ### 0.3 Regras de relação entre tipos
 Descubra, **a partir do que existe nesta org**, como um tipo referencia outro. Considere no mínimo:
 Apex→Apex (instanciação, chamada estática, extends/implements), Apex→Objeto/Campo (SOQL, DML, referência tipada),
 Apex→NamedCredential (`callout:`), Apex→CustomMetadata/CustomSetting, `Type.forName` (dinâmica),
-Trigger→Objeto, Flow→Apex (`actionCalls` do tipo apex), Flow→Flow (`subflows`/`flowName`), Flow→Objeto (objeto do `<start>`; `object` em `recordLookups`/`recordCreates`/`recordUpdates`/`recordDeletes`), Flow→Campo (`field` em filtros, `inputAssignments`, `outputAssignments`), Flow→PlatformEvent, CustomField→CustomObject (estrutural: todo campo liga-se ao objeto pai, para que referências em nível de campo e de objeto se encontrem), Workflow→OutboundMessage,
+Trigger→Objeto, Flow→Apex (`actionCalls` do tipo apex), Flow→Flow (`subflows`/`flowName`), Flow→Objeto (objeto do `<start>`; `object` em `recordLookups`/`recordCreates`/`recordUpdates`/`recordDeletes`), Flow→Campo (`field` em filtros, `inputAssignments`, `outputAssignments`), Flow→PlatformEvent, CustomField→CustomObject (estrutural: todo campo liga-se ao objeto pai, para que referências em nível de campo e de objeto se encontrem),
+LWC/Aura→ApexClass (`import ... from '@salesforce/apex/Classe.metodo'`; `controller="Classe"`), FlexiPage→LWC/Aura, Apex→registro de CustomMetadata (`Tipo__mdt.getInstance('Registro')`, SOQL com `DeveloperName`), Workflow→OutboundMessage,
 LWC/Aura/Visualforce→Apex, registros de CustomMetadata cujo valor é nome de componente (textual),
 NamedCredential→ExternalCredential, NamedCredential/ExternalClientApplication/ConnectedApp→Certificate,
 Profile/PermissionSet/PermissionSetGroup→ApexClass (`classAccesses`), →Objeto/Campo (`objectPermissions`/`fieldPermissions`),

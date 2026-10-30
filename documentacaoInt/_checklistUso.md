@@ -14,7 +14,7 @@ Como você vai continuar na mesma sessão do Devin em que o modelo foi criado, h
   <DIR_TRABALHO>/_projeto/
   <DIR_TRABALHO>/_entradas/modelo_referencia/
   ```
-- [ ] Baixar do GitHub (`_sf_utilities/documentacaoInt`) e copiar `00_regras_gerais.md` e `template_jornada.md` para `_projeto/`. Os demais arquivos ficam à mão para copiar e colar os prompts.
+- [ ] Baixar do GitHub (`_sf_utilities/documentacaoInt`). Copiar `00_regras_gerais.md` e `base_de_conhecimento/` para `_projeto/`, os esqueletos `modelo_esqueletos/01_*.md` e `02_*.md` para `_projeto/templates/`, e criar `config.json` (na raiz da pasta de trabalho) a partir de `config.exemplo.json`.
 - [ ] Confirmar que o Devin tem Python 3 disponível. Basta pedir para ele rodar `python3 --version`.
 
 ## 2. Preparar os insumos (≈20 min)

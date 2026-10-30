@@ -1,11 +1,11 @@
 # Fase 5 — Consolidação (org <ORG>) e 5B — Consolidação entre orgs
 
 ## Antes de começar
-Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
+Leia o `config.json` na raiz da pasta de trabalho e siga integralmente `<DIR_TRABALHO> [busque no arquivo config.json]/_projeto/00_regras_gerais.md`.
 
 ## Parâmetros desta execução
-- ORG: `<ORG>` (ou `AMBAS` para a 5B) · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
-- DATA_REFERENCIA: `<AAAA-MM-DD>`
+- ORG: `<ORG> [busque no arquivo config.json]` (ou `AMBAS` para a 5B) · DIR_TRABALHO: `<DIR_TRABALHO> [busque no arquivo config.json]` · MODO_TESTE: `<MODO_TESTE> [busque no arquivo config.json]`
+- DATA_REFERENCIA: `<DATA_REFERENCIA> [busque no arquivo config.json]`
 
 ## Objetivo
 Transformar as jornadas em uma documentação navegável: índice, catálogos e lacunas.
@@ -22,7 +22,9 @@ Transformar as jornadas em uma documentação navegável: índice, catálogos e 
 
 ### 5.1 Índice — `docs/README.md`
 - Como ler esta documentação (5 linhas).
-- Tabela de siglas: sigla, assuntos, nº de integrações, direções, sistemas externos, confiança, status (Documentado | Pendente | Sem integração detectada), link para `docs/<SIGLA>/README.md`.
+- Tabela de siglas: sigla, assuntos, nº de integrações, direções, sistemas externos, status (Documentado | Pendente | Sem integração detectada), link para o **inventário técnico da sigla** (`docs/<SIGLA>/<SIGLA>_inventario_tecnico.md`).
+- Tabela de assuntos: todo assunto de `assuntos.csv`, com sigla, integrações (links) e status.
+- Pendências de org: todos os `!!!DANGER` de todas as siglas, agrupados por tipo de verificação.
 - Atalhos: por sistema externo, por direção.
 
 ### 5.2 Catálogo de sistemas externos — `docs/sistemas/<sistema_externo_id>.md` + `docs/sistemas/README.md`
