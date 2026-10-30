@@ -153,3 +153,25 @@ Cada execução trabalha com **uma org por vez**.
 5. Decisões tomadas (resumo de `decisions.md` desta fase)
 6. Dúvidas abertas (resumo de `questions.md` desta fase)
 7. Recomendação para a próxima fase
+
+## 14. Base de conhecimento de integração
+
+Material de consulta em `<DIR_TRABALHO>/_projeto/base_de_conhecimento/` (cópia de `documentacaoInt/base_de_conhecimento/`). Prefira os arquivos JSON quando um script for consumir o conteúdo.
+
+| Arquivo | Use para |
+|---|---|
+| `guia_evidencias.md` | reconhecer componentes nos arquivos: pasta, sufixo, campos XML, padrões de código `C01`–`C25`, campos sensíveis |
+| `regras_ligacao.md` | seguir de um componente ao próximo: regras `L01`–`L47` (documentado × heurística) |
+| `diagnostico.md` | do sinal encontrado ao desenho candidato: sinais `S01`–`S38` e assinatura mínima de cada desenho |
+| `out-sync.md`, `in-sync.md`, `out-async.md`, `in-async.md`, `mid.md`, `outras.md` | desenhos e variantes (ex.: `D.1.v11`) com os componentes esperados |
+| `limites_da_fonte.md` | o que o repositório não mostra (`N01`–`N17`) e como registrar |
+| `antipadroes.md` | riscos a sinalizar (`A01`–`A18`) |
+| `limites_plataforma.md` | limites da plataforma que afetam cada desenho |
+| `exemplos/` | exemplos **fictícios** do método; nunca copie conteúdo deles |
+
+Regras de uso:
+- A base descreve **o que pode existir**. Só afirme que um componente existe com evidência em `<CAMINHO_ORG>` (seção 5).
+- A confiança da documentação segue a seção 5. A confiança da matriz de diagnóstico vale só para escolher o desenho candidato.
+- Regra de ligação do tipo **heurística** nunca sustenta sozinha uma afirmação ALTA.
+- Itens marcados na base como "não confirmado" ou ⚠️ não podem ser usados como fato.
+- Cite os IDs da base (`Cnn`, `Lnn`, `Snn`, `Ann`, `Nnn`, id de variante) nas colunas de observação e em `decisions.md`, para rastrear de onde veio cada decisão.

@@ -123,6 +123,7 @@
 | F2-H03 ⭐ | Vizinhanças fazem sentido | `revisao/vizinhanca_pontos.md` | Os diagramas representam o que você conhece? | Sim | Comente o que falta ou sobra |
 | F2-H04 | Isolados | `revisao/amostra_isolados.csv` | É isolado de verdade? | Maioria sim | Isolado falso = regra faltando: volte à fase 0 |
 | F2-H05 | Não resolvidas | `revisao/top_nao_resolvidas.csv` | Mesma análise de F0-H06 | Revisado | — |
+| F2-H06 | Regras sugeridas pela base | `regras_sugeridas_base.csv` | Alguma regra da base de conhecimento deve entrar nas regras aprovadas? | Revisado | Aprove na fase 0 e rode a fase 2 de novo |
 
 ### C. Liberação para a Fase 3
 - [ ] `infra_hubs_aprovado.csv` sem `pendente`
@@ -178,6 +179,8 @@
 | F4-H07 | Custom Metadata por ambiente | Seção de Custom Metadata | Registros por ambiente aparecem e não há valores sensíveis | Sim | Peça a correção |
 | F4-H08 | Certificados | `revisao/certificados.csv` | Vencimentos coerentes | Sim | — |
 | F4-H09 | Possivelmente relacionados | `revisao/possiveis.csv` | Promover algum? | Revisado | Promovidos → rodar a fase 4 da sigla de novo |
+| F4-H11 ⭐ | Desenho de cada integração | `integracoes.csv` (`desenho_base`) ao lado da variante em `base_de_conhecimento/` | A variante descreve o que você conhece da integração? Os `nenhum` fazem sentido? | Sim | Corrija o desenho ou registre um desenho novo para a base |
+| F4-H12 | Riscos | `secoes/riscos.csv` e a seção correspondente do documento | Os anti-padrões apontados existem? Os limites citados têm data? | Revisado | Peça a correção |
 | F4-H10 | Renderização e nada sensível | Abra os `.md`; busque "token", "senha", "secret", "password" | Diagramas aparecem e nada sensível foi encontrado | Ok | Peça a correção |
 
 ### C. Liberação
