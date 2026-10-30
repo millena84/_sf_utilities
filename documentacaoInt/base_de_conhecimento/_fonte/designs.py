@@ -195,22 +195,22 @@ OUT_SYNC = [
 
 # =========================== IN SYNC ===========================
 def ext_start(api):
-    return [ator(EXT, f"obtém o token e chama a {api}", "—", "Connected App / External Client App")]
+    return [ator(EXT, f"O sistema de fora do Salesforce. Primeiro pede um token (login) e depois chama a {api}.", "—", "Connected App / External Client App")]
 
 def dados_destino(caller, upsert=True):
-    rows = [R("Objeto de destino", "CustomObject (padrão ou __c)", "executa (DML)", "recebe a criação/alteração/consulta", caller, "triggers e flows do objeto"),
-            R("Campos", "CustomField", "lê/referencia", "campos gravados ou lidos", caller, "—")]
+    rows = [R("Objeto de destino", "CustomObject (padrão ou __c)", "executa (DML)", "Objeto (tabela) do Salesforce onde a integração cria, altera ou consulta registros.", caller, "triggers e flows do objeto"),
+            R("Campos", "CustomField", "lê/referencia", "Campos que a integração lê ou preenche.", caller, "—")]
     if upsert:
-        rows.append(R("Campo External ID", "CustomField (externalId=true)", "lê/referencia", "chave de correlação para upsert entre sistemas", caller, "—", "Opcional (obrigatório em upsert)"))
-    rows += [R("Trigger do objeto", "ApexTrigger", "executa", "efeitos colaterais da gravação", "plataforma (DML)", "classes handler", "Opcional"),
-             R("Flow record-triggered", "Flow", "executa", "efeitos colaterais declarativos", "plataforma (DML)", "—", "Opcional")]
+        rows.append(R("Campo External ID", "CustomField (externalId=true)", "lê/referencia", "Campo que guarda o identificador do registro no outro sistema. Com ele, o Salesforce sabe se deve criar um registro novo ou atualizar um existente (upsert), sem duplicar.", caller, "—", "Opcional (obrigatório em upsert)"))
+    rows += [R("Trigger do objeto", "ApexTrigger", "executa", "Código que roda sozinho quando a integração grava o registro. Pode disparar outras ações (inclusive outras integrações).", "plataforma (DML)", "classes handler", "Opcional"),
+             R("Flow record-triggered", "Flow", "executa", "Automação sem código que roda quando a integração grava o registro.", "plataforma (DML)", "—", "Opcional")]
     return rows
 
 def in_api(api, extra_fn, upsert=True):
     var = []
     for a, f in in_variants():
         rows = ext_start(api) + app_in(a, f)
-        rows += [ator(api, "endpoint padrão da plataforma", EXT, extra_fn[0] if extra_fn else "Objeto de destino")]
+        rows += [ator(api, "Endereço padrão do Salesforce (API pronta, sem código na org) que o sistema externo chama.", EXT, extra_fn[0] if extra_fn else "Objeto de destino")]
         if extra_fn:
             rows += extra_fn[1]
         else:
@@ -219,31 +219,31 @@ def in_api(api, extra_fn, upsert=True):
     return var
 
 APEX_REST = ("Classe Apex REST", [
-  R("Classe Apex REST", "ApexClass", "executa", "`@RestResource(urlMapping=...)` com `@HttpPost/@HttpGet...`: valida payload e aplica regra de negócio", "Apex REST (/services/apexrest)", "Objeto de destino"),
-  R("Classes de serviço / DTO", "ApexClass", "executa", "regra de negócio, desserialização", "Classe Apex REST", "Objeto de destino", "Opcional"),
-  R("Permission Set (acesso à classe)", "PermissionSet", "autoriza", "libera a classe Apex REST ao usuário de integração", "plataforma", "—")] + dados_destino("Classe Apex REST"))
+  R("Classe Apex REST", "ApexClass", "executa", "Classe Apex que vira um endereço (endpoint) que o sistema externo pode chamar (`@RestResource`). Recebe os dados, confere se estão corretos e aplica a regra de negócio.", "Apex REST (/services/apexrest)", "Objeto de destino"),
+  R("Classes de serviço / DTO", "ApexClass", "executa", "Classes de apoio: aplicam a regra de negócio e convertem o JSON recebido em objetos Apex.", "Classe Apex REST", "Objeto de destino", "Opcional"),
+  R("Permission Set (acesso à classe)", "PermissionSet", "autoriza", "Dá ao usuário de integração permissão para chamar a classe Apex REST. Sem isso, a chamada é recusada.", "plataforma", "—")] + dados_destino("Classe Apex REST"))
 APEX_SOAP = ("Classe Apex SOAP", [
-  R("Classe Apex SOAP", "ApexClass", "executa", "`global` com métodos `webservice`; WSDL gerado pela plataforma", "SOAP API customizada (/services/Soap/class)", "Objeto de destino"),
-  R("Permission Set (acesso à classe)", "PermissionSet", "autoriza", "libera a classe", "plataforma", "—")] + dados_destino("Classe Apex SOAP"))
+  R("Classe Apex SOAP", "ApexClass", "executa", "Classe Apex que vira um serviço SOAP (métodos `webservice` em classe `global`). A plataforma gera o contrato (WSDL) que o sistema externo usa para chamar.", "SOAP API customizada (/services/Soap/class)", "Objeto de destino"),
+  R("Permission Set (acesso à classe)", "PermissionSet", "autoriza", "Dá ao usuário de integração permissão para chamar a classe.", "plataforma", "—")] + dados_destino("Classe Apex SOAP"))
 FLOW_REST = ("Flow autolaunched", [
-  R("Flow autolaunched", "Flow", "executa", "invocado por `/actions/custom/flow/<Nome>`; recebe variáveis de entrada", "REST API (Actions)", "Objeto de destino"),
-  R("Permission Set (Run Flows / acesso ao Flow)", "PermissionSet", "autoriza", "libera a execução do Flow", "plataforma", "—")] + dados_destino("Flow autolaunched"))
+  R("Flow autolaunched", "Flow", "executa", "Automação sem código que o sistema externo dispara pela API (`/actions/custom/flow/<Nome>`), mandando os dados de entrada.", "REST API (Actions)", "Objeto de destino"),
+  R("Permission Set (Run Flows / acesso ao Flow)", "PermissionSet", "autoriza", "Dá ao usuário de integração permissão para rodar o Flow.", "plataforma", "—")] + dados_destino("Flow autolaunched"))
 
 def webhook():
     var = []
     for site in ("SITE", "EXP"):
         for val in ("NENHUMA", "CMDT", "CS"):
-            rows = [ator(EXT, "envia o webhook (POST) sem OAuth", "—", "Site")]
+            rows = [ator(EXT, "O sistema de fora do Salesforce. Avisa sobre um acontecimento enviando um POST (webhook), sem login OAuth.", "—", "Site")]
             if site == "SITE":
-                rows += [R("Site público", "CustomSite", "lê/referencia", "domínio público que expõe `/services/apexrest`", EXT, "Classe Apex REST")]
+                rows += [R("Site público", "CustomSite", "lê/referencia", "Site público do Salesforce. Permite que o sistema externo chame o endpoint sem fazer login (como usuário convidado/guest).", EXT, "Classe Apex REST")]
             else:
-                rows += [R("Site Experience Cloud", "Network + ExperienceBundle/DigitalExperienceBundle + CustomSite", "lê/referencia", "site do Experience com acesso guest", EXT, "Classe Apex REST")]
-            rows += [R("Perfil guest do site", "Profile", "autoriza", "acesso da classe e dos objetos para o usuário guest", "plataforma", "—"),
-                     R("Classe Apex REST", "ApexClass", "executa", "recebe o webhook, valida, grava ou enfileira", "Site", "Objeto de destino")]
+                rows += [R("Site Experience Cloud", "Network + ExperienceBundle/DigitalExperienceBundle + CustomSite", "lê/referencia", "Site do Experience Cloud com acesso de convidado (guest), usado para receber a chamada sem login.", EXT, "Classe Apex REST")]
+            rows += [R("Perfil guest do site", "Profile", "autoriza", "Perfil do usuário convidado do site: define o que a chamada sem login pode executar e acessar. Deve ser o mínimo possível.", "plataforma", "—"),
+                     R("Classe Apex REST", "ApexClass", "executa", "Classe que recebe o aviso (webhook) do sistema externo, confere se é legítimo e grava os dados ou os coloca numa fila para processar depois.", "Site", "Objeto de destino")]
             if val == "CMDT":
-                rows += [R("Registro de Custom Metadata (protegido)", "CustomMetadata (+ CustomObject __mdt)", "lê/referencia", "segredo/token para validar assinatura HMAC. Risco: ver README", "Classe Apex REST", "—")]
+                rows += [R("Registro de Custom Metadata (protegido)", "CustomMetadata (+ CustomObject __mdt)", "lê/referencia", "Guarda o segredo usado para conferir a assinatura do webhook. Atenção: segredo em Custom Metadata é risco (anti-padrão A01).", "Classe Apex REST", "—")]
             if val == "CS":
-                rows += [R("Custom Setting protegido", "CustomObject (Custom Setting)", "lê/referencia", "segredo para validar assinatura", "Classe Apex REST", "—")]
+                rows += [R("Custom Setting protegido", "CustomObject (Custom Setting)", "lê/referencia", "Guarda o segredo usado para conferir a assinatura do webhook.", "Classe Apex REST", "—")]
             rows += dados_destino("Classe Apex REST")
             var.append((f"{'Site público' if site=='SITE' else 'Experience Cloud'} · validação {'nenhuma (não recomendado)' if val=='NENHUMA' else ('segredo em Custom Metadata' if val=='CMDT' else 'segredo em Custom Setting')}", rows))
     return var
@@ -260,18 +260,18 @@ IN_SYNC = [
 
 # =========================== OUT ASYNC ===========================
 def gatilho_trigger():
-    return [ator("Gravação do registro", "insert/update/delete por usuário, API ou automação", "—", "Trigger"),
-            R("Objeto de origem", "CustomObject + CustomField", "lê/referencia", "registro que dispara a integração", "—", "Trigger"),
-            R("Trigger", "ApexTrigger", "executa", "detecta a mudança (após commit lógico) e delega", "plataforma (DML)", "Classe handler"),
-            R("Classe handler", "ApexClass", "executa", "filtra registros elegíveis e enfileira o processamento assíncrono", "Trigger", "processamento assíncrono")]
+    return [ator("Gravação do registro", "Alguém (usuário, outra integração ou automação) cria, altera ou exclui um registro. É isso que dispara tudo.", "—", "Trigger"),
+            R("Objeto de origem", "CustomObject + CustomField", "lê/referencia", "Objeto cujos registros, ao serem criados ou alterados, disparam a integração.", "—", "Trigger"),
+            R("Trigger", "ApexTrigger", "executa", "Código que roda sozinho quando o registro é gravado. Não pode chamar o sistema externo direto (a plataforma não deixa callout síncrono em trigger), então só repassa o trabalho.", "plataforma (DML)", "Classe handler"),
+            R("Classe handler", "ApexClass", "executa", "Escolhe quais registros precisam ir para o sistema externo e agenda o envio para rodar em segundo plano.", "Trigger", "processamento assíncrono")]
 
 def async_apex(mech, caller):
     if mech == "FUTURE":
-        return [R("Método @future", "ApexClass", "executa", "`@future(callout=true)`: recebe IDs, consulta e faz o callout fora da transação", caller, "Sistema externo")], "Método @future"
-    return [R("Classe Queueable", "ApexClass", "executa", "implementa `Queueable, Database.AllowsCallouts`; faz o callout", caller, "Sistema externo"),
-            R("Finalizer", "ApexClass", "executa", "implementa `System.Finalizer`: trata falha e reenfileira", "plataforma (fim do Queueable)", "Classe Queueable", "Opcional")], "Classe Queueable"
+        return [R("Método @future", "ApexClass", "executa", "Método que roda em segundo plano (`@future(callout=true)`), depois que o registro já foi salvo. Recebe os IDs, busca os dados e chama o sistema externo.", caller, "Sistema externo")], "Método @future"
+    return [R("Classe Queueable", "ApexClass", "executa", "Tarefa que roda em segundo plano (Queueable com `Database.AllowsCallouts`). É ela que chama o sistema externo. Permite encadear tarefas e tratar falhas melhor que o `@future`.", caller, "Sistema externo"),
+            R("Finalizer", "ApexClass", "executa", "Código que roda sempre ao final da tarefa Queueable, mesmo se ela falhar. Usado para registrar o erro e tentar de novo.", "plataforma (fim do Queueable)", "Classe Queueable", "Opcional")], "Classe Queueable"
 
-WRITEBACK = lambda c: R("Atualização do registro de origem", "CustomObject + CustomField", "executa (DML)", "grava o retorno (enriquecimento, ID externo, status). Exige proteção contra recursão do trigger", c, "Trigger (de novo)", "Opcional")
+WRITEBACK = lambda c: R("Atualização do registro de origem", "CustomObject + CustomField", "executa (DML)", "Grava no registro o que voltou do sistema externo (dados, ID externo, status). Cuidado: essa gravação dispara o trigger de novo, então é preciso uma proteção para não entrar em loop.", c, "Trigger (de novo)", "Opcional")
 
 def trig_async():
     var = []
@@ -284,9 +284,9 @@ def trig_async():
     return var
 
 def flow_rt_start():
-    return [ator("Gravação do registro", "insert/update", "—", "Flow"),
-            R("Objeto de origem", "CustomObject + CustomField", "lê/referencia", "registro que dispara", "—", "Flow"),
-            R("Flow record-triggered (Run Asynchronously)", "Flow", "executa", "o caminho assíncrono roda após o commit e permite callout", "plataforma (DML)", "ação")]
+    return [ator("Gravação do registro", "Alguém cria ou altera um registro. É isso que dispara tudo.", "—", "Flow"),
+            R("Objeto de origem", "CustomObject + CustomField", "lê/referencia", "Objeto cujos registros disparam a integração.", "—", "Flow"),
+            R("Flow record-triggered (Run Asynchronously)", "Flow", "executa", "Automação sem código disparada pela gravação do registro. O trecho \"Run Asynchronously\" roda depois que o registro foi salvo e, por isso, pode chamar o sistema externo.", "plataforma (DML)", "ação")]
 
 def flow_async():
     var = []
@@ -294,18 +294,18 @@ def flow_async():
         for e in (NC_E if acao != "APEX" else ALL_E):
             rows = flow_rt_start()
             if acao == "APEX":
-                rows += [R("Classe invocável", "ApexClass", "executa", "`@InvocableMethod` que faz o callout", "Flow", "Sistema externo")]
+                rows += [R("Classe invocável", "ApexClass", "executa", "Classe Apex chamada pelo Flow (`@InvocableMethod`) que chama o sistema externo.", "Flow", "Sistema externo")]
                 c = "Classe invocável"
             else:
-                rows += [R("Ação HTTP Callout" if acao == "HTTP" else "Registro de External Service", "ExternalServiceRegistration", "lê/referencia", "define a operação chamada", "Flow", "Named Credential")]
+                rows += [R("Ação HTTP Callout" if acao == "HTTP" else "Registro de External Service", "ExternalServiceRegistration", "lê/referencia", "Cadastro da operação da API externa que o Flow chama (criado pelo HTTP Callout ou pelo External Services).", "Flow", "Named Credential")]
                 c = "Flow"
             rows += endpoint(e, c) + [WRITEBACK(c)]
             var.append((f"Ação {'HTTP Callout' if acao=='HTTP' else ('External Service' if acao=='ES' else 'Apex invocável')} · endpoint {e}", rows))
     return var
 
 def pe_def(c="publicador"):
-    return [R("Platform Event", "CustomObject (__e)", "lê/referencia", "contrato da mensagem", c, "assinantes"),
-            R("Campos do evento", "CustomField", "lê/referencia", "payload", c, "—")]
+    return [R("Platform Event", "CustomObject (__e)", "lê/referencia", "Platform Event: o \"formato\" de uma mensagem que um sistema publica e outros recebem. Funciona como um aviso: quem publica não espera resposta.", c, "assinantes"),
+            R("Campos do evento", "CustomField", "lê/referencia", "Campos da mensagem: os dados que viajam no evento.", c, "—")]
 
 def pe_callout():
     var = []
@@ -313,18 +313,18 @@ def pe_callout():
         for sub in ("APEX", "FLOW"):
             for e in (ALL_E if sub == "APEX" else NC_E):
                 if pub == "TRIGGER":
-                    rows = gatilho_trigger()[:3] + [R("Classe handler", "ApexClass", "executa", "monta e publica o evento (`EventBus.publish`)", "Trigger", "Platform Event")]
+                    rows = gatilho_trigger()[:3] + [R("Classe handler", "ApexClass", "executa", "Monta a mensagem e a publica (`EventBus.publish`). A partir daí, quem assina o evento faz o resto.", "Trigger", "Platform Event")]
                 else:
-                    rows = flow_rt_start()[:2] + [R("Flow record-triggered", "Flow", "executa", "elemento Create Records no evento `__e`", "plataforma (DML)", "Platform Event")]
+                    rows = flow_rt_start()[:2] + [R("Flow record-triggered", "Flow", "executa", "Automação sem código que publica o evento criando um registro do Platform Event (`__e`).", "plataforma (DML)", "Platform Event")]
                 rows += pe_def("publicador")
                 if sub == "APEX":
-                    rows += [R("Trigger do evento", "ApexTrigger", "executa", "`after insert` no `__e`; não pode fazer callout direto: enfileira", "barramento de eventos", "Classe Queueable"),
-                             R("Configuração do assinante", "PlatformEventSubscriberConfig", "lê/referencia", "usuário de execução e tamanho do lote do trigger", "plataforma", "—", "Opcional")]
+                    rows += [R("Trigger do evento", "ApexTrigger", "executa", "Código que roda quando o evento chega. A plataforma não deixa ele chamar o sistema externo direto, então ele agenda uma tarefa em segundo plano.", "barramento de eventos", "Classe Queueable"),
+                             R("Configuração do assinante", "PlatformEventSubscriberConfig", "lê/referencia", "Define com qual usuário o trigger do evento roda e quantos eventos ele processa de uma vez.", "plataforma", "—", "Opcional")]
                     a, c = async_apex("QUEUE", "Trigger do evento")
                     rows += a + endpoint(e, c)
                 else:
-                    rows += [R("Flow disparado por evento", "Flow", "executa", "Platform Event–Triggered Flow; caminho assíncrono com HTTP Callout/External Service", "barramento de eventos", "Named Credential"),
-                             R("Ação HTTP Callout / External Service", "ExternalServiceRegistration", "lê/referencia", "operação chamada", "Flow disparado por evento", "Named Credential")]
+                    rows += [R("Flow disparado por evento", "Flow", "executa", "Automação sem código disparada quando o evento chega; chama o sistema externo por HTTP Callout ou External Service.", "barramento de eventos", "Named Credential"),
+                             R("Ação HTTP Callout / External Service", "ExternalServiceRegistration", "lê/referencia", "Cadastro da operação da API externa que o Flow chama.", "Flow disparado por evento", "Named Credential")]
                     rows += endpoint(e, "Flow disparado por evento")
                 rows += logrows("assinante")
                 var.append((f"Publica {'Apex' if pub=='TRIGGER' else 'Flow'} · assina {'Apex Trigger + Queueable' if sub=='APEX' else 'Flow'} · endpoint {e}", rows))
@@ -334,35 +334,35 @@ def outbound_msg():
     var = []
     for origem in ("WF", "FLOW"):
         for cert in (False, True):
-            rows = [ator("Gravação do registro", "insert/update", "—", "regra"),
-                    R("Objeto de origem", "CustomObject + CustomField", "lê/referencia", "campos enviados na mensagem", "—", "regra")]
+            rows = [ator("Gravação do registro", "Alguém cria ou altera um registro. É isso que dispara tudo.", "—", "regra"),
+                    R("Objeto de origem", "CustomObject + CustomField", "lê/referencia", "Objeto cujos registros disparam o envio; os campos escolhidos vão na mensagem.", "—", "regra")]
             if origem == "WF":
-                rows += [R("Regra de workflow", "Workflow (WorkflowRule)", "executa", "critério que dispara a mensagem (legado)", "plataforma (DML)", "Outbound Message")]
+                rows += [R("Regra de workflow", "Workflow (WorkflowRule)", "executa", "Regra de workflow (recurso antigo) que decide quando enviar a mensagem.", "plataforma (DML)", "Outbound Message")]
             else:
-                rows += [R("Flow record-triggered", "Flow", "executa", "ação Outbound Message", "plataforma (DML)", "Outbound Message")]
-            rows += [R("Outbound Message", "Workflow (WorkflowOutboundMessage)", "lê/referencia", "endpoint, campos, usuário de envio; fila com retry até 24 h", "regra", "Sistema externo"),
-                     ator("Usuário de envio", "usuário cujo contexto define a visibilidade dos campos", "Outbound Message", "—")]
+                rows += [R("Flow record-triggered", "Flow", "executa", "Automação sem código que dispara o envio da mensagem.", "plataforma (DML)", "Outbound Message")]
+            rows += [R("Outbound Message", "Workflow (WorkflowOutboundMessage)", "lê/referencia", "Configuração do Outbound Message: para onde enviar, quais campos e com qual usuário. A plataforma envia em SOAP e tenta de novo por até 24 h se o sistema externo não confirmar.", "regra", "Sistema externo"),
+                     ator("Usuário de envio", "Usuário em nome de quem a mensagem é enviada; define quais campos podem ser lidos.", "Outbound Message", "—")]
             if cert:
-                rows.append(R("Certificate", "Certificate", "autoriza", "certificado de cliente para mutual TLS", "Outbound Message", "—"))
-            rows.append(ator(EXT, "listener SOAP que devolve `ack=true`", "Outbound Message", "—"))
+                rows.append(R("Certificate", "Certificate", "autoriza", "Certificado digital que prova a identidade do Salesforce para o sistema externo na conexão.", "Outbound Message", "—"))
+            rows.append(ator(EXT, "O sistema de fora do Salesforce. Recebe a mensagem SOAP e confirma o recebimento (`ack=true`); sem a confirmação, o Salesforce tenta de novo.", "Outbound Message", "—"))
             var.append((f"{'Workflow Rule' if origem=='WF' else 'Flow'} · {'com' if cert else 'sem'} certificado", rows))
     return var
 
 def ext_subscriber(app):
-    rows = [ator("Pub/Sub API (ou CometD)", "entrega os eventos ao assinante", "barramento", EXT),
-            ator(EXT, "assinante gRPC/CometD; trata replay ID", "—", "Pub/Sub API"),
-            R("Assinatura gerenciada", "ManagedEventSubscription", "lê/referencia", "`topicName`, `defaultReplay`, `state` para a RPC ManagedSubscribe (Beta, API 60.0+)", EXT, "—", "Opcional")]
+    rows = [ator("Pub/Sub API (ou CometD)", "API do Salesforce que entrega os eventos para sistemas externos que estão assinando.", "barramento", EXT),
+            ator(EXT, "O sistema de fora do Salesforce que assina os eventos. Guarda a posição do último evento lido (replay ID) para retomar se cair.", "—", "Pub/Sub API"),
+            R("Assinatura gerenciada", "ManagedEventSubscription", "lê/referencia", "Assinatura de eventos administrada pela plataforma: guarda qual evento o cliente externo assina e de onde retomar se ele cair (recurso Beta).", EXT, "—", "Opcional")]
     rows += app_in(app, "JWT")
-    rows += [R("Permission Set (leitura do evento / do objeto)", "PermissionSet", "autoriza", "Read no `__e` ou no objeto do CDC", "plataforma", "—")]
+    rows += [R("Permission Set (leitura do evento / do objeto)", "PermissionSet", "autoriza", "Dá ao usuário de integração permissão para ler o evento ou o objeto monitorado.", "plataforma", "—")]
     return rows
 
 def pe_external():
     var = []
     for pub in ("APEX", "FLOW", "API"):
         for app in ("CA", "ECA"):
-            rows = {"APEX": [R("Classe publicadora", "ApexClass", "executa", "`EventBus.publish`", "trigger/serviço", "Platform Event")],
-                    "FLOW": [R("Flow publicador", "Flow", "executa", "Create Records no `__e`", "plataforma", "Platform Event")],
-                    "API": [ator("Outro sistema", "publica via REST/Pub/Sub API", "—", "Platform Event")]}[pub]
+            rows = {"APEX": [R("Classe publicadora", "ApexClass", "executa", "Classe Apex que publica o evento (`EventBus.publish`).", "trigger/serviço", "Platform Event")],
+                    "FLOW": [R("Flow publicador", "Flow", "executa", "Automação sem código que publica o evento criando um registro dele.", "plataforma", "Platform Event")],
+                    "API": [ator("Outro sistema", "Outro sistema que publica o evento pela API.", "—", "Platform Event")]}[pub]
             rows += pe_def() + ext_subscriber(app)
             var.append((f"Publicador {pub} · assinante autenticado por {APPS[app]}", rows))
     return var
@@ -371,13 +371,13 @@ def cdc():
     var = []
     for sub in ("EXT_CA", "EXT_ECA", "APEX"):
         for e in (["-"] if sub != "APEX" else ALL_E):
-            rows = [ator("Gravação do registro", "qualquer DML", "—", "plataforma"),
-                    R("Objeto monitorado", "CustomObject", "lê/referencia", "objeto cujas mudanças viram eventos", "—", "Change Event"),
-                    R("Membro do canal ChangeEvents", "PlatformEventChannelMember", "lê/referencia", "habilita o CDC do objeto (`selectedEntity`, ex.: AccountChangeEvent)", "plataforma", "Change Event"),
-                    ator("Change Event", "evento gerado pela plataforma (`<Objeto>ChangeEvent`); não é metadata próprio", "plataforma", "assinantes")]
+            rows = [ator("Gravação do registro", "Qualquer criação, alteração ou exclusão de registro do objeto monitorado.", "—", "plataforma"),
+                    R("Objeto monitorado", "CustomObject", "lê/referencia", "Objeto cujas alterações (criar, editar, excluir, restaurar) viram eventos automaticamente.", "—", "Change Event"),
+                    R("Membro do canal ChangeEvents", "PlatformEventChannelMember", "lê/referencia", "Liga o Change Data Capture (CDC) para o objeto: a partir daí, toda alteração gera um evento (ex.: AccountChangeEvent) sem nenhum código.", "plataforma", "Change Event"),
+                    ator("Change Event", "Evento criado automaticamente pela plataforma a cada alteração (`<Objeto>ChangeEvent`). Não aparece como arquivo no projeto.", "plataforma", "assinantes")]
             if sub == "APEX":
-                rows += [R("Trigger do change event", "ApexTrigger", "executa", "`after insert` no ChangeEvent; enfileira o callout", "barramento", "Classe Queueable"),
-                         R("Configuração do assinante", "PlatformEventSubscriberConfig", "lê/referencia", "usuário e lote", "plataforma", "—", "Opcional")]
+                rows += [R("Trigger do change event", "ApexTrigger", "executa", "Código que roda quando chega o evento de mudança. Agenda uma tarefa em segundo plano para chamar o sistema externo.", "barramento", "Classe Queueable"),
+                         R("Configuração do assinante", "PlatformEventSubscriberConfig", "lê/referencia", "Define com qual usuário o trigger roda e quantos eventos processa de uma vez.", "plataforma", "—", "Opcional")]
                 a, c = async_apex("QUEUE", "Trigger do change event")
                 rows += a + endpoint(e, c)
                 lab = f"Assinante interno (Apex) · endpoint {e}"
@@ -391,9 +391,9 @@ def custom_channel():
     var = []
     for tipo in ("CDC", "PE"):
         for app in ("CA", "ECA"):
-            rows = [R("Canal customizado", "PlatformEventChannel", "lê/referencia", f"canal do tipo {'data' if tipo=='CDC' else 'event'} que agrupa eventos", "plataforma", "assinantes"),
-                    R("Membro do canal", "PlatformEventChannelMember", "lê/referencia", "inclui o evento/objeto; define campos de enriquecimento e filtro", "Canal", "—")]
-            rows += (pe_def() if tipo == "PE" else [R("Objeto monitorado", "CustomObject", "lê/referencia", "origem do change event", "—", "Canal")])
+            rows = [R("Canal customizado", "PlatformEventChannel", "lê/referencia", f"Canal próprio (tipo {'data' if tipo=='CDC' else 'event'}) que junta só os eventos que interessam a quem vai assinar.", "plataforma", "assinantes"),
+                    R("Membro do canal", "PlatformEventChannelMember", "lê/referencia", "Coloca um evento ou objeto no canal e pode acrescentar campos extras (enriquecimento) ou filtrar quais eventos passam.", "Canal", "—")]
+            rows += (pe_def() if tipo == "PE" else [R("Objeto monitorado", "CustomObject", "lê/referencia", "Objeto cujas alterações geram os eventos de mudança.", "—", "Canal")])
             rows += ext_subscriber(app)
             var.append((f"{tipo} · {APPS[app]}", rows))
     return var
@@ -401,12 +401,12 @@ def custom_channel():
 def relay():
     var = []
     for tipo in ("PE", "CDC"):
-        rows = (pe_def() if tipo == "PE" else [R("Objeto monitorado", "CustomObject", "lê/referencia", "origem do change event", "—", "Canal")])
-        rows += [R("Canal customizado", "PlatformEventChannel", "lê/referencia", "canal que o relay lê", "plataforma", "Event Relay"),
-                 R("Membro do canal", "PlatformEventChannelMember", "lê/referencia", "eventos incluídos no canal", "Canal", "—"),
-                 R("Event Relay", "EventRelayConfig", "executa", "retransmite os eventos do canal ao destino", "plataforma", "Named Credential"),
-                 R("Named Credential (destino AWS)", "NamedCredential", "lê/referencia", "aponta para a conta/região AWS (EventBridge partner event source)", "Event Relay", "Amazon EventBridge"),
-                 ator("Amazon EventBridge", "recebe os eventos; regras roteiam para outros serviços", "Event Relay", "—")]
+        rows = (pe_def() if tipo == "PE" else [R("Objeto monitorado", "CustomObject", "lê/referencia", "Objeto cujas alterações geram os eventos de mudança.", "—", "Canal")])
+        rows += [R("Canal customizado", "PlatformEventChannel", "lê/referencia", "Canal de onde o Event Relay pega os eventos para repassar.", "plataforma", "Event Relay"),
+                 R("Membro do canal", "PlatformEventChannelMember", "lê/referencia", "Indica quais eventos entram no canal.", "Canal", "—"),
+                 R("Event Relay", "EventRelayConfig", "executa", "Repassa automaticamente os eventos do canal para a AWS (Amazon EventBridge), sem código.", "plataforma", "Named Credential"),
+                 R("Named Credential (destino AWS)", "NamedCredential", "lê/referencia", "Guarda a conta e a região da AWS para onde os eventos vão.", "Event Relay", "Amazon EventBridge"),
+                 ator("Amazon EventBridge", "Serviço da AWS que recebe os eventos e os distribui para outros serviços, conforme regras.", "Event Relay", "—")]
         var.append((tipo, rows))
     return var
 
@@ -414,16 +414,16 @@ def sched_batch(tipo):
     var = []
     for sentido in ("ENVIA", "BUSCA"):
         for e in ALL_E:
-            rows = [ator("Agendamento", "job agendado (CronTrigger) via Setup ou `System.schedule`; registro, não metadata", "—", "Classe Schedulable"),
-                    R("Classe Schedulable", "ApexClass", "executa", "`execute(SchedulableContext)` inicia o processamento", "Agendamento", "Batch" if tipo == "BATCH" else "Queueable")]
+            rows = [ator("Agendamento", "Agendamento que diz quando a classe roda. É feito na tela ou por código e não fica no projeto (N01).", "—", "Classe Schedulable"),
+                    R("Classe Schedulable", "ApexClass", "executa", "Classe que a plataforma executa no horário agendado; ela só dá a partida no processamento.", "Agendamento", "Batch" if tipo == "BATCH" else "Queueable")]
             if tipo == "BATCH":
-                rows += [R("Classe Batch", "ApexClass", "executa", "`Database.Batchable, Database.AllowsCallouts`: `start` seleciona, `execute` faz o callout por lote", "Classe Schedulable", "Sistema externo")]
+                rows += [R("Classe Batch", "ApexClass", "executa", "Processamento em lotes (Batch Apex): seleciona os registros e os processa em blocos; em cada bloco chama o sistema externo. Bom para grandes volumes.", "Classe Schedulable", "Sistema externo")]
                 c = "Classe Batch"
             else:
-                rows += [R("Classe Queueable encadeada", "ApexClass", "executa", "busca uma página e enfileira a próxima (`System.enqueueJob`)", "Classe Schedulable / ela mesma", "Sistema externo")]
+                rows += [R("Classe Queueable encadeada", "ApexClass", "executa", "Tarefa em segundo plano que busca uma página de dados e agenda a próxima, até acabar. Bom para APIs que devolvem os dados em páginas.", "Classe Schedulable / ela mesma", "Sistema externo")]
                 c = "Classe Queueable encadeada"
             rows += endpoint(e, c)
-            rows += [R("Objeto de destino/origem", "CustomObject + CustomField (External ID)", "executa (DML)", "registros enviados ou gravados com o retorno", c, "—")]
+            rows += [R("Objeto de destino/origem", "CustomObject + CustomField (External ID)", "executa (DML)", "Objeto cujos registros são enviados ao sistema externo ou atualizados com o que voltou. O campo External ID evita duplicidade.", c, "—")]
             rows += logrows(c) + killswitch(c)
             var.append((f"{'Envia dados' if sentido=='ENVIA' else 'Busca dados'} · endpoint {e}", rows))
     return var
@@ -432,11 +432,11 @@ def sched_flow():
     var = []
     for acao in ("HTTP", "ES", "APEX"):
         for e in (NC_E if acao != "APEX" else ALL_E):
-            rows = [R("Flow agendado", "Flow (Schedule-Triggered)", "executa", "roda na frequência configurada sobre os registros que atendem ao filtro", "plataforma (agenda)", "ação")]
+            rows = [R("Flow agendado", "Flow (Schedule-Triggered)", "executa", "Automação sem código que roda em horários definidos sobre os registros que atendem a um filtro.", "plataforma (agenda)", "ação")]
             if acao == "APEX":
-                rows += [R("Classe invocável", "ApexClass", "executa", "faz o callout", "Flow agendado", "Sistema externo")]; c = "Classe invocável"
+                rows += [R("Classe invocável", "ApexClass", "executa", "Classe Apex que chama o sistema externo.", "Flow agendado", "Sistema externo")]; c = "Classe invocável"
             else:
-                rows += [R("Ação HTTP Callout / External Service", "ExternalServiceRegistration", "lê/referencia", "operação chamada", "Flow agendado", "Named Credential")]; c = "Flow agendado"
+                rows += [R("Ação HTTP Callout / External Service", "ExternalServiceRegistration", "lê/referencia", "Cadastro da operação da API externa que o Flow chama.", "Flow agendado", "Named Credential")]; c = "Flow agendado"
             rows += endpoint(e, c)
             var.append((f"Ação {acao} · endpoint {e}", rows))
     return var
@@ -445,9 +445,9 @@ def cross_org_bulk():
     var = []
     for m in ("BATCH", "QUEUE"):
         for e in ("E1", "E2", "E5"):
-            rows = [R("Classe de carga", "ApexClass", "executa", f"{'Batch' if m=='BATCH' else 'Queueable'} que cria o job Bulk API 2.0 na org de destino", "agenda/trigger", "org de destino")]
+            rows = [R("Classe de carga", "ApexClass", "executa", f"Tarefa em segundo plano ({'Batch' if m=='BATCH' else 'Queueable'}) que envia uma carga grande de dados para a outra org pela Bulk API 2.0.", "agenda/trigger", "org de destino")]
             rows += endpoint(e, "Classe de carga", "Org Salesforce de destino")
-            rows += [R("Connected App / External Client App (na org de destino)", "ConnectedApp ou ExternalClientApplication", "autoriza", "emite o token aceito pela org de destino", "Named Credential", "—")]
+            rows += [R("Connected App / External Client App (na org de destino)", "ConnectedApp ou ExternalClientApplication", "autoriza", "Cadastro, na outra org, que permite que esta org entre lá com um token.", "Named Credential", "—")]
             var.append((f"{m} · endpoint {e}", rows))
     return var
 
@@ -456,15 +456,15 @@ def staging():
     for proc in ("BATCH", "QUEUE"):
         for e in ALL_E:
             rows = gatilho_trigger()[:3] + [
-                R("Classe handler", "ApexClass", "executa", "grava um registro de fila com o payload/estado PENDENTE", "Trigger", "Objeto de fila"),
-                R("Objeto de fila / staging", "CustomObject (__c) + CustomField", "executa (DML)", "fila persistente: status, tentativas, payload, erro", "Classe handler", "processador"),
-                ator("Agendamento", "CronTrigger", "—", "processador")]
+                R("Classe handler", "ApexClass", "executa", "Em vez de chamar o sistema externo na hora, grava um pedido numa fila (objeto próprio) com status PENDENTE.", "Trigger", "Objeto de fila"),
+                R("Objeto de fila / staging", "CustomObject (__c) + CustomField", "executa (DML)", "Objeto que funciona como fila: guarda o que precisa ser enviado, o status, quantas tentativas já houve e o último erro. Permite reprocessar com segurança.", "Classe handler", "processador"),
+                ator("Agendamento", "Agendamento que diz quando o processamento roda. Não fica no projeto (N01).", "—", "processador")]
             if proc == "BATCH":
-                rows += [R("Classe Schedulable + Batch", "ApexClass", "executa", "lê os PENDENTES, faz callout, atualiza status e tentativas", "Agendamento", "Sistema externo")]
+                rows += [R("Classe Schedulable + Batch", "ApexClass", "executa", "Processa a fila em lotes: pega os pendentes, chama o sistema externo e atualiza o status e o número de tentativas.", "Agendamento", "Sistema externo")]
             else:
-                rows += [R("Classe Queueable", "ApexClass", "executa", "processa a fila e reenfileira enquanto houver itens", "Classe handler ou Schedulable", "Sistema externo")]
+                rows += [R("Classe Queueable", "ApexClass", "executa", "Processa a fila em segundo plano e agenda a si mesma de novo enquanto houver itens.", "Classe handler ou Schedulable", "Sistema externo")]
             c = "processador"
-            rows += endpoint(e, c) + [R("Notificação de falha", "CustomNotificationType ou EmailTemplate", "executa", "alerta após esgotar tentativas", c, "—", "Opcional")]
+            rows += endpoint(e, c) + [R("Notificação de falha", "CustomNotificationType ou EmailTemplate", "executa", "Avisa alguém (notificação ou e-mail) quando um item falhou em todas as tentativas.", c, "—", "Opcional")]
             var.append((f"Processador {proc} · endpoint {e}", rows))
     return var
 
@@ -489,7 +489,7 @@ def bulk_in():
     var = []
     for a, f in in_variants(flows=("JWT", "CC", "WS")):
         for op in ("INSERT", "UPSERT"):
-            rows = ext_start("Bulk API 2.0") + app_in(a, f) + [ator("Bulk API 2.0", "recebe o CSV e processa o job em lotes assíncronos", EXT, "Objeto de destino")]
+            rows = ext_start("Bulk API 2.0") + app_in(a, f) + [ator("Bulk API 2.0", "API do Salesforce para cargas grandes: recebe um arquivo CSV e processa em lotes, em segundo plano.", EXT, "Objeto de destino")]
             rows += dados_destino("Bulk API 2.0", upsert=(op == "UPSERT"))
             var.append((f"{APPS[a]} · {FLOWS[f]} · {op.lower()}", rows))
     return var
@@ -499,15 +499,15 @@ def pe_in():
     for a, f in in_variants(flows=("JWT", "CC")):
         for via in ("REST", "PUBSUB"):
             for sub in ("APEX", "FLOW"):
-                rows = [ator(EXT, "publica o evento", "—", "API")] + app_in(a, f)
-                rows += [ator("REST API (sObject __e)" if via == "REST" else "Pub/Sub API (Publish)", "recebe a publicação", EXT, "Platform Event")]
-                rows += pe_def("API") + [R("Permission Set (Create no evento)", "PermissionSet", "autoriza", "permite publicar o `__e`", "plataforma", "—")]
+                rows = [ator(EXT, "O sistema de fora do Salesforce. Publica o evento pela API.", "—", "API")] + app_in(a, f)
+                rows += [ator("REST API (sObject __e)" if via == "REST" else "Pub/Sub API (Publish)", "API do Salesforce que recebe a publicação do evento.", EXT, "Platform Event")]
+                rows += pe_def("API") + [R("Permission Set (Create no evento)", "PermissionSet", "autoriza", "Dá ao usuário de integração permissão para publicar o evento.", "plataforma", "—")]
                 if sub == "APEX":
-                    rows += [R("Trigger do evento", "ApexTrigger", "executa", "`after insert` no `__e`; processa e grava", "barramento", "Objeto de destino"),
-                             R("Configuração do assinante", "PlatformEventSubscriberConfig", "lê/referencia", "usuário e lote", "plataforma", "—", "Opcional")]
+                    rows += [R("Trigger do evento", "ApexTrigger", "executa", "Código que roda quando o evento chega; processa os dados e grava no Salesforce.", "barramento", "Objeto de destino"),
+                             R("Configuração do assinante", "PlatformEventSubscriberConfig", "lê/referencia", "Define com qual usuário o trigger roda e quantos eventos processa de uma vez.", "plataforma", "—", "Opcional")]
                     c = "Trigger do evento"
                 else:
-                    rows += [R("Flow disparado por evento", "Flow", "executa", "processa e grava", "barramento", "Objeto de destino")]; c = "Flow disparado por evento"
+                    rows += [R("Flow disparado por evento", "Flow", "executa", "Automação sem código que roda quando o evento chega; processa os dados e grava no Salesforce.", "barramento", "Objeto de destino")]; c = "Flow disparado por evento"
                 rows += dados_destino(c)
                 var.append((f"{APPS[a]} · {FLOWS[f]} · publica via {via} · assinante {sub}", rows))
     return var
@@ -517,12 +517,12 @@ def rest_enqueue():
     for a, f in in_variants(flows=("JWT", "CC")):
         for m in ("QUEUE", "PE"):
             rows = ext_start("Apex REST") + app_in(a, f) + [
-                ator("Apex REST (/services/apexrest)", "endpoint", EXT, "Classe Apex REST"),
-                R("Classe Apex REST", "ApexClass", "executa", "valida o payload, responde 202 e delega", "Apex REST", "Queueable" if m == "QUEUE" else "Platform Event")]
+                ator("Apex REST (/services/apexrest)", "Endereço do Salesforce chamado pelo sistema externo.", EXT, "Classe Apex REST"),
+                R("Classe Apex REST", "ApexClass", "executa", "Recebe a chamada, confere os dados e responde na hora \"recebido\" (202). O processamento pesado fica para depois, em segundo plano.", "Apex REST", "Queueable" if m == "QUEUE" else "Platform Event")]
             if m == "QUEUE":
-                rows += [R("Classe Queueable", "ApexClass", "executa", "processa depois da resposta", "Classe Apex REST", "Objeto de destino")]; c = "Classe Queueable"
+                rows += [R("Classe Queueable", "ApexClass", "executa", "Tarefa em segundo plano que faz o processamento depois que o sistema externo já recebeu a resposta.", "Classe Apex REST", "Objeto de destino")]; c = "Classe Queueable"
             else:
-                rows += pe_def("Classe Apex REST") + [R("Trigger do evento", "ApexTrigger", "executa", "processa", "barramento", "Objeto de destino")]; c = "Trigger do evento"
+                rows += pe_def("Classe Apex REST") + [R("Trigger do evento", "ApexTrigger", "executa", "Código que roda quando o evento chega e faz o processamento.", "barramento", "Objeto de destino")]; c = "Trigger do evento"
             rows += dados_destino(c) + logrows(c)
             var.append((f"{APPS[a]} · {FLOWS[f]} · delega para {'Queueable' if m=='QUEUE' else 'Platform Event'}", rows))
     return var
@@ -530,11 +530,11 @@ def rest_enqueue():
 def email_in():
     var = []
     for dest in ("DML", "QUEUE"):
-        rows = [ator(EXT, "envia e-mail ao endereço do serviço", "—", "Email Service"),
-                R("Email Service", "EmailServicesFunction", "executa", "endereço, remetentes aceitos, usuário de contexto, ação em falha", EXT, "Classe handler"),
-                R("Classe handler", "ApexClass", "executa", "implementa `Messaging.InboundEmailHandler`; lê corpo e anexos", "Email Service", "Objeto de destino" if dest == "DML" else "Queueable")]
+        rows = [ator(EXT, "O sistema de fora do Salesforce. Manda um e-mail para o endereço do Email Service.", "—", "Email Service"),
+                R("Email Service", "EmailServicesFunction", "executa", "Cria um endereço de e-mail no Salesforce. Define quem pode enviar, com qual usuário o processamento roda e o que fazer em caso de erro.", EXT, "Classe handler"),
+                R("Classe handler", "ApexClass", "executa", "Classe Apex que recebe cada e-mail que chega ao endereço (`Messaging.InboundEmailHandler`) e lê o texto e os anexos.", "Email Service", "Objeto de destino" if dest == "DML" else "Queueable")]
         if dest == "QUEUE":
-            rows.append(R("Classe Queueable", "ApexClass", "executa", "processamento pesado posterior", "Classe handler", "Objeto de destino"))
+            rows.append(R("Classe Queueable", "ApexClass", "executa", "Tarefa em segundo plano para o processamento mais pesado.", "Classe handler", "Objeto de destino"))
         rows += dados_destino("Classe handler", upsert=False)
         var.append(("Processa direto" if dest == "DML" else "Enfileira processamento", rows))
     return var
@@ -544,9 +544,9 @@ def files_in():
     for a, f in in_variants(flows=("JWT", "CC")):
         for sub in ("APEX", "FLOW"):
             rows = ext_start("REST API (ContentVersion)") + app_in(a, f) + [
-                ator("REST API (ContentVersion)", "recebe o arquivo (multipart/base64)", EXT, "ContentVersion"),
-                ator("ContentVersion / ContentDocumentLink", "objetos padrão de arquivo (registros, não metadata)", "REST API", "processador")]
-            rows += [R("Trigger em ContentVersion" if sub == "APEX" else "Flow record-triggered em ContentVersion", "ApexTrigger" if sub == "APEX" else "Flow", "executa", "lê/valida o conteúdo e vincula ao registro", "plataforma (DML)", "Objeto de destino")]
+                ator("REST API (ContentVersion)", "API do Salesforce que recebe o arquivo enviado pelo sistema externo.", EXT, "ContentVersion"),
+                ator("ContentVersion / ContentDocumentLink", "Objetos padrão que guardam arquivos e o vínculo com os registros. São dados, não aparecem no projeto.", "REST API", "processador")]
+            rows += [R("Trigger em ContentVersion" if sub == "APEX" else "Flow record-triggered em ContentVersion", "ApexTrigger" if sub == "APEX" else "Flow", "executa", "Roda quando o arquivo chega: confere o conteúdo e o vincula ao registro certo.", "plataforma (DML)", "Objeto de destino")]
             rows += dados_destino("processador", upsert=False)
             var.append((f"{APPS[a]} · {FLOWS[f]} · processador {sub}", rows))
     return var
@@ -568,12 +568,12 @@ def mid_out_sync():
         for e in ALL_E:
             rows, entry = origem_ui(o); rows = list(rows)
             rows += endpoint(e, entry, MULE)
-            rows += [ator("Sistema de destino final", "chamado pelo middleware (ERP, legado etc.)", MULE, "—")]
+            rows += [ator("Sistema de destino final", "Sistema final (ERP, legado etc.) que o middleware chama. O Salesforce não fala com ele direto.", MULE, "—")]
             var.append((f"Origem {ORIG_NOME[o]} · endpoint {e}", rows))
     for m in ("FUTURE", "QUEUE"):
         for e in ALL_E:
             rows = gatilho_trigger(); a, c = async_apex(m, "Classe handler")
-            rows += a + endpoint(e, c, MULE) + [ator("Sistema de destino final", "chamado pelo middleware", MULE, "—")]
+            rows += a + endpoint(e, c, MULE) + [ator("Sistema de destino final", "Sistema final que o middleware chama. O Salesforce não fala com ele direto.", MULE, "—")]
             var.append((f"Origem Trigger + {'@future' if m=='FUTURE' else 'Queueable'} · endpoint {e}", rows))
     return var
 
@@ -581,10 +581,10 @@ def mid_sub():
     var = []
     for tipo in ("PE", "CDC"):
         for app in ("CA", "ECA"):
-            rows = (pe_def() if tipo == "PE" else [R("Membro do canal ChangeEvents", "PlatformEventChannelMember", "lê/referencia", "habilita o CDC do objeto", "plataforma", "Change Event"), R("Objeto monitorado", "CustomObject", "lê/referencia", "origem", "—", "Change Event")])
-            rows += [ator("Pub/Sub API", "entrega os eventos", "barramento", MULE), ator(MULE, "conector Salesforce assina o canal e roteia", "—", "sistemas de destino")]
+            rows = (pe_def() if tipo == "PE" else [R("Membro do canal ChangeEvents", "PlatformEventChannelMember", "lê/referencia", "Liga o Change Data Capture para o objeto: toda alteração vira um evento, sem código.", "plataforma", "Change Event"), R("Objeto monitorado", "CustomObject", "lê/referencia", "Objeto cujas alterações geram os eventos.", "—", "Change Event")])
+            rows += [ator("Pub/Sub API", "API do Salesforce que entrega os eventos ao middleware.", "barramento", MULE), ator(MULE, "Middleware (ex.: MuleSoft). Assina os eventos com o conector do Salesforce e repassa para os sistemas internos.", "—", "sistemas de destino")]
             rows += app_in(app, "JWT", MULE)
-            rows += [R("Permission Set (leitura do evento/objeto)", "PermissionSet", "autoriza", "Read no evento ou objeto", "plataforma", "—")]
+            rows += [R("Permission Set (leitura do evento/objeto)", "PermissionSet", "autoriza", "Dá ao usuário do middleware permissão para ler o evento ou o objeto.", "plataforma", "—")]
             var.append((f"{tipo} · {APPS[app]}", rows))
     return var
 
@@ -593,12 +593,12 @@ def mid_in(api_kind):
     for a, f in in_variants(flows=("JWT", "CC")):
         kinds = ("PADRAO", "APEXREST") if api_kind == "SYNC" else ("BULK",)
         for k in kinds:
-            rows = [ator(MULE, "orquestra e chama a org", "sistema de origem", "Salesforce")] + app_in(a, f, MULE)
+            rows = [ator(MULE, "Middleware (ex.: MuleSoft). Organiza o fluxo entre sistemas e chama o Salesforce.", "sistema de origem", "Salesforce")] + app_in(a, f, MULE)
             if k == "APEXREST":
-                rows += [ator("Apex REST", "endpoint", MULE, "Classe Apex REST")] + APEX_REST[1]
+                rows += [ator("Apex REST", "Endereço do Salesforce chamado pelo sistema externo.", MULE, "Classe Apex REST")] + APEX_REST[1]
             else:
                 api = {"PADRAO": "REST/Composite API padrão", "BULK": "Bulk API 2.0"}[k]
-                rows += [ator(api, "endpoint", MULE, "Objeto de destino")] + dados_destino(api)
+                rows += [ator(api, "Endereço do Salesforce chamado pelo sistema externo.", MULE, "Objeto de destino")] + dados_destino(api)
             var.append((f"{APPS[a]} · {FLOWS[f]} · {k}", rows))
     return var
 
@@ -606,11 +606,11 @@ def mid_poll():
     var = []
     for a, f in in_variants(flows=("JWT", "CC")):
         for ctrl in ("LMD", "CAMPO"):
-            rows = [ator(MULE, "executa SOQL periodicamente", "agenda do middleware", "REST API (query)")] + app_in(a, f, MULE)
-            rows += [ator("REST API (query)", "executa a SOQL", MULE, "Objeto consultado"),
-                     R("Objeto consultado", "CustomObject + CustomField", "lê/referencia", "dados lidos", "REST API", "—")]
+            rows = [ator(MULE, "Middleware (ex.: MuleSoft) que, de tempos em tempos, consulta o Salesforce em busca de novidades.", "agenda do middleware", "REST API (query)")] + app_in(a, f, MULE)
+            rows += [ator("REST API (query)", "API do Salesforce que executa a consulta pedida.", MULE, "Objeto consultado"),
+                     R("Objeto consultado", "CustomObject + CustomField", "lê/referencia", "Objeto que o middleware consulta periodicamente.", "REST API", "—")]
             if ctrl == "CAMPO":
-                rows += [R("Campo de controle", "CustomField", "lê/referencia + executa (DML)", "flag/status 'enviado'; o middleware atualiza após processar", MULE, "triggers do objeto")]
+                rows += [R("Campo de controle", "CustomField", "lê/referencia + executa (DML)", "Campo que marca o que já foi enviado. O middleware lê os registros não marcados e marca depois de processar.", MULE, "triggers do objeto")]
             var.append((f"{APPS[a]} · {FLOWS[f]} · controle por {'LastModifiedDate' if ctrl=='LMD' else 'campo customizado'}", rows))
     return var
 
@@ -618,14 +618,14 @@ def mid_ip():
     var = []
     for caller in ("OMNISCRIPT", "FLEXCARD", "APEX", "APEXREST"):
         for e in ("E1", "E2", "E3"):
-            ent = {"OMNISCRIPT": [R("OmniScript", "OmniScript", "executa", "chama a IP", "Usuário", "Integration Procedure")],
-                   "FLEXCARD": [R("FlexCard", "OmniUiCard", "executa", "fonte de dados IP", "Usuário", "Integration Procedure")],
-                   "APEX": [R("Classe Apex", "ApexClass", "executa", "invoca a IP pela API Apex do OmniStudio", "trigger/serviço", "Integration Procedure")],
-                   "APEXREST": [ator(EXT, "chama a org", "—", "Apex REST")] + app_in("CA", "JWT") + [R("Classe Apex REST", "ApexClass", "executa", "expõe a IP como endpoint", "Apex REST", "Integration Procedure")]}[caller]
-            rows = ent + [R("Integration Procedure", "OmniIntegrationProcedure", "executa", "orquestra várias chamadas, condições e cache", caller, "HTTP Actions / Data Mappers"),
-                          R("Data Mapper (Extract/Load/Transform)", "OmniDataTransform", "executa", "lê/grava objetos e transforma payloads", "Integration Procedure", "objetos")]
+            ent = {"OMNISCRIPT": [R("OmniScript", "OmniScript", "executa", "Processo guiado do OmniStudio que chama a Integration Procedure.", "Usuário", "Integration Procedure")],
+                   "FLEXCARD": [R("FlexCard", "OmniUiCard", "executa", "Cartão de tela do OmniStudio que busca os dados na Integration Procedure.", "Usuário", "Integration Procedure")],
+                   "APEX": [R("Classe Apex", "ApexClass", "executa", "Classe Apex que chama a Integration Procedure.", "trigger/serviço", "Integration Procedure")],
+                   "APEXREST": [ator(EXT, "O sistema de fora do Salesforce que chama a org.", "—", "Apex REST")] + app_in("CA", "JWT") + [R("Classe Apex REST", "ApexClass", "executa", "Classe Apex REST que deixa a Integration Procedure ser chamada de fora do Salesforce.", "Apex REST", "Integration Procedure")]}[caller]
+            rows = ent + [R("Integration Procedure", "OmniIntegrationProcedure", "executa", "Roteiro de integração do OmniStudio, montado sem código: encadeia chamadas, decisões e cache. Faz o papel de um middleware dentro do Salesforce.", caller, "HTTP Actions / Data Mappers"),
+                          R("Data Mapper (Extract/Load/Transform)", "OmniDataTransform", "executa", "Ferramenta de mapeamento do OmniStudio: lê e grava registros e converte dados de um formato para outro.", "Integration Procedure", "objetos")]
             if e == "E3":
-                rows += [R("Remote Site Setting", "RemoteSiteSetting", "autoriza", "URL fixa", "plataforma", "—"), ator(EXT, "responde", "Integration Procedure", "—")]
+                rows += [R("Remote Site Setting", "RemoteSiteSetting", "autoriza", "Lista de domínios externos permitidos. Como a URL é fixa (sem Named Credential), o domínio **precisa** estar cadastrado aqui.", "plataforma", "—"), ator(EXT, "O sistema de fora do Salesforce. Recebe a chamada e devolve a resposta.", "Integration Procedure", "—")]
             else:
                 rows += endpoint(e, "Integration Procedure")
             var.append((f"Chamador {caller} · endpoint {e}", rows))
@@ -637,10 +637,10 @@ def mule_es():
         for o in ("FLOW", "APEX"):
             for e in NC_E:
                 if o == "FLOW":
-                    rows = [R("Flow", "Flow", "executa", "`actionCalls` com `actionType`=externalService", "gatilho do Flow", "Registro de External Service")]; c = "Flow"
+                    rows = [R("Flow", "Flow", "executa", "Automação sem código que chama a operação da API do MuleSoft como se fosse uma ação pronta.", "gatilho do Flow", "Registro de External Service")]; c = "Flow"
                 else:
-                    rows = [R("Classe Apex", "ApexClass", "executa", "chama `ExternalService.<Servico>`", "trigger/serviço/UI", "Registro de External Service")]; c = "Classe Apex"
-                rows += [R("Registro de External Service", "ExternalServiceRegistration", "lê/referencia", f"`registrationProviderType`={prov}; operações da API do MuleSoft", c, "Named Credential")]
+                    rows = [R("Classe Apex", "ApexClass", "executa", "Classe Apex que chama a operação da API do MuleSoft pelas classes geradas automaticamente (`ExternalService.<Servico>`).", "trigger/serviço/UI", "Registro de External Service")]; c = "Classe Apex"
+                rows += [R("Registro de External Service", "ExternalServiceRegistration", "lê/referencia", f"Cadastro da API do MuleSoft (origem {prov}). A plataforma transforma cada operação em ação para Flow e classe para Apex.", c, "Named Credential")]
                 rows += endpoint(e, "Registro de External Service", MULE)
                 var.append((f"Fonte {prov} · chamador {'Flow' if o=='FLOW' else 'Apex'} · endpoint {e}", rows))
     return var
@@ -659,45 +659,45 @@ MID = [
 def org_org():
     var = []
     var.append(("Salesforce Connect cross-org", [USER,
-        R("External Object", "CustomObject (__x)", "lê/referencia", "objetos da org remota", "Página", "External Data Source"),
-        R("External Data Source (cross-org)", "ExternalDataSource", "lê/referencia", "URL e identidade da org remota", "External Object", "Org remota"),
-        R("Permission Set", "PermissionSet", "autoriza", "acesso ao External Object", "plataforma", "—"),
-        ator("Org Salesforce remota", "responde às consultas via API", "External Data Source", "—")]))
+        R("External Object", "CustomObject (__x)", "lê/referencia", "Objetos \"espelho\" (`__x`) que mostram dados da outra org sem copiar.", "Página", "External Data Source"),
+        R("External Data Source (cross-org)", "ExternalDataSource", "lê/referencia", "Cadastro da outra org: endereço e com qual identidade consultar.", "External Object", "Org remota"),
+        R("Permission Set", "PermissionSet", "autoriza", "Dá ao usuário permissão para ver os objetos espelho.", "plataforma", "—"),
+        ator("Org Salesforce remota", "A outra org Salesforce, que responde às consultas.", "External Data Source", "—")]))
     for e in ("E1", "E2", "E5"):
-        rows = [R("Classe cliente (org A)", "ApexClass", "executa", "faz o callout para a org B", "trigger/UI/agenda", "Org B")]
+        rows = [R("Classe cliente (org A)", "ApexClass", "executa", "Classe Apex desta org (A) que chama a outra org (B).", "trigger/UI/agenda", "Org B")]
         rows += endpoint(e, "Classe cliente (org A)", "Org B")
-        rows += [R("Connected App / External Client App (org B)", "ConnectedApp ou ExternalClientApplication", "autoriza", "emite o token", "Named Credential", "—"),
-                 R("Classe Apex REST (org B)", "ApexClass", "executa", "recebe e processa", "Org A", "objetos da org B", "Opcional (ou API padrão)")]
+        rows += [R("Connected App / External Client App (org B)", "ConnectedApp ou ExternalClientApplication", "autoriza", "Cadastro, na org B, que permite que a org A entre lá com um token.", "Named Credential", "—"),
+                 R("Classe Apex REST (org B)", "ApexClass", "executa", "Endpoint na org B que recebe a chamada e processa os dados.", "Org A", "objetos da org B", "Opcional (ou API padrão)")]
         var.append((f"Apex REST org→org · endpoint {e}", rows))
     return var
 
 def ui_int():
     var = []
-    var.append(("Botão/link de URL", [USER, R("Botão ou link", "WebLink", "executa", "abre o sistema externo com parâmetros do registro na URL", "Usuário", "Sistema externo"), R("Layout", "Layout", "lê/referencia", "expõe o botão", "plataforma", "—"), ator(EXT, "abre no navegador", "WebLink", "—")]))
-    var.append(("Web Tab", [USER, R("Aba web", "CustomTab", "executa", "carrega a URL externa", "Usuário", "Sistema externo"), R("App", "CustomApplication", "lê/referencia", "inclui a aba", "plataforma", "—"), ator(EXT, "exibido em frame", "CustomTab", "—")]))
+    var.append(("Botão/link de URL", [USER, R("Botão ou link", "WebLink", "executa", "Botão ou link que abre o sistema externo em outra aba, levando dados do registro na URL. Não há troca de dados no servidor.", "Usuário", "Sistema externo"), R("Layout", "Layout", "lê/referencia", "Configuração da página que faz o botão aparecer.", "plataforma", "—"), ator(EXT, "O sistema externo, aberto no navegador do usuário.", "WebLink", "—")]))
+    var.append(("Web Tab", [USER, R("Aba web", "CustomTab", "executa", "Aba do menu que mostra o sistema externo dentro do Salesforce.", "Usuário", "Sistema externo"), R("App", "CustomApplication", "lê/referencia", "App que contém a aba.", "plataforma", "—"), ator(EXT, "O sistema externo, mostrado dentro do Salesforce.", "CustomTab", "—")]))
     for host in ("VF", "PAGE"):
         rows = [USER]
-        rows += ([R("Página Visualforce", "ApexPage", "executa", "`<apex:canvasApp>`", "Usuário", "Canvas App")] if host == "VF" else [R("Página Lightning", "FlexiPage", "executa", "componente padrão Canvas App", "Usuário", "Canvas App")])
-        rows += [R("Connected App com Canvas", "ConnectedApp", "autoriza + lê", "URL do Canvas, método de acesso (signed request/OAuth), locais permitidos", "host", "Sistema externo"), ator(EXT, "app web que recebe o signed request", "Canvas", "—")]
+        rows += ([R("Página Visualforce", "ApexPage", "executa", "Página Visualforce que mostra o sistema externo dentro do Salesforce (Canvas).", "Usuário", "Canvas App")] if host == "VF" else [R("Página Lightning", "FlexiPage", "executa", "Página Lightning com o componente Canvas, que mostra o sistema externo dentro do Salesforce.", "Usuário", "Canvas App")])
+        rows += [R("Connected App com Canvas", "ConnectedApp", "autoriza + lê", "Cadastro do sistema externo como Canvas: endereço, como o Salesforce passa a identidade do usuário (signed request ou OAuth) e onde ele pode aparecer.", "host", "Sistema externo"), ator(EXT, "Aplicação web externa que recebe do Salesforce a identidade do usuário (signed request).", "Canvas", "—")]
         var.append((f"Canvas em {'Visualforce' if host=='VF' else 'Lightning Page'}", rows))
-    var.append(("Canvas via External Client App", [USER, R("Página Lightning", "FlexiPage", "executa", "componente Canvas App", "Usuário", "Canvas App"),
-        R("External Client App", "ExternalClientApplication", "autoriza", "app registrado", "host", "—"),
-        R("Configuração Canvas do app", "ExtlClntAppCanvasSettings", "autoriza + lê", "URL e acesso do Canvas (API 66.0+)", "External Client App", "Sistema externo"), ator(EXT, "app web", "Canvas", "—")]))
-    var.append(("iframe em LWC", [USER, R("Componente LWC", "LightningComponentBundle", "executa", "renderiza `<iframe>`", "Página", "Sistema externo"), R("CSP Trusted Site", "CspTrustedSite", "autoriza", "libera o domínio em `frame-src`", "navegador", "—"), ator(EXT, "precisa permitir ser emoldurado (X-Frame-Options/CSP)", "LWC", "—")]))
+    var.append(("Canvas via External Client App", [USER, R("Página Lightning", "FlexiPage", "executa", "Página Lightning com o componente Canvas.", "Usuário", "Canvas App"),
+        R("External Client App", "ExternalClientApplication", "autoriza", "Cadastro (modelo novo) do sistema externo no Salesforce.", "host", "—"),
+        R("Configuração Canvas do app", "ExtlClntAppCanvasSettings", "autoriza + lê", "Parte do External Client App com o endereço e o acesso do Canvas.", "External Client App", "Sistema externo"), ator(EXT, "Aplicação web externa mostrada dentro do Salesforce.", "Canvas", "—")]))
+    var.append(("iframe em LWC", [USER, R("Componente LWC", "LightningComponentBundle", "executa", "Componente de tela que mostra o sistema externo numa moldura (`<iframe>`).", "Página", "Sistema externo"), R("CSP Trusted Site", "CspTrustedSite", "autoriza", "Lista de domínios que o **navegador** pode mostrar em moldura nas páginas do Salesforce (regra CSP).", "navegador", "—"), ator(EXT, "O sistema externo. Precisa permitir ser mostrado em moldura dentro de outro site.", "LWC", "—")]))
     return var
 
 def sso():
     return [
-     ("SAML com IdP externo", [ator("IdP externo", "autentica o usuário", "Usuário", "Salesforce"), R("Configuração SAML", "SamlSsoConfig", "autoriza", "emissor, certificado, mapeamento de identidade", "IdP", "—"), R("Certificate", "Certificate", "autoriza", "valida/assina asserções", "SAML", "—", "Opcional")]),
-     ("OpenID Connect via Auth Provider", [ator("Provedor externo", "autentica", "Usuário", "Salesforce"), R("Auth Provider", "AuthProvider", "autoriza", "configuração OIDC", "login", "Registration Handler"), R("Registration Handler", "ApexClass", "executa", "cria/atualiza o usuário a partir dos dados do provedor", "Auth Provider", "User")]),
-     ("Salesforce como IdP", [ator("App externo", "pede login", "Usuário", "Salesforce"), R("Connected App (SAML/OIDC)", "ConnectedApp", "autoriza", "app de serviço; Salesforce emite asserção/token", "App externo", "—")]),
+     ("SAML com IdP externo", [ator("IdP externo", "Provedor de identidade externo que faz o login do usuário.", "Usuário", "Salesforce"), R("Configuração SAML", "SamlSsoConfig", "autoriza", "Configuração do login único (SSO) via SAML: quem é o provedor de identidade, o certificado e como achar o usuário correspondente.", "IdP", "—"), R("Certificate", "Certificate", "autoriza", "Certificado usado para conferir ou assinar as mensagens de login.", "SAML", "—", "Opcional")]),
+     ("OpenID Connect via Auth Provider", [ator("Provedor externo", "Provedor de login externo que confirma quem é o usuário.", "Usuário", "Salesforce"), R("Auth Provider", "AuthProvider", "autoriza", "Cadastro do provedor de login externo (OpenID Connect).", "login", "Registration Handler"), R("Registration Handler", "ApexClass", "executa", "Classe Apex que cria ou atualiza o usuário do Salesforce com os dados vindos do provedor de login.", "Auth Provider", "User")]),
+     ("Salesforce como IdP", [ator("App externo", "Aplicação externa que pede ao Salesforce para confirmar quem é o usuário.", "Usuário", "Salesforce"), R("Connected App (SAML/OIDC)", "ConnectedApp", "autoriza", "Cadastro do sistema externo que vai usar o Salesforce como provedor de login; o Salesforce emite a confirmação de identidade.", "App externo", "—")]),
     ]
 
 OUTRAS = [
  D("N.1", "Org ↔ org", "Integração entre orgs Salesforce.", org_org(), validar=["Salesforce to Salesforce (legado) não incluído: verificar se há metadata associada."]),
  D("N.2", "Integração de UI", "O usuário vê ou usa outro sistema; pouca ou nenhuma troca de dados no servidor.", ui_int()),
  D("N.3", "Identidade (SSO)", "Integra o login, não os dados.", sso()),
- D("N.4", "Data Cloud", "Ingestão e ativação de dados.", [("A validar", [ator("Data Cloud", "metadata types de data streams, data sources e ativações a confirmar", "—", "—")])], validar=["Toda a família de metadata do Data Cloud."]),
+ D("N.4", "Data Cloud", "Ingestão e ativação de dados.", [("A validar", [ator("Data Cloud", "Data Cloud: os metadata types envolvidos (fluxos de dados, fontes e ativações) ainda precisam ser confirmados.", "—", "—")])], validar=["Toda a família de metadata do Data Cloud."]),
 ]
 
 SECOES = [
