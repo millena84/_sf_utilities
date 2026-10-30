@@ -5,6 +5,8 @@ from evidencias import FONTES, TIPOS, CODIGO, NAO_CONFIRMADOS, evid
 from ligacoes import LIGACOES
 from diagnostico import SINAIS
 from limites import LIMITES
+from antipadroes import ANTIPADROES
+from limites_plataforma import LIMITES_PLATAFORMA
 out = sys.argv[1]
 os.makedirs(out, exist_ok=True)
 def esc(s): return str(s).replace("|", "\\|")
@@ -147,6 +149,24 @@ for i, info, porque, efeito, f in LIMITES:
     L.append(f"| {i} | {esc(info)} | {esc(porque)} | {esc(efeito)} | {fonte(f) if f not in ('nv', '—') else f} |")
 open(f"{out}/limites_da_fonte.md", "w").write("\n".join(L) + "\n")
 
+# ---------- item 5: anti-padrões ----------
+def fo(f): return fonte(f) if f not in ("heurística", "nv", "—") else f
+L = ["# Anti-padrões e riscos", "", AVISO, "",
+     "O que a documentação de uma integração deve sinalizar como risco. Recomendações do Salesforce Well-Architected e dos guias oficiais (consultados em 2026-10-30); citações entre aspas são literais.",
+     "Ao documentar: registre o anti-padrão na seção de pontos em aberto, com a evidência `arquivo:linha`, sem copiar valores sensíveis.", "",
+     "| ID | Anti-padrão | Como detectar no projeto | Risco | Recomendação | Fonte |", "|---|---|---|---|---|---|"]
+for a in ANTIPADROES:
+    L.append("| " + " | ".join(esc(x) for x in a[:5]) + f" | {fo(a[5])} |")
+open(f"{out}/antipadroes.md", "w").write("\n".join(L) + "\n")
+
+# ---------- item 6: limites da plataforma ----------
+L = ["# Limites da plataforma para integração", "", AVISO, "",
+     "Valores consultados em 2026-10-30 (Winter '27, API 68.0). **Os números mudam entre releases e por edição/licença:** confira a fonte antes de usar em decisão e cite a data na documentação.", "",
+     "| Área | Limite | Valor | Desenhos afetados | Fonte |", "|---|---|---|---|---|"]
+for l in LIMITES_PLATAFORMA:
+    L.append("| " + " | ".join(esc(x) for x in l[:4]) + f" | {fo(l[4])} |")
+open(f"{out}/limites_plataforma.md", "w").write("\n".join(L) + "\n")
+
 # ---------- JSON ----------
 cols = ["componente", "metadata_type", "relacao", "papel", "acionado_por", "aciona", "obrigatoriedade"]
 data = []
@@ -165,5 +185,9 @@ json.dump({"fontes": FONTES,
 json.dump({"sinais": [dict(zip(["id", "sinal", "evidencia", "direcao_mecanismo", "desenhos_candidatos", "confianca", "confirmar"], r)) for r in SINAIS],
            "limites": [dict(zip(["id", "informacao", "por_que", "efeito", "fonte"], r)) for r in LIMITES]},
           open(f"{out}/diagnostico_e_limites.json", "w"), ensure_ascii=False, indent=1)
+json.dump({"antipadroes": [dict(zip(["id", "antipadrao", "como_detectar", "risco", "recomendacao", "fonte"], a)) for a in ANTIPADROES],
+           "limites_plataforma": [dict(zip(["area", "limite", "valor", "desenhos", "fonte"], l)) for l in LIMITES_PLATAFORMA],
+           "consultado_em": "2026-10-30"},
+          open(f"{out}/riscos_e_limites_plataforma.json", "w"), ensure_ascii=False, indent=1)
 for k, v in total.items(): print(k, v)
 print("TOTAL", sum(total.values()))

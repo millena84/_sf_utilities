@@ -59,6 +59,14 @@ Páginas oficiais consultadas em 2026-10-30. O ID entre colchetes é usado nos o
 | MA-EXB | <https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_experiencebundle.htm> |
 | MA-DEB | <https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_digitalexperiencebundle.htm> |
 | MA-TYPES | <https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm> |
+| WA-TRUST | <https://architect.salesforce.com/docs/architect/well-architected/guide/trust.html> |
+| WA-REL | <https://architect.salesforce.com/docs/architect/well-architected/guide/reliability.html> |
+| WA-OPS | <https://architect.salesforce.com/docs/architect/well-architected/guide/operational-excellence.html> |
+| AX-GOV | <https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm> |
+| PE-LIM | <https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm> |
+| CDC-LIM | <https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_allocations.htm> |
+| LIM-API | <https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm> |
+| LIM-BULK | <https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_bulkapi.htm> |
 | LWC-CONT | <https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-auraenabled.html> |
 | LWC-CONTL | <https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-limits.html> |
 | LWC-IMP | <https://developer.salesforce.com/docs/platform/lwc/guide/apex-import-method.html> |

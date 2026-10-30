@@ -1,0 +1,38 @@
+# Limites da plataforma para integração
+
+> Gerado a partir de `_fonte/`. Não edite este arquivo: altere as definições e rode `python3 _fonte/render.py .` nesta pasta.
+
+Valores consultados em 2026-10-30 (Winter '27, API 68.0). **Os números mudam entre releases e por edição/licença:** confira a fonte antes de usar em decisão e cite a data na documentação.
+
+| Área | Limite | Valor | Desenhos afetados | Fonte |
+|---|---|---|---|---|
+| Callout Apex | Callouts (HTTP ou web service) por transação | 100 | b.*, D.1, F.1, F.2, G.1 | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Callout Apex | Timeout padrão / máximo por callout | 10 s / 120.000 ms | b.*, D.*, F.* | [AX-LIM](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_timeouts.htm) |
+| Callout Apex | Timeout acumulado de callouts por transação | 120 s | b.1, F.1 (vários callouts) | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Callout Apex | Tamanho de request ou response | 6 MB síncrono / 12 MB assíncrono | b.*, D.*, F.* | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Callout Apex | Callouts concorrentes para fora (só Developer Edition) | 20 | — | [AX-LIM](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_timeouts.htm) |
+| Continuation | Callouts paralelos / encadeados por continuation; timeout | 3 / 3; 120 s | b.6 | [AX-CONTL](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_continuation_limits.htm) |
+| Apex assíncrono | Métodos @future por invocação | 50 (0 em batch/future; 50 em queueable) | D.1 | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Apex assíncrono | Jobs enfileirados com System.enqueueJob por transação | 50 síncrono / 1 assíncrono | D.1, D.3, F.2, G.1 | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Apex assíncrono | Execuções assíncronas (batch, future, queueable, scheduled) em 24 h | 250.000 ou 200 × licenças aplicáveis (o maior) | D.*, F.*, G.1 | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Apex assíncrono | Batch jobs em fila ou ativos ao mesmo tempo; flex queue em Holding | 5; 100 | F.1, G.1 | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Apex assíncrono | Classes agendadas ao mesmo tempo | 100 (5 em Developer Edition) | F.1, F.2, G.1 | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Apex transação | CPU | 10.000 ms síncrono / 60.000 ms assíncrono | todos com Apex | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Apex transação | Heap | 10 MB síncrono / 25 MB assíncrono (50 MB em Email Services) | payloads grandes; H.4 | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Apex transação | SOQL / DML por transação | 100 síncrono, 200 assíncrono / 150 | todos com Apex | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Apex transação | EventBus.publish (publicação imediata) por transação | 150 | D.3, E.1 | [AX-GOV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm) |
+| Platform Event | Entrega de eventos em 24 h (Pub/Sub, CometD, empApi, Event Relay) sem add-on | 50.000 Performance/Unlimited; 25.000 Enterprise; 10.000 Developer | E.1, E.2, E.3, E.4, M.2 | [PE-LIM](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm) |
+| Platform Event | Publicação por hora sem add-on | 25.000 | D.3, E.1, H.2 | [PE-LIM](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm) |
+| Platform Event | Definições de Platform Event por org | 100 Performance/Unlimited; 50 Enterprise; 5 Developer | D.3, E.1, H.2 | [PE-LIM](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm) |
+| Platform Event | Clientes CometD concorrentes | 2.000 Performance/Unlimited; 1.000 Enterprise; 20 Developer | E.1, E.2 (CometD), LWC com empApi | [PE-LIM](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm) |
+| Platform Event | Retry de trigger de evento | até 10 execuções (1 + 9) | D.3, H.2 | [PE-RETRY](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_apex_refire.htm) |
+| Platform Event | Lote do trigger de evento | padrão 2.000; configurável 1–2.000 (PlatformEventSubscriberConfig) | D.3, H.2 | [MA-PESC](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_platformeventsubscriberconfig.htm) |
+| CDC | Entidades selecionadas sem add-on | 5 | E.2, E.3, M.2 | [CDC-LIM](https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_allocations.htm) |
+| CDC | Tamanho máximo da mensagem de change event | 1 MB (acima vira gap event) | E.2, E.3, M.2 | [CDC-LIM](https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_allocations.htm) |
+| CDC | Entrega de eventos em 24 h (compartilhada com Platform Events de alto volume) | 50.000 / 25.000 / 10.000 (como acima) | E.2, E.3, M.2 | [CDC-LIM](https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_allocations.htm) |
+| API de entrada | Requisições concorrentes de 20 s ou mais | 25 em produção e sandbox; 5 em Developer/Trial | g.*, H.1, M.3, M.4 | [LIM-API](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm) |
+| API de entrada | Timeout de chamada REST/SOAP (exceto query) | 10 minutos | g.* | [LIM-API](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm) |
+| API de entrada | Requisições de API em 24 h (Enterprise) | 100.000 + (licenças × chamadas por tipo de licença) + add-ons | g.*, H.*, M.*; publicar evento via REST/SOAP/Bulk também consome | [LIM-API](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm), [PE-LIM](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm) |
+| Bulk API | Batches em 24 h (compartilhado Bulk API e 2.0) | 15.000 | H.1, M.4 | [LIM-BULK](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_bulkapi.htm) |
+| Bulk API | Registros enviados em 24 h | 150.000.000 | H.1, M.4 | [LIM-BULK](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_bulkapi.htm) |
+| Bulk API | Recomendação de volume | acima de 2.000 registros: Bulk API 2.0; abaixo: chamadas síncronas em lote (ex.: Composite) | g.2, H.1 | [LIM-BULK](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_bulkapi.htm) |
