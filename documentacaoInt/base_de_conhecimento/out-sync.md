@@ -33,7 +33,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Classe de s
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Classe de serviço | ApexClass | executa | regra de negócio e montagem do payload | Controller Apex | Classe cliente HTTP | Obrigatório | L38 chamada a partir do ponto de entrada (`new Classe(` / `Classe.metodo(`) |
 | 6 | Classe cliente HTTP | ApexClass | executa | monta `HttpRequest`, faz o callout e trata a resposta | Classe de serviço | Sistema externo | Obrigatório | C02 `new HttpRequest()` + C01/C03 |
@@ -55,7 +55,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Classe de s
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Classe de serviço | ApexClass | executa | regra de negócio e montagem do payload | Controller Apex | Classe cliente HTTP | Obrigatório | L38 chamada a partir do ponto de entrada (`new Classe(` / `Classe.metodo(`) |
 | 6 | Classe cliente HTTP | ApexClass | executa | monta `HttpRequest`, faz o callout e trata a resposta | Classe de serviço | Sistema externo | Obrigatório | C02 `new HttpRequest()` + C01/C03 |
@@ -76,7 +76,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Classe de s
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Classe de serviço | ApexClass | executa | regra de negócio e montagem do payload | Controller Apex | Classe cliente HTTP | Obrigatório | L38 chamada a partir do ponto de entrada (`new Classe(` / `Classe.metodo(`) |
 | 6 | Classe cliente HTTP | ApexClass | executa | monta `HttpRequest`, faz o callout e trata a resposta | Classe de serviço | Sistema externo | Obrigatório | C02 `new HttpRequest()` + C01/C03 |
@@ -96,7 +96,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Classe de s
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Classe de serviço | ApexClass | executa | regra de negócio e montagem do payload | Controller Apex | Classe cliente HTTP | Obrigatório | L38 chamada a partir do ponto de entrada (`new Classe(` / `Classe.metodo(`) |
 | 6 | Classe cliente HTTP | ApexClass | executa | monta `HttpRequest`, faz o callout e trata a resposta | Classe de serviço | Sistema externo | Obrigatório | C02 `new HttpRequest()` + C01/C03 |
@@ -119,7 +119,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Classe de s
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Classe de serviço | ApexClass | executa | regra de negócio e montagem do payload | Controller Apex | Classe cliente HTTP | Obrigatório | L38 chamada a partir do ponto de entrada (`new Classe(` / `Classe.metodo(`) |
 | 6 | Classe cliente HTTP | ApexClass | executa | monta `HttpRequest`, faz o callout e trata a resposta | Classe de serviço | Sistema externo | Obrigatório | C02 `new HttpRequest()` + C01/C03 |
@@ -142,7 +142,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Classe de s
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Classe de serviço | ApexClass | executa | regra de negócio e montagem do payload | Controller Apex | Classe cliente HTTP | Obrigatório | L38 chamada a partir do ponto de entrada (`new Classe(` / `Classe.metodo(`) |
 | 6 | Classe cliente HTTP | ApexClass | executa | monta `HttpRequest`, faz o callout e trata a resposta | Classe de serviço | Sistema externo | Obrigatório | C02 `new HttpRequest()` + C01/C03 |
@@ -304,7 +304,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor e faz o callout (`HttpRequest`) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Named Credential | NamedCredential | lê/referencia | resolve a URL base usada em `callout:Nome` | Controller Apex | External Credential | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
 | 6 | External Credential | ExternalCredential | autoriza | fornece o protocolo de autenticação (OAuth, JWT, Basic, Custom) e os principals | Named Credential | Sistema externo | Obrigatório | `externalCredentials/*.externalCredential` — `authenticationProtocol` [MA-EC] |
@@ -323,7 +323,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor e faz o callout (`HttpRequest`) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Named Credential (legada) | NamedCredential | lê/referencia + autoriza | resolve a URL e injeta a autenticação (senha, OAuth via Auth Provider, JWT) | Controller Apex | Sistema externo | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
 | 6 | Auth Provider | AuthProvider | autoriza | obtém o token OAuth quando a Named Credential legada usa OAuth | Named Credential | — | Opcional | `authproviders/*.authprovider` — `providerType`, `authorizeUrl`, `tokenUrl`, `registrationHandler` (Apex `Auth.RegistrationHandler`), `executionUser`, `plugin` (Apex `Auth.AuthProviderPluginClass`) [MA-AP] |
@@ -341,7 +341,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor e faz o callout (`HttpRequest`) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Remote Site Setting | RemoteSiteSetting | autoriza | libera o domínio fixo no código para callout | plataforma (no momento do callout) | — | Obrigatório | `remoteSiteSettings/*.remoteSite` — `url`, `isActive`, `disableProtocolSecurity` [MA-RSS] |
 | 6 | Certificate | Certificate | autoriza | mutual TLS (`setClientCertificateName`) | Controller Apex | — | Opcional | `certs/*.crt` — nome do certificado referenciado por NamedCredential, ConnectedApp, ExternalDataSource ou `setClientCertificateName` [MA-CERT] |
@@ -358,7 +358,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor e faz o callout (`HttpRequest`) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Tipo de Custom Metadata | CustomObject (__mdt) + CustomField | lê/referencia | define os campos de configuração (endpoint, path, client_id, timeout, ativo) | Controller Apex | registro de Custom Metadata | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 6 | Registro de Custom Metadata | CustomMetadata | lê/referencia | fornece os valores do ambiente (URL, client_id). Segredo aqui é risco: ver README | Controller Apex | — | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
@@ -378,7 +378,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor e faz o callout (`HttpRequest`) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Tipo de Custom Metadata | CustomObject (__mdt) + CustomField | lê/referencia | define o campo com o nome da Named Credential e parâmetros não sensíveis | Controller Apex | registro de Custom Metadata | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 6 | Registro de Custom Metadata | CustomMetadata | lê/referencia | indica qual Named Credential usar e os parâmetros (path, timeout, ativo) | Controller Apex | — | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
@@ -398,7 +398,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor e faz o callout (`HttpRequest`) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Custom Setting ou Custom Label | CustomObject (Custom Setting) ou CustomLabels | lê/referencia | fornece o endpoint por ambiente | Controller Apex | — | Obrigatório | `objects/*.object` [MA-CO] ou `labels/*` [MA-LBL] |
 | 6 | Remote Site Setting | RemoteSiteSetting | autoriza | libera o domínio lido | plataforma (no momento do callout) | — | Obrigatório | `remoteSiteSettings/*.remoteSite` — `url`, `isActive`, `disableProtocolSecurity` [MA-RSS] |
@@ -615,7 +615,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | chama a classe gerada no namespace `ExternalService` | Componente LWC | Registro de External Service | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Registro de External Service | ExternalServiceRegistration | lê/referencia | schema OpenAPI registrado; gera ações invocáveis e classes Apex | Controller Apex | Named Credential | Obrigatório | `externalServiceRegistrations/*.externalServiceRegistration` — `namedCredential` / `namedCredentialReference` (57.0+), `registrationProviderType` (SchemaInferred = criado pelo HTTP Callout, 57.0+ [MA-ESR] |
 | 6 | Named Credential | NamedCredential | lê/referencia | resolve a URL base usada em `callout:Nome` | Registro de External Service | External Credential | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
@@ -632,7 +632,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | chama a classe gerada no namespace `ExternalService` | Componente LWC | Registro de External Service | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Registro de External Service | ExternalServiceRegistration | lê/referencia | schema OpenAPI registrado; gera ações invocáveis e classes Apex | Controller Apex | Named Credential | Obrigatório | `externalServiceRegistrations/*.externalServiceRegistration` — `namedCredential` / `namedCredentialReference` (57.0+), `registrationProviderType` (SchemaInferred = criado pelo HTTP Callout, 57.0+ [MA-ESR] |
 | 6 | Named Credential (legada) | NamedCredential | lê/referencia + autoriza | resolve a URL e injeta a autenticação (senha, OAuth via Auth Provider, JWT) | Registro de External Service | Sistema externo | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
@@ -655,7 +655,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Stub gerado
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Stub gerado (WSDL2Apex) | ApexClass | executa | classe gerada a partir do WSDL; serializa SOAP e faz `WebServiceCallout.invoke`. O `endpoint_x` pode ser sobrescrito | Controller Apex | Sistema externo | Obrigatório | C15 `WebServiceCallout.invoke` / `endpoint_x` |
 | 6 | Named Credential | NamedCredential | lê/referencia | resolve a URL base usada em `callout:Nome` | Stub gerado (WSDL2Apex) | External Credential | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
@@ -673,7 +673,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Stub gerado
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Stub gerado (WSDL2Apex) | ApexClass | executa | classe gerada a partir do WSDL; serializa SOAP e faz `WebServiceCallout.invoke`. O `endpoint_x` pode ser sobrescrito | Controller Apex | Sistema externo | Obrigatório | C15 `WebServiceCallout.invoke` / `endpoint_x` |
 | 6 | Named Credential (legada) | NamedCredential | lê/referencia + autoriza | resolve a URL e injeta a autenticação (senha, OAuth via Auth Provider, JWT) | Stub gerado (WSDL2Apex) | Sistema externo | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
@@ -690,7 +690,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Stub gerado
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Stub gerado (WSDL2Apex) | ApexClass | executa | classe gerada a partir do WSDL; serializa SOAP e faz `WebServiceCallout.invoke`. O `endpoint_x` pode ser sobrescrito | Controller Apex | Sistema externo | Obrigatório | C15 `WebServiceCallout.invoke` / `endpoint_x` |
 | 6 | Remote Site Setting | RemoteSiteSetting | autoriza | libera o domínio fixo no código para callout | plataforma (no momento do callout) | — | Obrigatório | `remoteSiteSettings/*.remoteSite` — `url`, `isActive`, `disableProtocolSecurity` [MA-RSS] |
@@ -706,7 +706,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Stub gerado
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Stub gerado (WSDL2Apex) | ApexClass | executa | classe gerada a partir do WSDL; serializa SOAP e faz `WebServiceCallout.invoke`. O `endpoint_x` pode ser sobrescrito | Controller Apex | Sistema externo | Obrigatório | C15 `WebServiceCallout.invoke` / `endpoint_x` |
 | 6 | Tipo de Custom Metadata | CustomObject (__mdt) + CustomField | lê/referencia | define os campos de configuração (endpoint, path, client_id, timeout, ativo) | Stub gerado (WSDL2Apex) | registro de Custom Metadata | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
@@ -725,7 +725,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Stub gerado
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Stub gerado (WSDL2Apex) | ApexClass | executa | classe gerada a partir do WSDL; serializa SOAP e faz `WebServiceCallout.invoke`. O `endpoint_x` pode ser sobrescrito | Controller Apex | Sistema externo | Obrigatório | C15 `WebServiceCallout.invoke` / `endpoint_x` |
 | 6 | Tipo de Custom Metadata | CustomObject (__mdt) + CustomField | lê/referencia | define o campo com o nome da Named Credential e parâmetros não sensíveis | Stub gerado (WSDL2Apex) | registro de Custom Metadata | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
@@ -744,7 +744,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Stub gerado
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled`: ponto de entrada no servidor | Componente LWC | próximo componente | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Stub gerado (WSDL2Apex) | ApexClass | executa | classe gerada a partir do WSDL; serializa SOAP e faz `WebServiceCallout.invoke`. O `endpoint_x` pode ser sobrescrito | Controller Apex | Sistema externo | Obrigatório | C15 `WebServiceCallout.invoke` / `endpoint_x` |
 | 6 | Custom Setting ou Custom Label | CustomObject (Custom Setting) ou CustomLabels | lê/referencia | fornece o endpoint por ambiente | Stub gerado (WSDL2Apex) | — | Obrigatório | `objects/*.object` [MA-CO] ou `labels/*` [MA-LBL] |
@@ -871,7 +871,7 @@ Fluxo principal: Usuário → Screen Flow → Classe invocável → Stub gerado 
 Chamada longa (até 120 s) sem prender thread do servidor.
 
 > Observação: Confirmado [AX-CONTL]: até 3 callouts paralelos, 3 encadeados, timeout máximo de 120 s por continuation.
-> ⚠️ A validar: Anotação usada em LWC (`@AuraEnabled(continuation=true ...)`): a página do Apex Developer Guide fala de Visualforce e "Lightning component", sem a anotação.
+> Observação: Confirmado [LWC-CONT]: o método é anotado com `@AuraEnabled(continuation=true)` (pode ter `cacheable=true`); o LWC processa uma Continuation por vez [LWC-CONTL].
 
 ### b.6.v1 — Endpoint E1
 
@@ -881,8 +881,8 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
-| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation` | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
+| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Named Credential | NamedCredential | lê/referencia | resolve a URL base usada em `callout:Nome` | Controller Apex | External Credential | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
 | 6 | External Credential | ExternalCredential | autoriza | fornece o protocolo de autenticação (OAuth, JWT, Basic, Custom) e os principals | Named Credential | Sistema externo | Obrigatório | `externalCredentials/*.externalCredential` — `authenticationProtocol` [MA-EC] |
 | 7 | Permission Set (acesso ao principal) | PermissionSet | autoriza | `externalCredentialPrincipalAccesses` dá ao usuário que executa o callout acesso ao principal da External Credential | plataforma (no momento do callout) | — | Obrigatório | `permissionsets/*.permissionset` — `classAccesses` (`apexClass`), `externalCredentialPrincipalAccesses` (API 59.0+), `externalDataSourceAccesses`, `customMetadataTypeAccesses`, `objectPermissions` [MA-PS] |
@@ -898,8 +898,8 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
-| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation` | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
+| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Named Credential (legada) | NamedCredential | lê/referencia + autoriza | resolve a URL e injeta a autenticação (senha, OAuth via Auth Provider, JWT) | Controller Apex | Sistema externo | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
 | 6 | Auth Provider | AuthProvider | autoriza | obtém o token OAuth quando a Named Credential legada usa OAuth | Named Credential | — | Opcional | `authproviders/*.authprovider` — `providerType`, `authorizeUrl`, `tokenUrl`, `registrationHandler` (Apex `Auth.RegistrationHandler`), `executionUser`, `plugin` (Apex `Auth.AuthProviderPluginClass`) [MA-AP] |
 | 7 | Certificate | Certificate | autoriza | assina JWT ou mutual TLS | Named Credential | — | Opcional | `certs/*.crt` — nome do certificado referenciado por NamedCredential, ConnectedApp, ExternalDataSource ou `setClientCertificateName` [MA-CERT] |
@@ -914,8 +914,8 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
-| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation` | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
+| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Remote Site Setting | RemoteSiteSetting | autoriza | libera o domínio fixo no código para callout | plataforma (no momento do callout) | — | Obrigatório | `remoteSiteSettings/*.remoteSite` — `url`, `isActive`, `disableProtocolSecurity` [MA-RSS] |
 | 6 | Certificate | Certificate | autoriza | mutual TLS (`setClientCertificateName`) | Controller Apex | — | Opcional | `certs/*.crt` — nome do certificado referenciado por NamedCredential, ConnectedApp, ExternalDataSource ou `setClientCertificateName` [MA-CERT] |
 | 7 | Sistema externo | não é metadata | ator | recebe a requisição e devolve a resposta | Controller Apex | — | Obrigatório | não aparece no projeto (ator) |
@@ -929,8 +929,8 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
-| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation` | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
+| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Tipo de Custom Metadata | CustomObject (__mdt) + CustomField | lê/referencia | define os campos de configuração (endpoint, path, client_id, timeout, ativo) | Controller Apex | registro de Custom Metadata | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 6 | Registro de Custom Metadata | CustomMetadata | lê/referencia | fornece os valores do ambiente (URL, client_id). Segredo aqui é risco: ver README | Controller Apex | — | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 7 | Classe de token | ApexClass | executa | faz o callout de autenticação (ex.: client_credentials) e devolve o token | Controller Apex | endpoint de token do sistema externo | Opcional | C02 callout ao endpoint de token; lê CMDT |
@@ -947,8 +947,8 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
-| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation` | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
+| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Tipo de Custom Metadata | CustomObject (__mdt) + CustomField | lê/referencia | define o campo com o nome da Named Credential e parâmetros não sensíveis | Controller Apex | registro de Custom Metadata | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 6 | Registro de Custom Metadata | CustomMetadata | lê/referencia | indica qual Named Credential usar e os parâmetros (path, timeout, ativo) | Controller Apex | — | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 7 | Named Credential | NamedCredential | lê/referencia | resolve a URL base (`callout:` + nome lido do CMDT) | Controller Apex | External Credential | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
@@ -965,8 +965,8 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Página Lightning | FlexiPage | lê/referencia | posiciona o componente na página de registro, app ou home | Usuário | LWC | Opcional (ou CustomTab / QuickAction) | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
-| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation` | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
+| 3 | Componente LWC | LightningComponentBundle | executa | captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire) | Página Lightning | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
+| 4 | Controller Apex | ApexClass | executa | método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25) | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 5 | Custom Setting ou Custom Label | CustomObject (Custom Setting) ou CustomLabels | lê/referencia | fornece o endpoint por ambiente | Controller Apex | — | Obrigatório | `objects/*.object` [MA-CO] ou `labels/*` [MA-LBL] |
 | 6 | Remote Site Setting | RemoteSiteSetting | autoriza | libera o domínio lido | plataforma (no momento do callout) | — | Obrigatório | `remoteSiteSettings/*.remoteSite` — `url`, `isActive`, `disableProtocolSecurity` [MA-RSS] |
 | 7 | Sistema externo | não é metadata | ator | recebe a requisição e devolve a resposta | Controller Apex | — | Obrigatório | não aparece no projeto (ator) |
@@ -1240,7 +1240,7 @@ Fluxo principal: Usuário → Componente LWC → Sistema externo
 | Ordem | Componente | Metadata type | Relação | Papel na integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Componente LWC | LightningComponentBundle | executa | chama a API externa com `fetch()` direto do navegador | Página | Sistema externo | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 2 | Componente LWC | LightningComponentBundle | executa | chama a API externa com `fetch()` direto do navegador | Página | Sistema externo | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 3 | CSP Trusted Site | CspTrustedSite | autoriza | libera o domínio em `connect-src` no navegador | navegador | — | Obrigatório | `cspTrustedSites/*.cspTrustedSite` — `endpointUrl`, `context` (All, LEX, Communities, VisualForce...), `isActive`, `isApplicableToConnectSrc`, `isApplicableToFrameSrc`, `isApplicableToImgSrc` [MA-CSP] |
 | 4 | Sistema externo | não é metadata | ator | responde; precisa liberar CORS para o domínio Lightning | Componente LWC | — | Obrigatório | não aparece no projeto (ator) |
 
@@ -1251,7 +1251,7 @@ Fluxo principal: Usuário → Componente LWC → Sistema externo
 | Ordem | Componente | Metadata type | Relação | Papel na integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Componente LWC | LightningComponentBundle | executa | chama a API externa com `fetch()` direto do navegador | Página | Sistema externo | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 2 | Componente LWC | LightningComponentBundle | executa | chama a API externa com `fetch()` direto do navegador | Página | Sistema externo | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 3 | Custom Label | CustomLabels | lê/referencia | URL importada via `@salesforce/label` | Componente LWC | — | Obrigatório | `labels/*` — rótulo com URL ou parâmetro de integração [MA-LBL] |
 | 4 | CSP Trusted Site | CspTrustedSite | autoriza | libera o domínio em `connect-src` no navegador | navegador | — | Obrigatório | `cspTrustedSites/*.cspTrustedSite` — `endpointUrl`, `context` (All, LEX, Communities, VisualForce...), `isActive`, `isApplicableToConnectSrc`, `isApplicableToFrameSrc`, `isApplicableToImgSrc` [MA-CSP] |
 | 5 | Sistema externo | não é metadata | ator | responde; precisa liberar CORS para o domínio Lightning | Componente LWC | — | Obrigatório | não aparece no projeto (ator) |
@@ -1263,7 +1263,7 @@ Fluxo principal: Usuário → Componente LWC → Controller Apex → Sistema ext
 | Ordem | Componente | Metadata type | Relação | Papel na integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Componente LWC | LightningComponentBundle | executa | chama a API externa com `fetch()` direto do navegador | Página | Sistema externo | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 2 | Componente LWC | LightningComponentBundle | executa | chama a API externa com `fetch()` direto do navegador | Página | Sistema externo | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 3 | Controller Apex | ApexClass | executa | devolve ao LWC a URL lida do CMDT | Componente LWC | Registro de Custom Metadata | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 4 | Registro de Custom Metadata | CustomMetadata (+ CustomObject __mdt) | lê/referencia | URL por ambiente | Controller Apex | — | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 5 | CSP Trusted Site | CspTrustedSite | autoriza | libera o domínio em `connect-src` no navegador | navegador | — | Obrigatório | `cspTrustedSites/*.cspTrustedSite` — `endpointUrl`, `context` (All, LEX, Communities, VisualForce...), `isActive`, `isApplicableToConnectSrc`, `isApplicableToFrameSrc`, `isApplicableToImgSrc` [MA-CSP] |
@@ -1559,7 +1559,7 @@ Fluxo principal: Usuário → Quick Action → Componente LWC (screen ou headles
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Quick Action | QuickAction | executa | botão na página do registro; tipo Flow ou LWC | Usuário | Componente LWC | Obrigatório | `quickActions/*.quickAction` — `type` (Flow, LightningComponent, LightningWebComponent, Canvas, VisualforcePage...), `flowDefinition`, `lightningComponent`, `page`, `targetObject`, `actionSubtype` [MA-QA] |
 | 3 | Layout / Página (onde a ação aparece) | Layout ou FlexiPage | lê/referencia | expõe a ação | plataforma | — | Obrigatório | `layouts/*.layout (nv)` [MA-LAY] ou `flexipages/*.flexipage` [MA-FP] |
-| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 5 | Controller Apex | ApexClass | executa | faz o callout | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 6 | Named Credential | NamedCredential | lê/referencia | resolve a URL base usada em `callout:Nome` | Controller Apex | External Credential | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
 | 7 | External Credential | ExternalCredential | autoriza | fornece o protocolo de autenticação (OAuth, JWT, Basic, Custom) e os principals | Named Credential | Sistema externo | Obrigatório | `externalCredentials/*.externalCredential` — `authenticationProtocol` [MA-EC] |
@@ -1578,7 +1578,7 @@ Fluxo principal: Usuário → Quick Action → Componente LWC (screen ou headles
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Quick Action | QuickAction | executa | botão na página do registro; tipo Flow ou LWC | Usuário | Componente LWC | Obrigatório | `quickActions/*.quickAction` — `type` (Flow, LightningComponent, LightningWebComponent, Canvas, VisualforcePage...), `flowDefinition`, `lightningComponent`, `page`, `targetObject`, `actionSubtype` [MA-QA] |
 | 3 | Layout / Página (onde a ação aparece) | Layout ou FlexiPage | lê/referencia | expõe a ação | plataforma | — | Obrigatório | `layouts/*.layout (nv)` [MA-LAY] ou `flexipages/*.flexipage` [MA-FP] |
-| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 5 | Controller Apex | ApexClass | executa | faz o callout | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 6 | Named Credential (legada) | NamedCredential | lê/referencia + autoriza | resolve a URL e injeta a autenticação (senha, OAuth via Auth Provider, JWT) | Controller Apex | Sistema externo | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
 | 7 | Auth Provider | AuthProvider | autoriza | obtém o token OAuth quando a Named Credential legada usa OAuth | Named Credential | — | Opcional | `authproviders/*.authprovider` — `providerType`, `authorizeUrl`, `tokenUrl`, `registrationHandler` (Apex `Auth.RegistrationHandler`), `executionUser`, `plugin` (Apex `Auth.AuthProviderPluginClass`) [MA-AP] |
@@ -1596,7 +1596,7 @@ Fluxo principal: Usuário → Quick Action → Componente LWC (screen ou headles
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Quick Action | QuickAction | executa | botão na página do registro; tipo Flow ou LWC | Usuário | Componente LWC | Obrigatório | `quickActions/*.quickAction` — `type` (Flow, LightningComponent, LightningWebComponent, Canvas, VisualforcePage...), `flowDefinition`, `lightningComponent`, `page`, `targetObject`, `actionSubtype` [MA-QA] |
 | 3 | Layout / Página (onde a ação aparece) | Layout ou FlexiPage | lê/referencia | expõe a ação | plataforma | — | Obrigatório | `layouts/*.layout (nv)` [MA-LAY] ou `flexipages/*.flexipage` [MA-FP] |
-| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 5 | Controller Apex | ApexClass | executa | faz o callout | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 6 | Remote Site Setting | RemoteSiteSetting | autoriza | libera o domínio fixo no código para callout | plataforma (no momento do callout) | — | Obrigatório | `remoteSiteSettings/*.remoteSite` — `url`, `isActive`, `disableProtocolSecurity` [MA-RSS] |
 | 7 | Certificate | Certificate | autoriza | mutual TLS (`setClientCertificateName`) | Controller Apex | — | Opcional | `certs/*.crt` — nome do certificado referenciado por NamedCredential, ConnectedApp, ExternalDataSource ou `setClientCertificateName` [MA-CERT] |
@@ -1613,7 +1613,7 @@ Fluxo principal: Usuário → Quick Action → Componente LWC (screen ou headles
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Quick Action | QuickAction | executa | botão na página do registro; tipo Flow ou LWC | Usuário | Componente LWC | Obrigatório | `quickActions/*.quickAction` — `type` (Flow, LightningComponent, LightningWebComponent, Canvas, VisualforcePage...), `flowDefinition`, `lightningComponent`, `page`, `targetObject`, `actionSubtype` [MA-QA] |
 | 3 | Layout / Página (onde a ação aparece) | Layout ou FlexiPage | lê/referencia | expõe a ação | plataforma | — | Obrigatório | `layouts/*.layout (nv)` [MA-LAY] ou `flexipages/*.flexipage` [MA-FP] |
-| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 5 | Controller Apex | ApexClass | executa | faz o callout | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 6 | Tipo de Custom Metadata | CustomObject (__mdt) + CustomField | lê/referencia | define os campos de configuração (endpoint, path, client_id, timeout, ativo) | Controller Apex | registro de Custom Metadata | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 7 | Registro de Custom Metadata | CustomMetadata | lê/referencia | fornece os valores do ambiente (URL, client_id). Segredo aqui é risco: ver README | Controller Apex | — | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
@@ -1633,7 +1633,7 @@ Fluxo principal: Usuário → Quick Action → Componente LWC (screen ou headles
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Quick Action | QuickAction | executa | botão na página do registro; tipo Flow ou LWC | Usuário | Componente LWC | Obrigatório | `quickActions/*.quickAction` — `type` (Flow, LightningComponent, LightningWebComponent, Canvas, VisualforcePage...), `flowDefinition`, `lightningComponent`, `page`, `targetObject`, `actionSubtype` [MA-QA] |
 | 3 | Layout / Página (onde a ação aparece) | Layout ou FlexiPage | lê/referencia | expõe a ação | plataforma | — | Obrigatório | `layouts/*.layout (nv)` [MA-LAY] ou `flexipages/*.flexipage` [MA-FP] |
-| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 5 | Controller Apex | ApexClass | executa | faz o callout | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 6 | Tipo de Custom Metadata | CustomObject (__mdt) + CustomField | lê/referencia | define o campo com o nome da Named Credential e parâmetros não sensíveis | Controller Apex | registro de Custom Metadata | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 7 | Registro de Custom Metadata | CustomMetadata | lê/referencia | indica qual Named Credential usar e os parâmetros (path, timeout, ativo) | Controller Apex | — | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
@@ -1653,7 +1653,7 @@ Fluxo principal: Usuário → Quick Action → Componente LWC (screen ou headles
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
 | 2 | Quick Action | QuickAction | executa | botão na página do registro; tipo Flow ou LWC | Usuário | Componente LWC | Obrigatório | `quickActions/*.quickAction` — `type` (Flow, LightningComponent, LightningWebComponent, Canvas, VisualforcePage...), `flowDefinition`, `lightningComponent`, `page`, `targetObject`, `actionSubtype` [MA-QA] |
 | 3 | Layout / Página (onde a ação aparece) | Layout ou FlexiPage | lê/referencia | expõe a ação | plataforma | — | Obrigatório | `layouts/*.layout (nv)` [MA-LAY] ou `flexipages/*.flexipage` [MA-FP] |
-| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 4 | Componente LWC (screen ou headless action) | LightningComponentBundle | executa | recebe `recordId` e chama o Apex | Quick Action | Controller Apex | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 5 | Controller Apex | ApexClass | executa | faz o callout | Componente LWC | Sistema externo | Obrigatório | `@AuraEnabled` em `classes/*.cls` + C02 se fizer callout |
 | 6 | Custom Setting ou Custom Label | CustomObject (Custom Setting) ou CustomLabels | lê/referencia | fornece o endpoint por ambiente | Controller Apex | — | Obrigatório | `objects/*.object` [MA-CO] ou `labels/*` [MA-LBL] |
 | 7 | Remote Site Setting | RemoteSiteSetting | autoriza | libera o domínio lido | plataforma (no momento do callout) | — | Obrigatório | `remoteSiteSettings/*.remoteSite` — `url`, `isActive`, `disableProtocolSecurity` [MA-RSS] |

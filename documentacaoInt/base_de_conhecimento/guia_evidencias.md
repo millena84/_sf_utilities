@@ -61,7 +61,7 @@ Os fatos foram conferidos na documentação oficial em 2026-10-30 (Metadata API 
 | `CustomTab` | `tabs` | .tab | 10.0 | `url` (Web Tab), `page`, `lwcComponent`, `flexiPage`, `auraComponent` | — | [MA-TAB](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_tab.htm) |
 | `FlexiPage` | `flexipages` | .flexipage | 29.0 | componentes da página (`componentName`) — LWC, FlexCard, Canvas | — | [MA-FP](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_flexipage.htm) |
 | `Layout` | `layouts` | .layout (nv) | — | botões/ações e campos exibidos | — | [MA-LAY](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_layouts.htm) |
-| `LightningComponentBundle` | `lwc` | (bundle: pasta com .js, .html, .js-meta.xml) | — | `targetConfigs` (onde aparece); no JS: `import ... from '@salesforce/apex/...'`, `lightning/empApi`, `fetch(` (nv: padrões de código JS) | — | [MA-LWC](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_lightningcomponentbundle.htm) |
+| `LightningComponentBundle` | `lwc` | (bundle: pasta com .js, .html, .js-meta.xml) | — | `targetConfigs` (onde aparece); no JS: C24 `@salesforce/apex/...` [LWC-IMP]; `lightning/empApi` e `fetch(` (nv) | — | [MA-LWC](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_lightningcomponentbundle.htm) |
 | `ApexClass` | `classes` | .cls + .cls-meta.xml | — | ver padrões de código Apex | credenciais literais no código | [MA-CLS](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_classes.htm) |
 | `ApexTrigger` | `triggers` | .trigger + -meta.xml | — | `trigger X on Objeto (...)`; em `X__e` ou `XChangeEvent` só `after insert` | — | [MA-TRG](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_triggers.htm) |
 | `ApexPage` | `pages` | .page | — | `<apex:canvasApp>`, controller com Continuation | — | [MA-PAGE](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_pages.htm) |
@@ -72,6 +72,7 @@ Os fatos foram conferidos na documentação oficial em 2026-10-30 (Metadata API 
 ### Não confirmados
 
 - `OmniDataTransform/OmniIntegrationProcedure/OmniScript/OmniUiCard`: não constam na lista de Metadata Types do Metadata API Developer Guide (API 68.0) [MA-TYPES]; pasta e sufixo não confirmados
+- `Flow: Outbound Message como ação; callout em Flow disparado por evento ou agendado`: a fonte seria o help.salesforce.com, que não abre neste ambiente (depende de a.sfdcstatic.com, bloqueado pela rede)
 
 ## 3. Padrões de código Apex
 
@@ -99,6 +100,8 @@ Os fatos foram conferidos na documentação oficial em 2026-10-30 (Metadata API 
 | C20 | `throw new EventBus.RetryableException(` | retry do trigger de evento (até 10 execuções: 1 + 9 retries) | [PE-RETRY](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_apex_refire.htm) |
 | C21 | `trigger X on YChangeEvent (after insert)` / `Y__ChangeEvent` | assinante Apex de Change Data Capture (roda como Automated Process) | [CDC-TRG](https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_trigger_intro.htm) |
 | C22 | `@InvocableMethod(... callout=true ...)` | ação invocável que faz callout (modificador `callout`, usado por Screen Flow para decidir a transação) | [AX-INV](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_forcecom_flow_invocable_action_callout.htm) |
+| C24 | `import x from '@salesforce/apex/Classe.metodo'` (com namespace se for de pacote) | LWC chama método Apex | [LWC-IMP](https://developer.salesforce.com/docs/platform/lwc/guide/apex-import-method.html) |
+| C25 | `@AuraEnabled(continuation=true)` (opcionalmente `cacheable=true`) | método Apex chamado por LWC que devolve Continuation; máx. 3 callouts por Continuation e uma Continuation por vez no cliente | [LWC-CONT](https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-auraenabled.html), [LWC-CONTL](https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-limits.html) |
 | C23 | `HttpCalloutMock`, `WebServiceMock`, `@IsTest` | classe de teste: **descartar** como ponto de integração | [AX-HTTP](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_http.htm) |
 
 ## 4. Evidência por eixo de variante

@@ -55,7 +55,7 @@ Como seguir de um componente para o próximo, no projeto, para montar a cadeia d
 | L42 | ApexClass (stub WSDL) | NamedCredential / host | `endpoint_x` com URL literal ou `callout:` | heurística | [AX-WSDL](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_wsdl2apex_gen_code.htm) |
 | L43 | ApexClass (Continuation) | ApexClass (callback) | `continuationMethod = 'metodo'` | documentado | [AX-CONT](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_continuation_process.htm) |
 | L44 | ApexClass | Certificate | `setClientCertificateName('X')` | documentado | [AX-CERT](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_client_certs_http.htm) |
-| L45 | LightningComponentBundle | ApexClass | `import ... from '@salesforce/apex/Classe.metodo'` | nv | — |
+| L45 | LightningComponentBundle | ApexClass | `import x from '@salesforce/apex/[namespace.]Classe.metodo'` no JS do componente | documentado | [LWC-IMP](https://developer.salesforce.com/docs/platform/lwc/guide/apex-import-method.html) |
 | L46 | FlexiPage | LWC / FlexCard | componentes da página (`componentName`) | nv | [MA-FP](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_flexipage.htm) |
 | L47 | ApexClass | Platform Event | `EventBus.publish(` com instância de `X__e` | documentado | [PE-PUB](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_publish_apex.htm) |
 

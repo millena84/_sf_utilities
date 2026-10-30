@@ -47,7 +47,7 @@ LIGACOES = [
  ("L42", "ApexClass (stub WSDL)", "NamedCredential / host", "`endpoint_x` com URL literal ou `callout:`", "heurística", "AX-WSDL"),
  ("L43", "ApexClass (Continuation)", "ApexClass (callback)", "`continuationMethod = 'metodo'`", "documentado", "AX-CONT"),
  ("L44", "ApexClass", "Certificate", "`setClientCertificateName('X')`", "documentado", "AX-CERT"),
- ("L45", "LightningComponentBundle", "ApexClass", "`import ... from '@salesforce/apex/Classe.metodo'`", "nv", "—"),
+ ("L45", "LightningComponentBundle", "ApexClass", "`import x from '@salesforce/apex/[namespace.]Classe.metodo'` no JS do componente", "documentado", "LWC-IMP"),
  ("L46", "FlexiPage", "LWC / FlexCard", "componentes da página (`componentName`)", "nv", "MA-FP"),
  ("L47", "ApexClass", "Platform Event", "`EventBus.publish(` com instância de `X__e`", "documentado", "PE-PUB"),
 ]

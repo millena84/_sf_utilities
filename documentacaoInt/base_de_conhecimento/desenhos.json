@@ -57,7 +57,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -228,7 +228,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -388,7 +388,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -537,7 +537,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -719,7 +719,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -901,7 +901,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -2119,7 +2119,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -2257,7 +2257,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -2384,7 +2384,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -2500,7 +2500,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -2649,7 +2649,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -2798,7 +2798,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -4220,7 +4220,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -4336,7 +4336,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -4451,7 +4451,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -4578,7 +4578,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -4694,7 +4694,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -4799,7 +4799,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -4937,7 +4937,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -5075,7 +5075,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -5948,11 +5948,10 @@
    "titulo": "LWC → Apex Continuation",
    "resumo": "Chamada longa (até 120 s) sem prender thread do servidor.",
    "observacoes": [
-    "Confirmado [AX-CONTL]: até 3 callouts paralelos, 3 encadeados, timeout máximo de 120 s por continuation."
+    "Confirmado [AX-CONTL]: até 3 callouts paralelos, 3 encadeados, timeout máximo de 120 s por continuation.",
+    "Confirmado [LWC-CONT]: o método é anotado com `@AuraEnabled(continuation=true)` (pode ter `cacheable=true`); o LWC processa uma Continuation por vez [LWC-CONTL]."
    ],
-   "a_validar": [
-    "Anotação usada em LWC (`@AuraEnabled(continuation=true ...)`): a página do Apex Developer Guide fala de Visualforce e \"Lightning component\", sem a anotação."
-   ],
+   "a_validar": [],
    "variantes": [
     {
      "id": "b.6.v1",
@@ -5989,14 +5988,14 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
        "componente": "Controller Apex",
        "metadata_type": "ApexClass",
        "relacao": "executa",
-       "papel": "método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation`",
+       "papel": "método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25)",
        "acionado_por": "Componente LWC",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
@@ -6105,14 +6104,14 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
        "componente": "Controller Apex",
        "metadata_type": "ApexClass",
        "relacao": "executa",
-       "papel": "método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation`",
+       "papel": "método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25)",
        "acionado_por": "Componente LWC",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
@@ -6210,14 +6209,14 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
        "componente": "Controller Apex",
        "metadata_type": "ApexClass",
        "relacao": "executa",
-       "papel": "método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation`",
+       "papel": "método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25)",
        "acionado_por": "Componente LWC",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
@@ -6304,14 +6303,14 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
        "componente": "Controller Apex",
        "metadata_type": "ApexClass",
        "relacao": "executa",
-       "papel": "método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation`",
+       "papel": "método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25)",
        "acionado_por": "Componente LWC",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
@@ -6431,14 +6430,14 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
        "componente": "Controller Apex",
        "metadata_type": "ApexClass",
        "relacao": "executa",
-       "papel": "método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation`",
+       "papel": "método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25)",
        "acionado_por": "Componente LWC",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
@@ -6558,14 +6557,14 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
        "componente": "Controller Apex",
        "metadata_type": "ApexClass",
        "relacao": "executa",
-       "papel": "método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation`",
+       "papel": "método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25)",
        "acionado_por": "Componente LWC",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
@@ -8186,7 +8185,7 @@
        "acionado_por": "Página",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 3,
@@ -8236,7 +8235,7 @@
        "acionado_por": "Página",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 3,
@@ -8297,7 +8296,7 @@
        "acionado_por": "Página",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 3,
@@ -10287,7 +10286,7 @@
        "acionado_por": "Quick Action",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 5,
@@ -10425,7 +10424,7 @@
        "acionado_por": "Quick Action",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 5,
@@ -10552,7 +10551,7 @@
        "acionado_por": "Quick Action",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 5,
@@ -10668,7 +10667,7 @@
        "acionado_por": "Quick Action",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 5,
@@ -10817,7 +10816,7 @@
        "acionado_por": "Quick Action",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 5,
@@ -10966,7 +10965,7 @@
        "acionado_por": "Quick Action",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 5,
@@ -43842,7 +43841,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -43958,7 +43957,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -44063,7 +44062,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -44157,7 +44156,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -44284,7 +44283,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -44411,7 +44410,7 @@
        "acionado_por": "Página Lightning",
        "aciona": "Controller Apex",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 4,
@@ -52970,7 +52969,7 @@
        "acionado_por": "Página",
        "aciona": "Sistema externo",
        "obrigatoriedade": "Obrigatório",
-       "como_achar": "`lwc/*` — `targetConfigs` (onde aparece) [MA-LWC]"
+       "como_achar": "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"
       },
       {
        "ordem": 3,

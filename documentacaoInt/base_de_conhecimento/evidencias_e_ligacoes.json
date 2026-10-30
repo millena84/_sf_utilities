@@ -53,6 +53,9 @@
   "MA-EXB": "https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_experiencebundle.htm",
   "MA-DEB": "https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_digitalexperiencebundle.htm",
   "MA-TYPES": "https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm",
+  "LWC-CONT": "https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-auraenabled.html",
+  "LWC-CONTL": "https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-limits.html",
+  "LWC-IMP": "https://developer.salesforce.com/docs/platform/lwc/guide/apex-import-method.html",
   "MA-CAPP": "https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_customapplication.htm",
   "AX-TRG": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_triggers.htm",
   "AX-LIM": "https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_timeouts.htm",
@@ -458,7 +461,7 @@
    "pasta": "lwc",
    "sufixo": "(bundle: pasta com .js, .html, .js-meta.xml)",
    "desde_api": "—",
-   "procurar_no_xml": "`targetConfigs` (onde aparece); no JS: `import ... from '@salesforce/apex/...'`, `lightning/empApi`, `fetch(` (nv: padrões de código JS)",
+   "procurar_no_xml": "`targetConfigs` (onde aparece); no JS: C24 `@salesforce/apex/...` [LWC-IMP]; `lightning/empApi` e `fetch(` (nv)",
    "campos_sensiveis": "—",
    "fonte": "MA-LWC"
   },
@@ -512,7 +515,8 @@
   }
  },
  "nao_confirmados": {
-  "OmniDataTransform/OmniIntegrationProcedure/OmniScript/OmniUiCard": "não constam na lista de Metadata Types do Metadata API Developer Guide (API 68.0) [MA-TYPES]; pasta e sufixo não confirmados"
+  "OmniDataTransform/OmniIntegrationProcedure/OmniScript/OmniUiCard": "não constam na lista de Metadata Types do Metadata API Developer Guide (API 68.0) [MA-TYPES]; pasta e sufixo não confirmados",
+  "Flow: Outbound Message como ação; callout em Flow disparado por evento ou agendado": "a fonte seria o help.salesforce.com, que não abre neste ambiente (depende de a.sfdcstatic.com, bloqueado pela rede)"
  },
  "codigo": [
   {
@@ -646,6 +650,18 @@
    "procure": "`@InvocableMethod(... callout=true ...)`",
    "significa": "ação invocável que faz callout (modificador `callout`, usado por Screen Flow para decidir a transação)",
    "fonte": "AX-INV"
+  },
+  {
+   "id": "C24",
+   "procure": "`import x from '@salesforce/apex/Classe.metodo'` (com namespace se for de pacote)",
+   "significa": "LWC chama método Apex",
+   "fonte": "LWC-IMP"
+  },
+  {
+   "id": "C25",
+   "procure": "`@AuraEnabled(continuation=true)` (opcionalmente `cacheable=true`)",
+   "significa": "método Apex chamado por LWC que devolve Continuation; máx. 3 callouts por Continuation e uma Continuation por vez no cliente",
+   "fonte": "LWC-CONT, LWC-CONTL"
   },
   {
    "id": "C23",
@@ -1011,9 +1027,9 @@
    "id": "L45",
    "de": "LightningComponentBundle",
    "para": "ApexClass",
-   "como_seguir": "`import ... from '@salesforce/apex/Classe.metodo'`",
-   "tipo": "nv",
-   "fonte": "—"
+   "como_seguir": "`import x from '@salesforce/apex/[namespace.]Classe.metodo'` no JS do componente",
+   "tipo": "documentado",
+   "fonte": "LWC-IMP"
   },
   {
    "id": "L46",

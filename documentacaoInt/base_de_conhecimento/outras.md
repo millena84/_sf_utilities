@@ -146,7 +146,7 @@ Fluxo principal: Usuário → Componente LWC → Sistema externo
 | Ordem | Componente | Metadata type | Relação | Papel na integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | inicia a ação na tela | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Componente LWC | LightningComponentBundle | executa | renderiza `<iframe>` | Página | Sistema externo | Obrigatório | `lwc/*` — `targetConfigs` (onde aparece) [MA-LWC] |
+| 2 | Componente LWC | LightningComponentBundle | executa | renderiza `<iframe>` | Página | Sistema externo | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
 | 3 | CSP Trusted Site | CspTrustedSite | autoriza | libera o domínio em `frame-src` | navegador | — | Obrigatório | `cspTrustedSites/*.cspTrustedSite` — `endpointUrl`, `context` (All, LEX, Communities, VisualForce...), `isActive`, `isApplicableToConnectSrc`, `isApplicableToFrameSrc`, `isApplicableToImgSrc` [MA-CSP] |
 | 4 | Sistema externo | não é metadata | ator | precisa permitir ser emoldurado (X-Frame-Options/CSP) | LWC | — | Obrigatório | não aparece no projeto (ator) |
 
