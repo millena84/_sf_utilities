@@ -72,10 +72,10 @@ Remote Site Setting: **Não** — o Salesforce Connect usa a External Data Sourc
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | Pessoa que usa o Salesforce e dispara a integração ao clicar em algo na tela. Ela fica esperando a resposta. | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | External Object | CustomObject (__x) | lê/referencia | objetos da org remota | Página | External Data Source | Obrigatório | `objects/X__x/` (sufixo `__x`) [MA-CO] |
-| 3 | External Data Source (cross-org) | ExternalDataSource | lê/referencia | URL e identidade da org remota | External Object | Org remota | Obrigatório | `dataSources/*.dataSource` — `type` (OData, OData4, SfdcOrg, ApexClassId = adaptador Apex, AmazonAthena, AmazonDynamoDB), `endpoint` (URL ou `callout:NomeNC`), `principalType`, `protocol`, `authProvider`, `certificate`, `customConfiguration` [MA-EDS] |
-| 4 | Permission Set | PermissionSet | autoriza | acesso ao External Object | plataforma | — | Obrigatório | `permissionsets/*.permissionset` — `classAccesses` (`apexClass`), `externalCredentialPrincipalAccesses` (API 59.0+), `externalDataSourceAccesses`, `customMetadataTypeAccesses`, `objectPermissions` [MA-PS] |
-| 5 | Org Salesforce remota | não é metadata | ator | responde às consultas via API | External Data Source | — | Obrigatório | não aparece no projeto (ator) |
+| 2 | External Object | CustomObject (__x) | lê/referencia | Objetos "espelho" (`__x`) que mostram dados da outra org sem copiar. | Página | External Data Source | Obrigatório | `objects/X__x/` (sufixo `__x`) [MA-CO] |
+| 3 | External Data Source (cross-org) | ExternalDataSource | lê/referencia | Cadastro da outra org: endereço e com qual identidade consultar. | External Object | Org remota | Obrigatório | `dataSources/*.dataSource` — `type` (OData, OData4, SfdcOrg, ApexClassId = adaptador Apex, AmazonAthena, AmazonDynamoDB), `endpoint` (URL ou `callout:NomeNC`), `principalType`, `protocol`, `authProvider`, `certificate`, `customConfiguration` [MA-EDS] |
+| 4 | Permission Set | PermissionSet | autoriza | Dá ao usuário permissão para ver os objetos espelho. | plataforma | — | Obrigatório | `permissionsets/*.permissionset` — `classAccesses` (`apexClass`), `externalCredentialPrincipalAccesses` (API 59.0+), `externalDataSourceAccesses`, `customMetadataTypeAccesses`, `objectPermissions` [MA-PS] |
+| 5 | Org Salesforce remota | não é metadata | ator | A outra org Salesforce, que responde às consultas. | External Data Source | — | Obrigatório | não aparece no projeto (ator) |
 
 <a id="n1v2"></a>
 
@@ -87,14 +87,14 @@ Remote Site Setting: **Não** — a Named Credential já autoriza o domínio [AX
 
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Classe cliente (org A) | ApexClass | executa | faz o callout para a org B | trigger/UI/agenda | Org B | Obrigatório | `classes/*.cls + .cls-meta.xml` — ver padrões de código Apex [MA-CLS] |
+| 1 | Classe cliente (org A) | ApexClass | executa | Classe Apex desta org (A) que chama a outra org (B). | trigger/UI/agenda | Org B | Obrigatório | `classes/*.cls + .cls-meta.xml` — ver padrões de código Apex [MA-CLS] |
 | 2 | Named Credential | NamedCredential | lê/referencia | Guarda o endereço (URL) do sistema externo. O código não escreve a URL: usa `callout:Nome` e a plataforma troca pelo endereço cadastrado aqui. Como o domínio já está cadastrado na Named Credential, **não é preciso Remote Site Setting**. | Classe cliente (org A) | External Credential | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
 | 3 | External Credential | ExternalCredential | autoriza | Guarda **como** se autenticar no sistema externo (OAuth, JWT, usuário e senha ou cabeçalho próprio). A plataforma gera o token ou o cabeçalho e o coloca na requisição; o código não vê a credencial. | Named Credential | Org B | Obrigatório | `externalCredentials/*.externalCredential` — `authenticationProtocol` [MA-EC] |
 | 4 | Permission Set (acesso ao principal) | PermissionSet | autoriza | Dá permissão para o usuário que está rodando o código usar a credencial (campo `externalCredentialPrincipalAccesses`). Sem isso, o callout falha por falta de acesso. | plataforma (no momento do callout) | — | Obrigatório | `permissionsets/*.permissionset` — `classAccesses` (`apexClass`), `externalCredentialPrincipalAccesses` (API 59.0+), `externalDataSourceAccesses`, `customMetadataTypeAccesses`, `objectPermissions` [MA-PS] |
 | 5 | Certificate | Certificate | autoriza | Certificado digital usado quando o sistema externo exige: assina o token JWT ou prova a identidade do Salesforce na conexão (mutual TLS). | External Credential | — | Opcional | `certs/*.crt` — nome do certificado referenciado por NamedCredential, ConnectedApp, ExternalDataSource ou `setClientCertificateName` [MA-CERT] |
 | 6 | Org B | não é metadata | ator | O sistema de fora do Salesforce. Recebe a chamada, processa e devolve a resposta. | Classe cliente (org A) | — | Obrigatório | não aparece no projeto (ator) |
-| 7 | Connected App / External Client App (org B) | ConnectedApp ou ExternalClientApplication | autoriza | emite o token | Named Credential | — | Obrigatório | `connectedApps/*.connectedApp` [MA-CA] ou `externalClientApps/*.eca` [MA-ECA] |
-| 8 | Classe Apex REST (org B) | ApexClass | executa | recebe e processa | Org A | objetos da org B | Opcional (ou API padrão) | C11 `@RestResource(urlMapping=...)` |
+| 7 | Connected App / External Client App (org B) | ConnectedApp ou ExternalClientApplication | autoriza | Cadastro, na org B, que permite que a org A entre lá com um token. | Named Credential | — | Obrigatório | `connectedApps/*.connectedApp` [MA-CA] ou `externalClientApps/*.eca` [MA-ECA] |
+| 8 | Classe Apex REST (org B) | ApexClass | executa | Endpoint na org B que recebe a chamada e processa os dados. | Org A | objetos da org B | Opcional (ou API padrão) | C11 `@RestResource(urlMapping=...)` |
 
 <a id="n1v3"></a>
 
@@ -106,13 +106,13 @@ Remote Site Setting: **Não** — a Named Credential já autoriza o domínio [AX
 
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Classe cliente (org A) | ApexClass | executa | faz o callout para a org B | trigger/UI/agenda | Org B | Obrigatório | `classes/*.cls + .cls-meta.xml` — ver padrões de código Apex [MA-CLS] |
+| 1 | Classe cliente (org A) | ApexClass | executa | Classe Apex desta org (A) que chama a outra org (B). | trigger/UI/agenda | Org B | Obrigatório | `classes/*.cls + .cls-meta.xml` — ver padrões de código Apex [MA-CLS] |
 | 2 | Named Credential (legada) | NamedCredential | lê/referencia + autoriza | Modelo antigo de Named Credential: guarda no mesmo cadastro o endereço e a autenticação (senha, OAuth ou JWT). Assim como no modelo novo, **dispensa Remote Site Setting**. | Classe cliente (org A) | Org B | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
 | 3 | Auth Provider | AuthProvider | autoriza | Quando a autenticação é OAuth, é ele que conversa com o servidor de login do sistema externo para conseguir o token. | Named Credential | — | Opcional | `authproviders/*.authprovider` — `providerType`, `authorizeUrl`, `tokenUrl`, `registrationHandler` (Apex `Auth.RegistrationHandler`), `executionUser`, `plugin` (Apex `Auth.AuthProviderPluginClass`) [MA-AP] |
 | 4 | Certificate | Certificate | autoriza | Certificado digital usado quando o sistema externo exige assinatura do JWT ou mutual TLS. | Named Credential | — | Opcional | `certs/*.crt` — nome do certificado referenciado por NamedCredential, ConnectedApp, ExternalDataSource ou `setClientCertificateName` [MA-CERT] |
 | 5 | Org B | não é metadata | ator | O sistema de fora do Salesforce. Recebe a chamada, processa e devolve a resposta. | Classe cliente (org A) | — | Obrigatório | não aparece no projeto (ator) |
-| 6 | Connected App / External Client App (org B) | ConnectedApp ou ExternalClientApplication | autoriza | emite o token | Named Credential | — | Obrigatório | `connectedApps/*.connectedApp` [MA-CA] ou `externalClientApps/*.eca` [MA-ECA] |
-| 7 | Classe Apex REST (org B) | ApexClass | executa | recebe e processa | Org A | objetos da org B | Opcional (ou API padrão) | C11 `@RestResource(urlMapping=...)` |
+| 6 | Connected App / External Client App (org B) | ConnectedApp ou ExternalClientApplication | autoriza | Cadastro, na org B, que permite que a org A entre lá com um token. | Named Credential | — | Obrigatório | `connectedApps/*.connectedApp` [MA-CA] ou `externalClientApps/*.eca` [MA-ECA] |
+| 7 | Classe Apex REST (org B) | ApexClass | executa | Endpoint na org B que recebe a chamada e processa os dados. | Org A | objetos da org B | Opcional (ou API padrão) | C11 `@RestResource(urlMapping=...)` |
 
 <a id="n1v4"></a>
 
@@ -124,15 +124,15 @@ Remote Site Setting: **Não** — a Named Credential já autoriza o domínio [AX
 
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Classe cliente (org A) | ApexClass | executa | faz o callout para a org B | trigger/UI/agenda | Org B | Obrigatório | `classes/*.cls + .cls-meta.xml` — ver padrões de código Apex [MA-CLS] |
+| 1 | Classe cliente (org A) | ApexClass | executa | Classe Apex desta org (A) que chama a outra org (B). | trigger/UI/agenda | Org B | Obrigatório | `classes/*.cls + .cls-meta.xml` — ver padrões de código Apex [MA-CLS] |
 | 2 | Tipo de Custom Metadata | CustomObject (__mdt) + CustomField | lê/referencia | É a "tabela" de configuração: tem um campo com o **nome** da Named Credential a usar e outros parâmetros não sensíveis. | Classe cliente (org A) | registro de Custom Metadata | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 3 | Registro de Custom Metadata | CustomMetadata | lê/referencia | É a "linha" de configuração do ambiente: diz qual Named Credential usar e os parâmetros (caminho, timeout, ligado/desligado). Trocar de ambiente é só mudar esse registro. | Classe cliente (org A) | — | Obrigatório | tipo: `objects/X__mdt/`; registros: `customMetadata/X.Reg.md` [MA-CMD] |
 | 4 | Named Credential | NamedCredential | lê/referencia | Guarda o endereço do sistema externo. O código monta `callout:` + o nome lido do Custom Metadata. Por ser Named Credential, **dispensa Remote Site Setting**. | Classe cliente (org A) | External Credential | Obrigatório | `namedCredentials/*.namedCredential` — `namedCredentialType` (SecuredEndpoint = modelo novo [MA-NC] |
 | 5 | External Credential | ExternalCredential | autoriza | Guarda como se autenticar no sistema externo; a plataforma aplica a credencial na requisição sem o código ver o segredo. | Named Credential | Org B | Obrigatório | `externalCredentials/*.externalCredential` — `authenticationProtocol` [MA-EC] |
 | 6 | Permission Set (acesso ao principal) | PermissionSet | autoriza | Dá permissão para o usuário que roda o código usar a credencial. Sem isso, o callout falha. | plataforma (no momento do callout) | — | Obrigatório | `permissionsets/*.permissionset` — `classAccesses` (`apexClass`), `externalCredentialPrincipalAccesses` (API 59.0+), `externalDataSourceAccesses`, `customMetadataTypeAccesses`, `objectPermissions` [MA-PS] |
 | 7 | Org B | não é metadata | ator | O sistema de fora do Salesforce. Recebe a chamada, processa e devolve a resposta. | Classe cliente (org A) | — | Obrigatório | não aparece no projeto (ator) |
-| 8 | Connected App / External Client App (org B) | ConnectedApp ou ExternalClientApplication | autoriza | emite o token | Named Credential | — | Obrigatório | `connectedApps/*.connectedApp` [MA-CA] ou `externalClientApps/*.eca` [MA-ECA] |
-| 9 | Classe Apex REST (org B) | ApexClass | executa | recebe e processa | Org A | objetos da org B | Opcional (ou API padrão) | C11 `@RestResource(urlMapping=...)` |
+| 8 | Connected App / External Client App (org B) | ConnectedApp ou ExternalClientApplication | autoriza | Cadastro, na org B, que permite que a org A entre lá com um token. | Named Credential | — | Obrigatório | `connectedApps/*.connectedApp` [MA-CA] ou `externalClientApps/*.eca` [MA-ECA] |
+| 9 | Classe Apex REST (org B) | ApexClass | executa | Endpoint na org B que recebe a chamada e processa os dados. | Org A | objetos da org B | Opcional (ou API padrão) | C11 `@RestResource(urlMapping=...)` |
 
 
 ## N.2
@@ -163,9 +163,9 @@ Remote Site Setting: **Não se aplica** — não há chamada de saída feita por
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | Pessoa que usa o Salesforce e dispara a integração ao clicar em algo na tela. Ela fica esperando a resposta. | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Botão ou link | WebLink | executa | abre o sistema externo com parâmetros do registro na URL | Usuário | Sistema externo | Obrigatório | `objects (dentro do objeto)/*` — `linkType` (url, page, javascript), `url`, `openType`, `page` [MA-WL] |
-| 3 | Layout | Layout | lê/referencia | expõe o botão | plataforma | — | Obrigatório | `layouts/*.layout (nv)` — botões/ações e campos exibidos [MA-LAY] |
-| 4 | Sistema externo | não é metadata | ator | abre no navegador | WebLink | — | Obrigatório | não aparece no projeto (ator) |
+| 2 | Botão ou link | WebLink | executa | Botão ou link que abre o sistema externo em outra aba, levando dados do registro na URL. Não há troca de dados no servidor. | Usuário | Sistema externo | Obrigatório | `objects (dentro do objeto)/*` — `linkType` (url, page, javascript), `url`, `openType`, `page` [MA-WL] |
+| 3 | Layout | Layout | lê/referencia | Configuração da página que faz o botão aparecer. | plataforma | — | Obrigatório | `layouts/*.layout (nv)` — botões/ações e campos exibidos [MA-LAY] |
+| 4 | Sistema externo | não é metadata | ator | O sistema externo, aberto no navegador do usuário. | WebLink | — | Obrigatório | não aparece no projeto (ator) |
 
 <a id="n2v2"></a>
 
@@ -178,9 +178,9 @@ Remote Site Setting: **Não se aplica** — não há chamada de saída feita por
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | Pessoa que usa o Salesforce e dispara a integração ao clicar em algo na tela. Ela fica esperando a resposta. | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Aba web | CustomTab | executa | carrega a URL externa | Usuário | Sistema externo | Obrigatório | `tabs/*.tab` — `url` (Web Tab), `page`, `lwcComponent`, `flexiPage`, `auraComponent` [MA-TAB] |
-| 3 | App | CustomApplication | lê/referencia | inclui a aba | plataforma | — | Obrigatório | `applications/*.app` — app que agrupa abas [MA-CAPP] |
-| 4 | Sistema externo | não é metadata | ator | exibido em frame | CustomTab | — | Obrigatório | não aparece no projeto (ator) |
+| 2 | Aba web | CustomTab | executa | Aba do menu que mostra o sistema externo dentro do Salesforce. | Usuário | Sistema externo | Obrigatório | `tabs/*.tab` — `url` (Web Tab), `page`, `lwcComponent`, `flexiPage`, `auraComponent` [MA-TAB] |
+| 3 | App | CustomApplication | lê/referencia | App que contém a aba. | plataforma | — | Obrigatório | `applications/*.app` — app que agrupa abas [MA-CAPP] |
+| 4 | Sistema externo | não é metadata | ator | O sistema externo, mostrado dentro do Salesforce. | CustomTab | — | Obrigatório | não aparece no projeto (ator) |
 
 <a id="n2v3"></a>
 
@@ -193,9 +193,9 @@ Remote Site Setting: **Não se aplica** — não há chamada de saída feita por
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | Pessoa que usa o Salesforce e dispara a integração ao clicar em algo na tela. Ela fica esperando a resposta. | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Página Visualforce | ApexPage | executa | `<apex:canvasApp>` | Usuário | Canvas App | Obrigatório | `pages/*.page` — `<apex:canvasApp>`, controller com Continuation [MA-PAGE] |
-| 3 | Connected App com Canvas | ConnectedApp | autoriza + lê | URL do Canvas, método de acesso (signed request/OAuth), locais permitidos | host | Sistema externo | Obrigatório | `connectedApps/*.connectedApp` — `oauthConfig` (`callbackUrl`, `scopes`, `certificate`, `consumerKey`, `isClientCredentialEnabled`, `oauthClientCredentialUser`, `isAdminApproved`), `canvasConfig` (`canvasUrl`), `samlConfig` [MA-CA] |
-| 4 | Sistema externo | não é metadata | ator | app web que recebe o signed request | Canvas | — | Obrigatório | não aparece no projeto (ator) |
+| 2 | Página Visualforce | ApexPage | executa | Página Visualforce que mostra o sistema externo dentro do Salesforce (Canvas). | Usuário | Canvas App | Obrigatório | `pages/*.page` — `<apex:canvasApp>`, controller com Continuation [MA-PAGE] |
+| 3 | Connected App com Canvas | ConnectedApp | autoriza + lê | Cadastro do sistema externo como Canvas: endereço, como o Salesforce passa a identidade do usuário (signed request ou OAuth) e onde ele pode aparecer. | host | Sistema externo | Obrigatório | `connectedApps/*.connectedApp` — `oauthConfig` (`callbackUrl`, `scopes`, `certificate`, `consumerKey`, `isClientCredentialEnabled`, `oauthClientCredentialUser`, `isAdminApproved`), `canvasConfig` (`canvasUrl`), `samlConfig` [MA-CA] |
+| 4 | Sistema externo | não é metadata | ator | Aplicação web externa que recebe do Salesforce a identidade do usuário (signed request). | Canvas | — | Obrigatório | não aparece no projeto (ator) |
 
 <a id="n2v4"></a>
 
@@ -208,9 +208,9 @@ Remote Site Setting: **Não se aplica** — não há chamada de saída feita por
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | Pessoa que usa o Salesforce e dispara a integração ao clicar em algo na tela. Ela fica esperando a resposta. | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Página Lightning | FlexiPage | executa | componente padrão Canvas App | Usuário | Canvas App | Obrigatório | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | Connected App com Canvas | ConnectedApp | autoriza + lê | URL do Canvas, método de acesso (signed request/OAuth), locais permitidos | host | Sistema externo | Obrigatório | `connectedApps/*.connectedApp` — `oauthConfig` (`callbackUrl`, `scopes`, `certificate`, `consumerKey`, `isClientCredentialEnabled`, `oauthClientCredentialUser`, `isAdminApproved`), `canvasConfig` (`canvasUrl`), `samlConfig` [MA-CA] |
-| 4 | Sistema externo | não é metadata | ator | app web que recebe o signed request | Canvas | — | Obrigatório | não aparece no projeto (ator) |
+| 2 | Página Lightning | FlexiPage | executa | Página Lightning com o componente Canvas, que mostra o sistema externo dentro do Salesforce. | Usuário | Canvas App | Obrigatório | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
+| 3 | Connected App com Canvas | ConnectedApp | autoriza + lê | Cadastro do sistema externo como Canvas: endereço, como o Salesforce passa a identidade do usuário (signed request ou OAuth) e onde ele pode aparecer. | host | Sistema externo | Obrigatório | `connectedApps/*.connectedApp` — `oauthConfig` (`callbackUrl`, `scopes`, `certificate`, `consumerKey`, `isClientCredentialEnabled`, `oauthClientCredentialUser`, `isAdminApproved`), `canvasConfig` (`canvasUrl`), `samlConfig` [MA-CA] |
+| 4 | Sistema externo | não é metadata | ator | Aplicação web externa que recebe do Salesforce a identidade do usuário (signed request). | Canvas | — | Obrigatório | não aparece no projeto (ator) |
 
 <a id="n2v5"></a>
 
@@ -223,10 +223,10 @@ Remote Site Setting: **Não se aplica** — não há chamada de saída feita por
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | Pessoa que usa o Salesforce e dispara a integração ao clicar em algo na tela. Ela fica esperando a resposta. | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Página Lightning | FlexiPage | executa | componente Canvas App | Usuário | Canvas App | Obrigatório | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
-| 3 | External Client App | ExternalClientApplication | autoriza | app registrado | host | — | Obrigatório | `externalClientApps/*.eca` — `label`, `distributionState`, `contactEmail` [MA-ECA] |
-| 4 | Configuração Canvas do app | ExtlClntAppCanvasSettings | autoriza + lê | URL e acesso do Canvas (API 66.0+) | External Client App | Sistema externo | Obrigatório | `extlClntAppCanvasSettings/*.ecaCanvas` — configuração de Canvas do External Client App [MA-ECAC] |
-| 5 | Sistema externo | não é metadata | ator | app web | Canvas | — | Obrigatório | não aparece no projeto (ator) |
+| 2 | Página Lightning | FlexiPage | executa | Página Lightning com o componente Canvas. | Usuário | Canvas App | Obrigatório | `flexipages/*.flexipage` — componentes da página (`componentName`) — LWC, FlexCard, Canvas [MA-FP] |
+| 3 | External Client App | ExternalClientApplication | autoriza | Cadastro (modelo novo) do sistema externo no Salesforce. | host | — | Obrigatório | `externalClientApps/*.eca` — `label`, `distributionState`, `contactEmail` [MA-ECA] |
+| 4 | Configuração Canvas do app | ExtlClntAppCanvasSettings | autoriza + lê | Parte do External Client App com o endereço e o acesso do Canvas. | External Client App | Sistema externo | Obrigatório | `extlClntAppCanvasSettings/*.ecaCanvas` — configuração de Canvas do External Client App [MA-ECAC] |
+| 5 | Sistema externo | não é metadata | ator | Aplicação web externa mostrada dentro do Salesforce. | Canvas | — | Obrigatório | não aparece no projeto (ator) |
 
 <a id="n2v6"></a>
 
@@ -239,9 +239,9 @@ Remote Site Setting: **Não** — a chamada sai do navegador; quem libera é o C
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Usuário | não é metadata | ator | Pessoa que usa o Salesforce e dispara a integração ao clicar em algo na tela. Ela fica esperando a resposta. | — | página | Obrigatório | não aparece no projeto (ator) |
-| 2 | Componente LWC | LightningComponentBundle | executa | renderiza `<iframe>` | Página | Sistema externo | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
-| 3 | CSP Trusted Site | CspTrustedSite | autoriza | libera o domínio em `frame-src` | navegador | — | Obrigatório | `cspTrustedSites/*.cspTrustedSite` — `endpointUrl`, `context` (All, LEX, Communities, VisualForce...), `isActive`, `isApplicableToConnectSrc`, `isApplicableToFrameSrc`, `isApplicableToImgSrc` [MA-CSP] |
-| 4 | Sistema externo | não é metadata | ator | precisa permitir ser emoldurado (X-Frame-Options/CSP) | LWC | — | Obrigatório | não aparece no projeto (ator) |
+| 2 | Componente LWC | LightningComponentBundle | executa | Componente de tela que mostra o sistema externo numa moldura (`<iframe>`). | Página | Sistema externo | Obrigatório | `lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo` |
+| 3 | CSP Trusted Site | CspTrustedSite | autoriza | Lista de domínios que o **navegador** pode mostrar em moldura nas páginas do Salesforce (regra CSP). | navegador | — | Obrigatório | `cspTrustedSites/*.cspTrustedSite` — `endpointUrl`, `context` (All, LEX, Communities, VisualForce...), `isActive`, `isApplicableToConnectSrc`, `isApplicableToFrameSrc`, `isApplicableToImgSrc` [MA-CSP] |
+| 4 | Sistema externo | não é metadata | ator | O sistema externo. Precisa permitir ser mostrado em moldura dentro de outro site. | LWC | — | Obrigatório | não aparece no projeto (ator) |
 
 
 ## N.3
@@ -268,9 +268,9 @@ Remote Site Setting: **Não se aplica** — não há chamada de saída feita por
 
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
-| 1 | IdP externo | não é metadata | ator | autentica o usuário | Usuário | Salesforce | Obrigatório | não aparece no projeto (ator) |
-| 2 | Configuração SAML | SamlSsoConfig | autoriza | emissor, certificado, mapeamento de identidade | IdP | — | Obrigatório | `samlssoconfigs/*.samlssoconfig` — emissor, certificado e mapeamento de identidade [MA-SAML] |
-| 3 | Certificate | Certificate | autoriza | valida/assina asserções | SAML | — | Opcional | `certs/*.crt` — nome do certificado referenciado por NamedCredential, ConnectedApp, ExternalDataSource ou `setClientCertificateName` [MA-CERT] |
+| 1 | IdP externo | não é metadata | ator | Provedor de identidade externo que faz o login do usuário. | Usuário | Salesforce | Obrigatório | não aparece no projeto (ator) |
+| 2 | Configuração SAML | SamlSsoConfig | autoriza | Configuração do login único (SSO) via SAML: quem é o provedor de identidade, o certificado e como achar o usuário correspondente. | IdP | — | Obrigatório | `samlssoconfigs/*.samlssoconfig` — emissor, certificado e mapeamento de identidade [MA-SAML] |
+| 3 | Certificate | Certificate | autoriza | Certificado usado para conferir ou assinar as mensagens de login. | SAML | — | Opcional | `certs/*.crt` — nome do certificado referenciado por NamedCredential, ConnectedApp, ExternalDataSource ou `setClientCertificateName` [MA-CERT] |
 
 <a id="n3v2"></a>
 
@@ -282,9 +282,9 @@ Remote Site Setting: **Não se aplica** — não há chamada de saída feita por
 
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Provedor externo | não é metadata | ator | autentica | Usuário | Salesforce | Obrigatório | não aparece no projeto (ator) |
-| 2 | Auth Provider | AuthProvider | autoriza | configuração OIDC | login | Registration Handler | Obrigatório | `authproviders/*.authprovider` — `providerType`, `authorizeUrl`, `tokenUrl`, `registrationHandler` (Apex `Auth.RegistrationHandler`), `executionUser`, `plugin` (Apex `Auth.AuthProviderPluginClass`) [MA-AP] |
-| 3 | Registration Handler | ApexClass | executa | cria/atualiza o usuário a partir dos dados do provedor | Auth Provider | User | Obrigatório | AuthProvider.`registrationHandler`; classe implementa `Auth.RegistrationHandler` |
+| 1 | Provedor externo | não é metadata | ator | Provedor de login externo que confirma quem é o usuário. | Usuário | Salesforce | Obrigatório | não aparece no projeto (ator) |
+| 2 | Auth Provider | AuthProvider | autoriza | Cadastro do provedor de login externo (OpenID Connect). | login | Registration Handler | Obrigatório | `authproviders/*.authprovider` — `providerType`, `authorizeUrl`, `tokenUrl`, `registrationHandler` (Apex `Auth.RegistrationHandler`), `executionUser`, `plugin` (Apex `Auth.AuthProviderPluginClass`) [MA-AP] |
+| 3 | Registration Handler | ApexClass | executa | Classe Apex que cria ou atualiza o usuário do Salesforce com os dados vindos do provedor de login. | Auth Provider | User | Obrigatório | AuthProvider.`registrationHandler`; classe implementa `Auth.RegistrationHandler` |
 
 <a id="n3v3"></a>
 
@@ -296,8 +296,8 @@ Remote Site Setting: **Não se aplica** — não há chamada de saída feita por
 
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
-| 1 | App externo | não é metadata | ator | pede login | Usuário | Salesforce | Obrigatório | não aparece no projeto (ator) |
-| 2 | Connected App (SAML/OIDC) | ConnectedApp | autoriza | app de serviço; Salesforce emite asserção/token | App externo | — | Obrigatório | `connectedApps/*.connectedApp` — `oauthConfig` (`callbackUrl`, `scopes`, `certificate`, `consumerKey`, `isClientCredentialEnabled`, `oauthClientCredentialUser`, `isAdminApproved`), `canvasConfig` (`canvasUrl`), `samlConfig` [MA-CA] |
+| 1 | App externo | não é metadata | ator | Aplicação externa que pede ao Salesforce para confirmar quem é o usuário. | Usuário | Salesforce | Obrigatório | não aparece no projeto (ator) |
+| 2 | Connected App (SAML/OIDC) | ConnectedApp | autoriza | Cadastro do sistema externo que vai usar o Salesforce como provedor de login; o Salesforce emite a confirmação de identidade. | App externo | — | Obrigatório | `connectedApps/*.connectedApp` — `oauthConfig` (`callbackUrl`, `scopes`, `certificate`, `consumerKey`, `isClientCredentialEnabled`, `oauthClientCredentialUser`, `isAdminApproved`), `canvasConfig` (`canvasUrl`), `samlConfig` [MA-CA] |
 
 
 ## N.4
@@ -324,5 +324,5 @@ Remote Site Setting: **Não se aplica** — não há chamada de saída feita por
 
 | Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Data Cloud | não é metadata | ator | metadata types de data streams, data sources e ativações a confirmar | — | — | Obrigatório | não aparece no projeto (ator) |
+| 1 | Data Cloud | não é metadata | ator | Data Cloud: os metadata types envolvidos (fluxos de dados, fontes e ativações) ainda precisam ser confirmados. | — | — | Obrigatório | não aparece no projeto (ator) |
 
