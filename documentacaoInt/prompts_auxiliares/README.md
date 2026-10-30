@@ -7,3 +7,4 @@ Prompts curtos para corrigir ou completar uma fase **sem rodá-la inteira de nov
 | `fase0_completar_termos_genericos.md` | 0 | A lista de termos genéricos veio curta ou com termos de negócio |
 | `fase0_preencher_atributos.md` | 0 | A coluna `atributos` (ou `estado`) do inventário veio vazia |
 | `fase0_reagrupar_nao_resolvidas.md` | 0 | A taxa de referências não resolvidas veio perto de 100% |
+| `fase1_enriquecer_sistemas_externos.md` | 1 | Os sistemas externos vieram com nomes técnicos, `DINAMICO` ou `SIS::DESCONHECIDO` |
