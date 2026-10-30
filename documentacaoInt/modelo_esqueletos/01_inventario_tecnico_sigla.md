@@ -1,11 +1,17 @@
 <!--
-Esqueleto 1 de 2 — documento por SIGLA ("inventário técnico de integração").
-Fornecido pela revisora em 2026-10-30, a partir da documentação modelo montada manualmente.
-Registrado aqui sem alterações de conteúdo; servirá de base para refatorar Fase M, Fase 4 e template.
+Esqueleto 01 — documento por SIGLA ("inventário técnico de integração") — VERSÃO REFINADA (v2, 2026-10-30).
+Base: esqueleto enviado pela revisora + decisões 1–7 de 00_decisoes_estrutura.md.
+Mudanças em relação à v1:
+- Saíram os catálogos completos de Flows (antiga seção 3), Triggers/Apex/LWC (4) e UI/permissões/metadata (5):
+  agora ficam no documento de cada integração (esqueleto 02).
+- Entraram as seções "Acesso" e "Componentes compartilhados entre integrações".
+- Configurações de integração com três marcações: SUCCESS, ABSTRACT e DANGER.
+- "Validações que exigem estado vivo da org" recebe todos os DANGER.
 
-Regras de marcação informadas:
-- !!!SUCCESS → o componente/metadado É usado na integração; explicar por que é usado.
-- !!!ABSTRACT → o componente/metadado NÃO é usado na integração; explicar por que, no funcionamento técnico, ele não é necessário.
+Marcações (sintaxe idêntica à do modelo):
+- !!!SUCCESS → é usado na integração; explicar por que é usado.
+- !!!ABSTRACT → não é usado; explicar por que, no funcionamento técnico, não é necessário.
+- !!!DANGER → o repositório não permite confirmar; dizer o que foi achado, por que não dá para confirmar e o que verificar na org.
 -->
 
 # {SIGLA} - inventário técnico de integração
@@ -21,9 +27,14 @@ Regras de marcação informadas:
 ---
 
 ## INDICE
+
 {tabela_indice_secoes_com_link}
 
 | Seção | O que buscar |
+
+{lista_documentos_da_sigla_com_link}
+
+| Documento | Integração | O que buscar |
 
 ---
 
@@ -32,6 +43,7 @@ Regras de marcação informadas:
 {tabela_com_informacoes}
 
 | Caminho | Entrada | Saída |
+
 exemplo:
 | rolima     | inclusão tabela VEIC | GET api meu_veic |
 
@@ -48,57 +60,13 @@ Exemplo:
 
 ---
 
-## 3. Catálogo dos Flows
+## 3. Configurações de integração
 
-### 3.1. Roteador de tela de etapas
+<!-- Mesmas marcações do documento de cada integração (mesma fonte). Link para a explicação detalhada no documento da integração. -->
 
-<!-- Se alguma das integrações da sigla usar flow screen, triggered ou algo semelhante, explica nessa seção -->
+### 3.1. {aliasIntegracao01Sigla}
 
-{no_final_secao_fazer_breve_explanação_didatica_sobre_flows_que_aparecem_na_integração_de_alguma_forma}
-
-| Ação sistêmica / de negócio | Tipo flow usado | nome técnico |
-
-## 3.2. Flow de tratamento / conclusão
-
-<!-- Se alguma das integrações da sigla usar flows de outros tipos, ou algo semelhante, explica nessa seção -->
-
-| Flow | Objeto / tipo disparo | Efeito esperado |
-
-{no_final_secao_fazer_breve_explanação_didatica_sobre_flows_que_aparecem_na_integração_de_alguma_forma}
-
-3.3. Flows de retry / upload / outro (?)
-
-<!-- Se alguma das integrações da sigla usar flows com esses objetivos, ou algo semelhante, explica nessa seção -->
-
-| Flow | Objeto / tipo disparo | Efeito esperado |
-
-{no_final_secao_fazer_breve_explanação_didatica_sobre_flows_que_aparecem_na_integração_de_alguma_forma}
-
----
-
-## 4. Inventário Triggers, Apex e LWC
-
-<!-- Se alguma das integrações da sigla usar algum desses componentes com esses objetivos, ou algo semelhante, explica nessa seção -->
-
-| Entrada / camada | Componentes principais | Papel |
-
-{no_final_secao_fazer_breve_explanação_didatica_sobre_esses_componentes_que_aparecem_na_integração_de_alguma_forma}
-
----
-
-## 5. UI, permissões e metadata Salesforcec (?)
-
-<!-- Se alguma das integrações da sigla usar algum desses componentes com esses objetivos, ou algo semelhante, explica nessa seção -->
-
-| Tipo componente | API Name / registro | Estado do componente no repositório |
-
-{no_final_secao_fazer_breve_explanação_didatica_sobre_esses_componentes_que_aparecem_na_integração_de_alguma_forma}
-
----
-
-## 6. Configurações de integração
-
-### 6.1. {aliasIntegracao01Sigla}
+{link_documento_integracao}
 
 #### Connected App / External ClientApp
 
@@ -108,46 +76,70 @@ Exemplo:
 #### Certificado
 
 !!!ABSTRACT Não encontrado metadado {metadataType} associado nessa integração
-         { explicacao_motivo_metadataType_nao_usado_nessa_integracao}
+         {explicacao_motivo_metadataType_nao_usado_nessa_integracao}
 
 #### Remote Site Settings
 
-!!!SUCCESS label do componente
-       {       explicacao_motivo_metadataType_nao_usado_nessa_integracao}
+!!!SUCCESS {label_do_componente}
+         {explicacao_motivo_metadataType_usado_nessa_integracao}
 
 #### Endpoints
 
-!!!SUCCESS
-     { tipo_componente_onde_os_endpoints_estao_configurados}
-     Tipo registro?
-     Nome endpoint?
+!!!SUCCESS {tipo_componente_onde_os_endpoints_estao_configurados}
+         Tipo registro: {tipo_registro}
+         Nome endpoint: {nome_endpoint}
 
 {explicacao_como_usa_endpoint_na_integracao}
 
 #### Named Credential
 
-!!!ABSTRACT Não encontrado metadado {metadataType} associado nessa integração
-       { explicacao_motivo_metadataType_nao_usado_nessa_integracao}
+!!!DANGER {o_que_foi_encontrado}
+         {por_que_nao_da_para_confirmar}
+         Verificar na org: {o_que_verificar}
 
 #### External Credential
 
 !!!ABSTRACT Não encontrado metadado {metadataType} associado nessa integração
-       { explicacao_motivo_metadataType_nao_usado_nessa_integracao}
+         {explicacao_motivo_metadataType_nao_usado_nessa_integracao}
 
-### 6.n [ repete_rastreio_informações_seção_para_cada_integracao_sigla]
+### 3.n {repete_para_cada_integracao_da_sigla}
 
 ---
 
-## 7. Escopo e pontos de validação
+## 4. Acesso
 
-### 7.1. Validações que exigem estado vivo da org (?)
-{lista}
-<!-- avaliar se faz sentido -->
+<!-- Usuário de integração, Profiles, Permission Sets e Permission Set Groups que dão acesso aos componentes das integrações da sigla. -->
 
-### 7.2. Observações técnicas e de configuração
+| Tipo | Nome | Acesso concedido | Integrações |
+
+{breve_explicacao_didatica_sobre_usuario_de_integracao_e_acessos}
+
+---
+
+## 5. Componentes compartilhados entre integrações
+
+<!-- Componentes usados por mais de uma integração da sigla: alterar um deles afeta todas as listadas. -->
+
+| Componente | Tipo | Integrações afetadas | Impacto de uma alteração |
+
+---
+
+## 6. Escopo e pontos de validação
+
+### 6.1. Validações que exigem estado vivo da org
+
+<!-- Todos os !!!DANGER da sigla, cada um com o que verificar na org. -->
+
+| Integração | Item | O que verificar na org |
+
+### 6.2. Observações técnicas e de configuração
+
+<!-- Riscos e anti-padrões encontrados, limites relevantes e assuntos da sigla sem integração detectada (com o motivo). -->
+
 {lista}
-<!-- avaliar se faz sentido -->
 
 ---
 
 ## Anexo A - Fontes principais no repositório
+
+| Componente | Arquivo |

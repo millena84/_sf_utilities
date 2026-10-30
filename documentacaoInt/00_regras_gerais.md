@@ -140,7 +140,7 @@ Valores em `config.json` → `CALIBRACAO`. Se ausentes, usar: `AMOSTRA_REVISAO`=
 |---|---|---|
 | `!!!SUCCESS` | O componente **é usado**, com evidência | Por que a integração o usa |
 | `!!!ABSTRACT` | O componente **não é usado**, com justificativa técnica | Por que, no funcionamento técnico, ele não é necessário |
-| `!!!DANGER` | O repositório **não permite confirmar** | O que foi encontrado, por que não dá para confirmar e o que verificar na org. Todo DANGER entra também na seção 7.1 do documento da sigla |
+| `!!!DANGER` | O repositório **não permite confirmar** | O que foi encontrado, por que não dá para confirmar e o que verificar na org. Todo DANGER entra também na seção 6.1 ("Validações que exigem estado vivo da org") do inventário técnico da sigla |
 
 - **Proibido** nos documentos: "não identificado na base analisada" como resposta pronta; remissões genéricas ("ver CSVs", "a lacuna permanece explícita", "conteúdo detalhado nos arquivos de seção"); menção a arquivos de trabalho (`*.csv`, pastas `faseN/`); o mesmo parágrafo repetido em seções diferentes.
 - **Teste anti-genérico:** se o texto continuar fazendo sentido trocando o nome da integração por outro, ele está genérico e deve ser reescrito com fatos (sistema externo pelo nome, objeto pelo label, gatilho, o que é enviado/recebido, resultado).

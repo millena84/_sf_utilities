@@ -186,7 +186,7 @@
 | F4-H12 ⭐ | Resumo e cadeia | Caminho → Entrada → Saída faz sentido para cada integração; o Mermaid mostra a jornada com os sistemas pelo nome | Sim | Peça reescrita |
 | F4-H13 | Modelo de dados | Só objetos de negócio, cada um com o papel na sigla | Sim | Peça correção |
 | F4-H14 ⭐ | Configurações | As marcações são as mesmas dos documentos por integração | Sim | Peça correção |
-| F4-H15 ⭐ | Seção 7.1 | Todos os DANGER estão lá, cada um dizendo o que verificar na org | Sim | Encaminhe as verificações |
+| F4-H15 ⭐ | Seção 6.1 (validações na org) | Todos os DANGER estão lá, cada um dizendo o que verificar na org | Sim | Encaminhe as verificações |
 | F4-H16 | Nada sensível | Busque "token", "senha", "secret", "password" | Nada | Peça correção |
 
 ### D. Liberação

@@ -49,7 +49,7 @@ Produzir, para a sigla:
 ### 4.1 Integrações da sigla
 - Pontos de integração de cada assunto da sigla: componentes com `is_integration_point = sim` e confiança ALTA/MEDIA na matriz aprovada, mais os órfãos decididos como `anexar:<assunto da sigla>`.
 - **Integração** = troca com um sistema externo com gatilho e resultado próprios. **Todo assunto com ≥1 ponto gera ≥1 integração.** Não una assuntos diferentes só porque usam o mesmo sistema ou middleware; uma integração só atende a mais de um assunto se `conflitos_aprovado.csv` indicar `compartilhado`.
-- Assunto sem ponto de integração: não gera documento; entra na seção 7 do inventário técnico, com o motivo.
+- Assunto sem ponto de integração: não gera documento; entra na seção 6.2 do inventário técnico, com o motivo.
 - Parta da unidade de `fase3/unidades_integracao.csv` (variante e papéis já identificados) e confirme ou corrija o `desenho_base` com `diagnostico.md` (sinais e assinatura mínima) e a tabela da variante. Sem variante compatível → `nenhum` + motivo em `decisions.md` (e `questions.md` se for um desenho que a base não tem).
 - Identifique integrações relacionadas (uma aciona a outra) para a coluna `relacionada_a`.
 
@@ -105,22 +105,23 @@ Para cada integração e cada tipo — **Connected App / External Client App, Ce
 - **Script** gera, a partir do dossiê e das etapas: Cartão, Índice, Visão geral por passo, Ciclo de vida, tabelas de Flows e retry, Anexo A (Evidências) e os blocos de marcação (com a sintaxe de `_modelo/sintaxe_blocos.md`).
 - **Textos explicativos** (Objetos do workflow, explicações didáticas ao final das seções, sucesso/falha, ordem/limites) vêm de `interpretacao.md`, no estilo de `guia_estilo.md`.
 - **Seção 3.1 (caminho da integração):** Mermaid `sequenceDiagram` com `autonumber`; participantes = componentes reais na ordem em que atuam (e o sistema externo pelo nome); rótulo de cada seta = evento ou ação (ex.: `after insert`, `enqueueJob`, `POST <recurso>`).
-- **Configurações da integração:** os 6 tipos com as marcações de 4.4 (mesma fonte usada no inventário da sigla).
-- **Integrações relacionadas:** apenas link para o documento da outra integração e o tipo de relação; **nunca** copiar as seções dela.
+- **Seção 6 (Componentes técnicos):** tabelas de Triggers/Apex (com o papel de 4.3), LWC/Aura/páginas e Custom Metadata, a partir do dossiê.
+- **Seção 7 (Configurações de integração):** os 6 tipos com as marcações de 4.4 (mesma fonte usada no inventário da sigla).
+- **Seção 8 (Integrações relacionadas):** apenas link para o documento da outra integração e o tipo de relação; **nunca** copiar as seções dela.
 - Seção do esqueleto marcada como "se houver" e sem conteúdo: escreva **uma frase que explique por que não se aplica** a esta integração (ex.: "esta integração não usa Flows: o disparo é feito pela trigger X"). Nunca use texto padrão.
 - Nome do arquivo: `docs/<SIGLA>/<SIGLA>_<INTnn>_<acao_relacionada>.md`.
 
 ### 4.6 Renderização do inventário técnico da sigla (esqueleto 01) — por último
-Consolide os documentos por integração. Conteúdo do inventário (decisões registradas em `modelo_esqueletos/00_decisoes_estrutura.md`):
-- **Cabeçalho** (`!!!SUCCESS` com repositório `ALIAS_REPO`, comentários relevantes, lista das jornadas com link e `Data revisão` = DATA_REFERENCIA no formato dd/mm/aaaa) e **Índice** (toda seção com link e "o que buscar"; todo documento gerado da sigla com link).
+Consolide os documentos por integração, seguindo o esqueleto 01 (v2):
+- **Cabeçalho** (`!!!SUCCESS` com repositório `ALIAS_REPO`, comentários relevantes, lista das jornadas com link e `Data revisão` = DATA_REFERENCIA no formato dd/mm/aaaa) e **Índice** (toda seção com link e "o que buscar"; todo documento da sigla com link).
 - **1. Resumo executivo e limites da cadeia:** tabela Caminho | Entrada | Saída (uma linha por integração) + Mermaid básico do fluxo da sigla, com as integrações na ordem da jornada e os sistemas pelo nome.
-- **2. Modelo de dados:** objeto | papel na sigla (só os objetos de negócio; não listar todos os componentes).
-- **Configurações de integração por integração:** os 6 tipos com as **mesmas marcações** dos documentos por integração (mesma fonte `marcacoes.csv`), com link para a explicação detalhada.
-- **Acesso:** usuário de integração, Profiles e Permission Sets relevantes.
-- **Componentes compartilhados entre integrações:** componente | integrações afetadas | link (análise de impacto).
-- **7. Escopo e pontos de validação:** 7.1 recebe **todos os `!!!DANGER`** da sigla como itens a verificar na org; 7.2 observações técnicas (inclui `riscos.csv` e assuntos sem integração, com o motivo).
+- **2. Modelo de dados:** objeto | papel na sigla (só os objetos de negócio).
+- **3. Configurações de integração:** uma subseção por integração, com os 6 tipos e as **mesmas marcações** dos documentos por integração (mesma fonte `marcacoes.csv`) e link para a explicação detalhada.
+- **4. Acesso:** usuário de integração, Profiles, Permission Sets e Permission Set Groups relevantes.
+- **5. Componentes compartilhados entre integrações:** componente | tipo | integrações afetadas | impacto de uma alteração.
+- **6. Escopo e pontos de validação:** 6.1 recebe **todos os `!!!DANGER`** da sigla como itens a verificar na org; 6.2 observações técnicas (inclui `riscos.csv` e assuntos sem integração, com o motivo).
 - **Anexo A:** fontes principais no repositório.
-- Os catálogos completos de Flows, Apex, Triggers e LWC ficam **nos documentos por integração**, não no inventário.
+- Os catálogos de Flows, Apex, Triggers e LWC ficam **nos documentos por integração** (seções 4 e 6 do esqueleto 02), não no inventário.
 - Nome do arquivo: `docs/<SIGLA>/<SIGLA>_inventario_tecnico.md`.
 
 ### 4.7 Comparação com o modelo (somente se SIGLA = SIGLA_MODELO)
@@ -140,7 +141,7 @@ Consolide os documentos por integração. Conteúdo do inventário (decisões re
 | ID | Verificação | Severidade |
 |---|---|---|
 | F4-A01 | Pré-checagem executada e aprovada | BLOQUEANTE |
-| F4-A02 | Cobertura de assuntos: todo assunto da sigla tem ≥1 integração ou aparece na seção 7 do inventário com motivo | BLOQUEANTE |
+| F4-A02 | Cobertura de assuntos: todo assunto da sigla tem ≥1 integração ou aparece na seção 6.2 do inventário com motivo | BLOQUEANTE |
 | F4-A03 | Cobertura de pontos: todo ponto de integração dos assuntos da sigla está em alguma integração | BLOQUEANTE |
 | F4-A04 | Nenhuma integração junta assuntos diferentes sem `compartilhado` em `conflitos_aprovado.csv` | BLOQUEANTE |
 | F4-A05 | Estrutura: todo documento tem todas as seções do seu esqueleto, na ordem e com os títulos exatos | BLOQUEANTE |
@@ -150,7 +151,7 @@ Consolide os documentos por integração. Conteúdo do inventário (decisões re
 | F4-A09 | **Consistência entre seções:** todo componente citado em gatilho, passos ou diagrama aparece na seção do seu tipo (ex.: LWC do gatilho na seção de UI) | BLOQUEANTE |
 | F4-A10 | Marcações: os 6 tipos presentes por integração, cada um com SUCCESS/ABSTRACT/DANGER e motivo não vazio; sintaxe igual à de `sintaxe_blocos.md` | BLOQUEANTE |
 | F4-A11 | Marcações iguais no documento da integração e no inventário da sigla | BLOQUEANTE |
-| F4-A12 | Todo DANGER aparece na seção 7.1 do inventário | BLOQUEANTE |
+| F4-A12 | Todo DANGER aparece na seção 6.1 do inventário | BLOQUEANTE |
 | F4-A13 | **Anti-genérico:** o Cartão e o Resumo de cada integração citam o sistema externo pelo nome, ≥1 objeto de negócio e o gatilho | BLOQUEANTE |
 | F4-A14 | Papel das classes: nenhuma classe sem papel; papéis com evidência; não pode haver o mesmo texto de papel para todas as classes de uma integração | BLOQUEANTE |
 | F4-A15 | Diagramas: todo participante/nó existe no dossiê; toda integração aparece no Mermaid da sigla; `autonumber` na seção 3.1 | BLOQUEANTE |
