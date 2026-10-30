@@ -84,7 +84,10 @@ Se uma regra não ocorrer na amostra, faça uma busca dirigida no inventário in
   `id_regra,id_base,tipo_origem,tipo_destino,padrao,natureza,qtd_ocorrencias_amostra,exemplos,status_revisao,comentario_revisao`
   (`natureza`: estrutural | explicita | dinamica | textual | acesso — `acesso` é usada para as concessões de Profile/PermissionSet; `exemplos`: até 3 `caminho:linha`; regra sem ocorrência → `qtd=0` e observação "não ocorre na amostra")
 - `fase0/relation_sample.csv` `origem,destino,id_regra,evidencia`
-- `fase0/unresolved_refs.csv` `origem,referencia_textual,id_regra,evidencia,motivo_provavel`
+- `fase0/unresolved_refs.csv` — **agregado por nome referenciado** (uma linha por nome, não por ocorrência):
+  `referencia_textual,categoria(nativo|customizado|desconhecido),qtd_ocorrencias,qtd_componentes_origem,exemplos_origem(até 3, com caminho:linha),id_regra,motivo_provavel`
+  - `nativo`: tipos e namespaces do Apex (`String`, `List`, `Map`, `Set`, `System`, `Database`, `Schema`, `Test`…) e objetos/campos padrão do Salesforce.
+  - `customizado`: nomes com `__c`, `__mdt`, `__e`, `__x`, ou com padrão de classe/componente do projeto.
   (`motivo_provavel`: fora_do_escopo | pacote_gerenciado | padrao_padrao_salesforce | desconhecido)
 
 ### 0.4 Léxico da org
@@ -130,8 +133,8 @@ Gere em `fase0/revisao/` (seed=42, `AMOSTRA_REVISAO` linhas):
 | F0-A08 | Toda regra de relação tem ≥1 exemplo real ou está marcada "não ocorre" após busca dirigida | BLOQUEANTE |
 | F0-A19 | Toda regra com ocorrência aparece em `revisao/amostra_relacoes.csv` | BLOQUEANTE |
 | F0-A09 | Reverificação: todo `caminho:linha` de exemplos e da amostra existe e contém o padrão citado | BLOQUEANTE |
-| F0-A10 | Taxa de referências não resolvidas calculada; acima de `ALERTA_REFS_NAO_RESOLVIDAS` gera alerta | ALERTA |
-| F0-A10b | Sanidade da resolução: taxa de não resolvidas ≤ 95% **e** `relation_sample.csv` com ligações resolvidas para ≥ 3 tipos de destino diferentes. Caso contrário, há erro de formato de ID ou de cálculo: diagnosticar e corrigir antes de entregar | BLOQUEANTE |
+| F0-A10 | Taxa de não resolvidas calculada sobre **nomes distintos da categoria `customizado`** (não sobre ocorrências, nem sobre nativos); acima de `ALERTA_REFS_NAO_RESOLVIDAS` gera alerta. Reportar também, à parte, o total de nativos | ALERTA |
+| F0-A10b | Sanidade da resolução: taxa de não resolvidas (customizados distintos) ≤ 50% **e** `relation_sample.csv` com ligações resolvidas para ≥ 3 tipos de destino diferentes. Caso contrário, há erro de formato de ID ou de cálculo: diagnosticar e corrigir antes de entregar | BLOQUEANTE |
 | F0-A10c | Toda referência resolvida usa exatamente o formato de ID do inventário (`Tipo::NomeApi`); a comparação de nomes ignora maiúsculas/minúsculas | BLOQUEANTE |
 | F0-A11 | Todo termo do léxico aparece em ≥1 componente; contagens recalculáveis a partir do inventário | BLOQUEANTE |
 | F0-A12 | Nº de linhas do glossário = nº de assuntos em `assuntos.csv` (todos, independentemente da sigla); todo termo em `termos_da_org` existe no léxico | BLOQUEANTE |

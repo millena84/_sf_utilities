@@ -37,7 +37,7 @@ e identificar **infraestrutura** e **hubs de dados**, que não podem propagar as
 **Saídas:**
 - `fase2/edges.csv` `origem,destino,id_regra,natureza,evidencia`
 - `fase2/test_edges.csv` (mesmo formato)
-- `fase2/unresolved_refs.csv` `origem,referencia_textual,id_regra,evidencia,motivo_provavel`
+- `fase2/unresolved_refs.csv` — agregado por nome referenciado, no mesmo formato da Fase 0 (`referencia_textual,categoria,qtd_ocorrencias,qtd_componentes_origem,exemplos_origem,id_regra,motivo_provavel`)
 
 ### 2.2 Métricas por nó
 `fase2/nodes.csv`
@@ -77,7 +77,7 @@ Proponha, com justificativa:
 | F2-A06 | Todo ponto de integração tem aresta para/de um `SIS::` | BLOQUEANTE |
 | F2-A07 | Sem arestas duplicadas; auto-referências listadas | ALERTA |
 | F2-A08 | Métricas de `nodes.csv` recalculáveis a partir de `edges.csv` | BLOQUEANTE |
-| F2-A09 | Taxa de não resolvidas acima de `ALERTA_REFS_NAO_RESOLVIDAS` | ALERTA |
+| F2-A09 | Taxa de não resolvidas sobre nomes distintos da categoria `customizado` acima de `ALERTA_REFS_NAO_RESOLVIDAS` | ALERTA |
 | F2-A10 | % de componentes isolados e % sem caminho até ponto de integração reportados | ALERTA |
 | F2-A11 | Nenhum segredo nos artefatos | BLOQUEANTE |
 | F2-A12 | CSVs bem formados; Mermaid com sintaxe estruturalmente válida (nós declarados, setas válidas) | BLOQUEANTE |
