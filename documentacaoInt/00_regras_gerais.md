@@ -162,6 +162,16 @@ Material de consulta em `<DIR_TRABALHO>/_projeto/base_de_conhecimento/` (cópia 
 | `limites_plataforma.md` | limites da plataforma que afetam cada desenho |
 | `exemplos/` | exemplos **fictícios** do método; nunca copie conteúdo deles |
 
+Uso por fase:
+
+| Fase | Para que usa a base |
+|---|---|
+| 0 | Catálogo de partida das regras de relação (`L01`–`L47`) e formatos de arquivo (`guia_evidencias.md`) |
+| 1 | Sinais e padrões (`Snn`, `Cnn`) para achar pontos de integração; ligação ponto → configuração |
+| 2 | Regras da base que faltam viram sugestões para revisão (`regras_sugeridas_base.csv`) |
+| 3 | **Unidades de integração**: desenho/variante de cada ponto (`diagnostico.md`, `desenhos.json`) para manter juntas as peças de uma mesma integração na clusterização |
+| 4 | `desenho_base` como roteiro do dossiê, marcações SUCCESS/ABSTRACT/DANGER, riscos e limites |
+
 Regras de uso:
 - A base descreve **o que pode existir**. Só afirme que um componente existe com evidência em `<CAMINHO_ORG>` (seção 5).
 - A confiança da documentação segue a seção 5. A confiança da matriz de diagnóstico vale só para escolher o desenho candidato.

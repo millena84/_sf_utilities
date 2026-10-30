@@ -18,6 +18,7 @@ O resultado decide **quais pontos de integração pertencem a cada assunto** (e,
 - `fase0/inventory.csv`, `fase0/glossario_aprovado.csv`, `fase0/termos_genericos_aprovado.csv`
 - `fase1/integration_points.csv`, `fase1/sistemas_externos_aprovado.csv`
 - `fase2/edges.csv`, `fase2/nodes.csv`, `fase2/infra_hubs_aprovado.csv`
+- `_projeto/base_de_conhecimento/` (seção 14 das regras): `diagnostico.md`, `desenhos.json`, `regras_ligacao.md`
 - Opcional: `_entradas/gabarito_<ORG>.csv` (`id_assunto,assunto,componente_id_esperado`)
 - Opcional (se esta org for a ORG_DO_MODELO): `_modelo/gabarito_modelo.csv`
 - `fase2/validation_report.md`
@@ -28,6 +29,19 @@ O resultado decide **quais pontos de integração pertencem a cada assunto** (e,
 - Falhou → `fase3/PRECHECK_FALHOU.md` e encerre.
 
 ## Etapas
+
+### 3.0 Unidades de integração (base de conhecimento)
+Antes de pontuar assuntos, agrupe os componentes que **trabalham juntos numa mesma integração**, usando os desenhos da base. Isso evita que peças de uma mesma integração (trigger, handler, classe de callout, Named Credential, LWC, Flow) caiam em assuntos diferentes ou fiquem sem assunto.
+
+Para cada ponto de integração (`fase1/integration_points.csv`):
+1. Identifique os **sinais** presentes (`S01`–`S38` de `diagnostico.md`) e os **desenhos candidatos**; confira a **assinatura mínima** de cada um e escolha a variante mais compatível (`desenhos.json`).
+2. Percorra `edges.csv` a partir do ponto (nos dois sentidos, até `MAX_SALTOS`, **sem** o filtro de INFRA/HUB) e associe cada componente encontrado a um **papel da variante** (campo `componentes[].metadata_type` e `aciona`/`acionado_por`), usando as regras de `regras_ligacao.md`.
+3. A unidade é o ponto + os componentes que preenchem papéis da variante, com evidência de aresta.
+
+`fase3/unidades_integracao.csv`
+`id_unidade,id_ponto,desenho_candidato,variante,confianca_desenho(alta|media|baixa),componente_id,papel_no_desenho,obrigatoriedade(Obrigatório|Opcional),classificacao_infra,aresta_evidencia`
+- Sem variante compatível → `variante = nenhum` e motivo em `decisions.md`; a unidade fica só com o ponto e seus vizinhos diretos.
+- Componentes INFRA/HUB_DADOS podem **preencher papel** na unidade (ex.: wrapper HTTP genérico como "cliente de callout"), mas continuam sem propagar assunto (3.2).
 
 ### 3.1 Sementes léxicas
 Para cada assunto, pontue cada componente pelos termos aprovados:
@@ -45,10 +59,12 @@ Para cada assunto, pontue cada componente pelos termos aprovados:
 - Arestas de natureza `acesso` (Profiles/Permission Sets) **não propagam** e esses componentes não entram na matriz. Eles são levantados na Fase 4.
 - Nós `SIS::` propagam apenas se o sistema já tiver ≥1 ponto de integração com semente do mesmo assunto.
 - Score final = max(score léxico, maior score propagado) + 0.1 por semente independente adicional que alcança o componente (máx. 1.0).
+- **Coerência da unidade (3.0):** se o ponto de uma unidade (ou um componente da unidade com papel Obrigatório) tem ALTA/MEDIA num assunto, os demais membros da unidade que **não** são INFRA/HUB_DADOS recebem, nesse assunto, score = max(score atual, score da âncora × `DECAIMENTO`), com `origem = unidade_desenho` e `caminho_explicacao` = `unidade <id_unidade> (<variante>) > papel <papel_no_desenho>`. Membro com papel Obrigatório e aresta `documentado` recebe no mínimo MEDIA.
+- Aresta de regra da base do tipo `heurística` conta como relação fraca (`FATOR_RELACAO_FRACA`).
 - Confiança: ≥ `LIMIAR_ALTA` → ALTA; ≥ `LIMIAR_MEDIA` → MEDIA; abaixo → BAIXA (registrar só se ≥ 0.2).
 
 `fase3/matriz_componente_assunto_proposto.csv`
-`id_assunto,componente_id,tipo,score,confianca,origem(semente|propagacao),caminho_explicacao,is_integration_point,classificacao_infra,status_revisao,comentario_revisao`
+`id_assunto,componente_id,tipo,score,confianca,origem(semente|propagacao|unidade_desenho),caminho_explicacao,is_integration_point,classificacao_infra,status_revisao,comentario_revisao`
 - `caminho_explicacao`: `semente > aresta(id_regra) > ... > componente`, com os IDs de cada nó.
 
 ### 3.3 Conflitos, órfãos e resumo
@@ -70,6 +86,7 @@ Para cada assunto, pontue cada componente pelos termos aprovados:
 - `amostra_baixa.csv` — `AMOSTRA_REVISAO` associações BAIXA com caminho, `deveria_entrar(sim|não),comentario`
 - `amostra_media.csv` — `AMOSTRA_REVISAO` associações MEDIA com caminho, `ok,comentario`
 - `mapa_assuntos.md` — por assunto: lista dos componentes ALTA, sistemas externos e um Mermaid `flowchart LR` simplificado
+- `unidades_revisao.md` — para cada unidade: ponto, variante escolhida, papéis preenchidos × papéis Obrigatórios faltantes, e assunto(s) resultante(s)
 
 ## Autovalidação — `tools/fase3/validate_fase3.py`
 
@@ -87,6 +104,10 @@ Para cada assunto, pontue cada componente pelos termos aprovados:
 | F3-A10 | Recall do gabarito (só tipos classificáveis) reportado por origem e por tipo; recall < 80% | ALERTA |
 | F3-A14 | Se a matriz `_proposto` for regenerada, todos os derivados (recall, conflitos, órfãos, resumo, mapa) são regenerados na mesma execução | BLOQUEANTE |
 | F3-A15 | Entrada da Fase 3 em `decisions.md` | BLOQUEANTE |
+| F3-A16 | Todo ponto de integração tem unidade em `unidades_integracao.csv` (variante da base ou `nenhum` com motivo) | BLOQUEANTE |
+| F3-A17 | Todo papel atribuído na unidade tem aresta de evidência em `edges.csv`; nenhuma variante citada inexiste em `desenhos.json` | BLOQUEANTE |
+| F3-A18 | Unidade com membros em assuntos diferentes (ALTA/MEDIA) listada para revisão | ALERTA |
+| F3-A19 | Recall do gabarito reportado também por `origem` (quanto veio de `unidade_desenho`) | ALERTA |
 | F3-A11 | Nenhum componente `is_test=true` na matriz | BLOQUEANTE |
 | F3-A12 | Nenhum segredo; CSVs bem formados; Mermaid estruturalmente válido | BLOQUEANTE |
 | F3-A13 | Idempotência | BLOQUEANTE |

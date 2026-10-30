@@ -30,7 +30,7 @@ Produzir, para a sigla:
 ## Insumos
 - `_projeto/templates/*`, `_projeto/guia_estilo.md`, `_modelo/sintaxe_blocos.md`, `_modelo/mapa_secoes_aprovado.csv` (em MODO_TESTE, o `_proposto`)
 - `fase3/matriz_componente_assunto_aprovado.csv`, `fase3/conflitos_aprovado.csv`, `fase3/pontos_orfaos_aprovado.csv`
-- `fase2/edges.csv`, `fase2/nodes.csv`
+- `fase2/edges.csv`, `fase2/nodes.csv`, `fase3/unidades_integracao.csv`
 - `fase1/integration_points.csv`, `fase1/sistemas_externos_aprovado.csv`, `fase1/componentes_integracao.csv`, `fase1/config_por_ponto.csv`
 - `fase0/inventory.csv` (colunas `estado` e `atributos`), `fase0/glossario_aprovado.csv`, `_entradas/assuntos.csv` (coluna `descricao`)
 - `_projeto/base_de_conhecimento/` (seção 14 das regras)
@@ -50,7 +50,7 @@ Produzir, para a sigla:
 - Pontos de integração de cada assunto da sigla: componentes com `is_integration_point = sim` e confiança ALTA/MEDIA na matriz aprovada, mais os órfãos decididos como `anexar:<assunto da sigla>`.
 - **Integração** = troca com um sistema externo com gatilho e resultado próprios. **Todo assunto com ≥1 ponto gera ≥1 integração.** Não una assuntos diferentes só porque usam o mesmo sistema ou middleware; uma integração só atende a mais de um assunto se `conflitos_aprovado.csv` indicar `compartilhado`.
 - Assunto sem ponto de integração: não gera documento; entra na seção 7 do inventário técnico, com o motivo.
-- Escolha o `desenho_base` de cada integração com `diagnostico.md` (sinais e assinatura mínima) e confira na tabela da variante. Sem variante compatível → `nenhum` + motivo em `decisions.md` (e `questions.md` se for um desenho que a base não tem).
+- Parta da unidade de `fase3/unidades_integracao.csv` (variante e papéis já identificados) e confirme ou corrija o `desenho_base` com `diagnostico.md` (sinais e assinatura mínima) e a tabela da variante. Sem variante compatível → `nenhum` + motivo em `decisions.md` (e `questions.md` se for um desenho que a base não tem).
 - Identifique integrações relacionadas (uma aciona a outra) para a coluna `relacionada_a`.
 
 `fase4/<SIGLA>/integracoes.csv`

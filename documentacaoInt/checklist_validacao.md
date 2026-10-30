@@ -142,6 +142,7 @@
 | F3-H02 ⭐ | Tamanho dos assuntos | `resumo_assuntos.csv` | GIGANTE = vazamento (provável infra não marcada). Muito pequeno = vocabulário fraco | Plausível | GIGANTE → revise F2-H01. Pequeno → revise o glossário |
 | F3-H03 | Assuntos SEM_INTEGRACAO | `resumo_assuntos.csv` | É verdade que o assunto não tem integração nesta org? | Confirmado | Se tem, falta sinal (fase 1) ou vocabulário |
 | F3-H04 ⭐ | Conflitos | `conflitos_proposto.csv` | Compartilhado ou assunto principal? | Nenhum pendente | — |
+| F3-H09 ⭐ | Unidades de integração | `revisao/unidades_revisao.md` | Para 2–3 integrações conhecidas: as peças agrupadas são da mesma integração? A variante da base descreve a integração? | Sim | Unidade errada → peça correção da variante ou da regra de relação |
 | F3-H05 ⭐ | Pontos órfãos | `pontos_orfaos_proposto.csv` (salvar como `_aprovado`; a Fase 4 exige todos decididos) | Novo assunto, anexar a um existente ou ignorar? | Decidido | Novo assunto → inclua em `assuntos.csv` e no glossário |
 | F3-H06 | Calibração (BAIXA) | `revisao/amostra_baixa.csv` | Algum deveria entrar? | Poucos sim | Muitos sim → baixe `LIMIAR_MEDIA` |
 | F3-H07 | Calibração (MEDIA) | `revisao/amostra_media.csv` | Estão corretos? | ≥ 8 de 10 | Muitos errados → suba `LIMIAR_MEDIA` ou reduza `MAX_SALTOS` |

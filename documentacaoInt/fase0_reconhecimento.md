@@ -73,6 +73,7 @@ Profile/PermissionSet/PermissionSetGroup→ApexClass (`classAccesses`), →Objet
 →ExternalCredential (`externalCredentialPrincipalAccesses`), →CustomMetadata (`customMetadataTypeAccesses`), →Flow (`flowAccesses`).
 Considere só os acessos concedidos (`enabled`/`allowRead`/`readable` = true).
 Inclua padrões adicionais que encontrar.
+**Use a base de conhecimento como catálogo de partida** (seção 14 das regras): as regras `L01`–`L47` de `_projeto/base_de_conhecimento/regras_ligacao.md` (ou `evidencias_e_ligacoes.json`) e o formato dos arquivos de `guia_evidencias.md`. Para cada regra da base cujos tipos estejam em escopo, verifique se o padrão ocorre nesta org e inclua-a em `relation_rules_proposto.csv` com o `id_base` (ex.: `L01`). Regra `documentado` → natureza `explicita`/`estrutural`; regra `heurística` → natureza `textual`/`dinamica` (peso fraco na Fase 3); regra `nv` → incluir com observação "não verificada na documentação".
 **Não** crie regra a partir de `sourceTemplate` de Flow: ele indica de qual modelo o Flow foi criado, não uma dependência em execução.
 
 Para cada regra: rode a extração numa **amostra estratificada por tipo** (seed=42): até 5 componentes de cada tipo em escopo que tenha código ou XML com referências (Apex, Trigger, Flow, LWC/Aura, Visualforce, Workflow, CustomMetadata, Profile/PermissionSet, NamedCredential etc.), com no mínimo 30 componentes no total. Registre exemplos reais.
@@ -80,7 +81,7 @@ Se uma regra não ocorrer na amostra, faça uma busca dirigida no inventário in
 
 **Saídas:**
 - `fase0/relation_rules_proposto.csv`
-  `id_regra,tipo_origem,tipo_destino,padrao,natureza,qtd_ocorrencias_amostra,exemplos,status_revisao,comentario_revisao`
+  `id_regra,id_base,tipo_origem,tipo_destino,padrao,natureza,qtd_ocorrencias_amostra,exemplos,status_revisao,comentario_revisao`
   (`natureza`: estrutural | explicita | dinamica | textual | acesso — `acesso` é usada para as concessões de Profile/PermissionSet; `exemplos`: até 3 `caminho:linha`; regra sem ocorrência → `qtd=0` e observação "não ocorre na amostra")
 - `fase0/relation_sample.csv` `origem,destino,id_regra,evidencia`
 - `fase0/unresolved_refs.csv` `origem,referencia_textual,id_regra,evidencia,motivo_provavel`
@@ -137,6 +138,7 @@ Gere em `fase0/revisao/` (seed=42, `AMOSTRA_REVISAO` linhas):
 | F0-A15 | CSVs bem formados: cabeçalho exato, mesmo nº de colunas em todas as linhas, UTF-8 | BLOQUEANTE |
 | F0-A16 | Idempotência: rodar os scripts 2x gera arquivos idênticos | BLOQUEANTE |
 | F0-A17 | Nenhum comando sf/sfdx foi utilizado (declarar no relatório) | BLOQUEANTE |
+| F0-A20 | Toda regra `L..` da base cujos tipos estão em escopo foi avaliada: incluída (com `id_base`) ou listada em `decisions.md` como "não ocorre nesta org" | BLOQUEANTE |
 | F0-A18 | Nenhum arquivo de `_modelo/` ou `modelo_referencia/` foi lido; `gabarito_<ORG>_PARA_PREENCHER.csv` tem uma linha por assunto e a coluna `componente_id_esperado` vazia | BLOQUEANTE |
 
 ## Entrega
