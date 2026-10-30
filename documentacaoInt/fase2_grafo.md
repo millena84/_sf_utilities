@@ -30,6 +30,7 @@ e identificar **infraestrutura** e **hubs de dados**, que não podem propagar as
 - Aplique cada regra aprovada a todos os componentes do inventário (exceto `is_test=true`, que só entram em `test_edges.csv`).
 - Para cada ponto de integração, crie aresta `componente → SIS::<id>` (OUTBOUND) ou `SIS::<id> → componente` (INBOUND/INBOUND_PRESUMIDO); EVENTO conforme publicação/assinatura.
 - Remova duplicatas exatas; mantenha a evidência mais forte.
+- Use `_projeto/base_de_conhecimento/regras_ligacao.md` como fonte de regras candidatas: regras `documentado` que faltarem no arquivo de regras aprovado vão para `fase2/regras_sugeridas_base.csv` (`id_base,de,para,como_seguir,tipo`) para revisão humana; **não** as aplique sem aprovação. Regras `heurística` geram no máximo arestas de confiança MEDIA.
 
 **Saídas:**
 - `fase2/edges.csv` `origem,destino,id_regra,natureza,evidencia`

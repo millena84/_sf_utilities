@@ -9,6 +9,7 @@ Leia e siga integralmente:
 - `<DIR_TRABALHO>/_projeto/template_extraido.md` (**prevalece**; gerado na Fase M)
 - `<DIR_TRABALHO>/_projeto/template_jornada.md` (fallback e conteúdos mínimos)
 - Os documentos do modelo em `<DIR_TRABALHO>/_entradas/modelo_referencia/`, **como referência de estilo e nível de detalhe**
+- A base de conhecimento (`_projeto/base_de_conhecimento/`, seção 14 das regras), para classificar e completar cada integração
 
 ## Parâmetros desta execução
 - ORG: `<ORG>` · CAMINHO_ORG: `<CAMINHO_ORG>` · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
@@ -62,11 +63,14 @@ Produzir a documentação da sigla no formato do modelo do time: **uma visão ge
 - **Jornada completa** = a ordem em que as integrações acontecem do início ao fim do processo de negócio da sigla.
 - Para cada integração, identifique o gatilho: endpoint exposto, trigger, Flow record-triggered, agendamento, ação de usuário (LWC/Aura/Visualforce/botão), Platform Event.
 
-`fase4/<SIGLA>/integracoes.csv` `id_integracao(INTnn),id_assunto,nome,ordem_na_jornada,gatilho,componente_gatilho,resultado,direcao,sistema_externo_id,pontos_integracao`
+`fase4/<SIGLA>/integracoes.csv` `id_integracao(INTnn),id_assunto,nome,ordem_na_jornada,gatilho,componente_gatilho,resultado,direcao,sistema_externo_id,pontos_integracao,desenho_base,confianca_desenho`
+- `desenho_base`: variante da base que melhor descreve a integração (ex.: `D.1.v11`), escolhida com `diagnostico.md` (sinais e assinatura mínima) e conferida na tabela da variante; `confianca_desenho` = alta/média/baixa. Sem variante compatível → `nenhum` + motivo em `decisions.md` (pode ser um desenho que a base ainda não tem: registre em `questions.md`).
+- Componentes que a variante marca como **Obrigatório** e não foram achados no projeto: verifique se é limite da fonte (`limites_da_fonte.md`); se não for, investigue antes de seguir.
 
 ### 4.3 Etapas de cada integração
 Percorra o grafo a partir do gatilho e **leia o código** para ordenar as etapas. Marque síncrono/assíncrono (`@future`, Queueable, Batch, Schedulable, Platform Event, Outbound Message) e o tratamento de erro (try/catch, log, retentativa, reprocessamento).
 Transição sem aresta no grafo → [INFERIDO] com justificativa.
+A ordem da tabela da variante (`desenho_base`) serve de roteiro; a ordem real vem do código.
 
 `fase4/<SIGLA>/etapas.csv` `id_integracao,ordem,descricao,componente_id,sync_async,aresta_suporte(id_regra|INFERIDO),evidencia,confianca`
 
@@ -84,6 +88,8 @@ Gere um CSV por seção em `fase4/<SIGLA>/secoes/`, **por integração**, sempre
 | `lwc.csv` | LWC/Aura envolvidos | Se houver |
 | `acessos.csv` | Profiles e Permission Sets que concedem acesso aos componentes da integração (classe, objeto, External Credential, Custom Metadata), indicando se parecem ser de usuário de integração | **Somente** acessos a componentes do recorte; nunca a lista inteira do profile |
 
+`fase4/<SIGLA>/secoes/riscos.csv` `id_integracao,id_base(Ann|Nnn|limite),descricao,evidencia` — anti-padrões encontrados (`antipadroes.md`), informações que o repositório não mostra (`limites_da_fonte.md`) e limites da plataforma relevantes para o desenho (`limites_plataforma.md`, com a data da consulta).
+
 ### 4.5 Escrita
 - Siga o `template_extraido.md` e o `mapa_secoes_aprovado.csv`: cada seção é preenchida a partir da fonte mapeada.
 - Gere os arquivos com a mesma convenção de nomes do modelo. Na ausência de convenção:
@@ -92,6 +98,7 @@ Gere um CSV por seção em `fase4/<SIGLA>/secoes/`, **por integração**, sempre
 - O resumo não usa nomes técnicos (nada de nomes de API ou `__c`) e é escrito em frases curtas.
 - Diagramas: siga o modelo. Se o modelo não tiver diagrama, use Mermaid (`flowchart LR` na visão geral e `sequenceDiagram` nas integrações).
 - Seção do tipo "se houver" sem conteúdo → "Não se aplica a esta integração."; seção do tipo "sempre" sem conteúdo → "Não identificado na base analisada."
+- `riscos.csv` vai para a seção de tratamento de erros ou de pontos em aberto (a mais próxima no template). Os exemplos em `base_de_conhecimento/exemplos/` mostram o resultado esperado, mas são fictícios: não copie texto deles.
 
 ### 4.6 Comparação com o modelo (somente se for a sigla do modelo)
 Compare a documentação gerada com o modelo do time:
@@ -131,6 +138,8 @@ Compare a documentação gerada com o modelo do time:
 | F4-A18 | **Cobertura de assuntos:** todo assunto da sigla tem ≥1 integração em `integracoes.csv` ou aparece em "Pontos em aberto" com motivo (sem ponto de integração / sem componentes ALTA-MEDIA) | BLOQUEANTE |
 | F4-A19 | **Cobertura de pontos:** todo ponto de integração associado (ALTA/MEDIA) a um assunto da sigla está em alguma integração | BLOQUEANTE |
 | F4-A20 | Nenhuma integração junta assuntos diferentes sem componentes `compartilhado` em `conflitos_aprovado.csv` | BLOQUEANTE |
+| F4-A21 | Toda integração tem `desenho_base` (variante existente na base ou `nenhum` com motivo) | ALERTA |
+| F4-A22 | Nenhum fato do documento vem só de item da base marcado como "não confirmado"/⚠️ ou só de regra `heurística` com confiança ALTA (verificar pelos ids da base citados) | ALERTA |
 
 ## Entrega
 Docs + CSVs + `fase4/<SIGLA>/validation_report.md` + `fase4/<SIGLA>/RESUMO.md` (+ `comparacao_modelo.md` quando aplicável).

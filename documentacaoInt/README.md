@@ -9,11 +9,11 @@
 | `faseM_modelo_referencia.md` | Prompt que analisa o modelo feito pelo time e gera `template_extraido.md` (que prevalece sobre o template base) |
 | `fase0_reconhecimento.md` … `fase5_consolidacao.md` | Prompts. Cole um por sessão do Devin, depois de trocar os placeholders |
 | `checklist_validacao.md` | Seu checklist de revisão, com portão, revisão humana e liberação |
-| `base_de_conhecimento/` | Base de consulta: 52 desenhos de integração Salesforce (IN/OUT, SYNC/ASYNC, middleware) em 374 variantes, com metadata types, papel, ordem e quem aciona quem. Ver o README da pasta |
+| `base_de_conhecimento/` | Base de consulta das fases 1, 2 e 4: desenhos de integração (382 variantes), guia de evidências, regras de ligação, diagnóstico, limites e anti-padrões. Copie para `<DIR_TRABALHO>/_projeto/base_de_conhecimento/`. Ver o README da pasta e a seção 14 de `00_regras_gerais.md` |
 
 ## Preparação (uma vez)
 
-1. Crie `<DIR_TRABALHO>/_projeto/` e copie para lá `00_regras_gerais.md` e `template_jornada.md`.
+1. Crie `<DIR_TRABALHO>/_projeto/` e copie para lá `00_regras_gerais.md`, `template_jornada.md` e a pasta `base_de_conhecimento/` (fica `<DIR_TRABALHO>/_projeto/base_de_conhecimento/`).
 2. Crie `<DIR_TRABALHO>/_entradas/` com:
    - `tipos_metadata.txt`: um tipo por linha, com o nome da Metadata API (ex.: `ApexClass`, `ApexTrigger`, `Flow`, `CustomObject`, `NamedCredential`…)
    - `assuntos.csv`: coluna `assunto` obrigatória; `descricao` (ajuda muito) e `sigla` opcionais. Exemplo:
@@ -26,6 +26,8 @@
    - `modelo_referencia/`: os documentos do modelo do time (de preferência exportados em `.md` ou `.html`)
 4. Tipos de metadata recomendados para `tipos_metadata.txt` (a Fase M aponta os que faltarem):
    `CustomObject, ApexClass, ApexTrigger, Flow, LightningComponentBundle, AuraDefinitionBundle, ApexPage, CustomMetadata, NamedCredential, ExternalCredential, ExternalClientApplication, ConnectedApp, Certificate, RemoteSiteSetting, CspTrustedSite, Workflow, PlatformEventChannel, ExternalServiceRegistration, Profile, PermissionSet, PermissionSetGroup`
+
+   Também usados pela base de conhecimento (inclua os que existirem no repositório): `ExtlClntAppOauthSettings, ExtlClntAppGlobalOauthSettings, ExtlClntAppOauthConfigurablePolicies, ExtlClntAppConfigurablePolicies, AuthProvider, OauthCustomScope, ExternalDataSource, PlatformEventChannelMember, PlatformEventSubscriberConfig, EventRelayConfig, ManagedEventSubscription, EmailServicesFunction, CustomSite, QuickAction, CustomTab, FlexiPage, CustomLabels, PlatformCachePartition, OutboundNetworkConnection, SamlSsoConfig`
 3. Placeholders a substituir em cada prompt: `<ORG>`, `<CAMINHO_ORG>`, `<DIR_TRABALHO>`, `<sim|não>` (MODO_TESTE), `<AAAA-MM-DD>` (DATA_REFERENCIA, fases 1 e 5), e, na fase 4, `<SIGLA>` (os assuntos vêm da coluna `sigla` do `assuntos.csv`).
 
 ## Ordem de execução (uma org por vez)

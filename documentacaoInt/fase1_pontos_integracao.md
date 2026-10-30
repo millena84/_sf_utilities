@@ -2,6 +2,7 @@
 
 ## Antes de começar
 Leia e siga integralmente `<DIR_TRABALHO>/_projeto/00_regras_gerais.md`.
+Consulte a base de conhecimento (seção 14 das regras): `_projeto/base_de_conhecimento/guia_evidencias.md`, `regras_ligacao.md`, `diagnostico.md`, `limites_da_fonte.md`.
 
 ## Parâmetros desta execução
 - ORG: `<ORG>` · CAMINHO_ORG: `<CAMINHO_ORG>` · DIR_TRABALHO: `<DIR_TRABALHO>` · MODO_TESTE: `<sim|não>`
@@ -42,6 +43,8 @@ Monte `fase1/catalogo_sinais.csv` (`id_sinal,categoria,padrao,direcao_padrao,tip
 
 Inclua sinais adicionais descobertos na fase 0. Se um sinal depende de um tipo **fora do escopo**, registre como lacuna em `fase1/lacunas.csv`.
 
+**Complemente o catálogo com a base de conhecimento:** os padrões de código `C01`–`C25` e o catálogo por tipo de `guia_evidencias.md` (campos XML que comprovam cada componente) e os sinais `S01`–`S38` de `diagnostico.md`. Anote o id da base na coluna `descricao` (ex.: `C07`, `S21`). Aceite os dois formatos de arquivo (com e sem `-meta.xml`, seção 1 do guia).
+
 ### 1.2 Censo e classificação
 - Varra os componentes do inventário com todos os sinais → `fase1/signal_census.csv` (`id_sinal,componente_id,evidencia`).
 - Cada ocorrência vira **ponto de integração** ou **descarte justificado**:
@@ -53,10 +56,12 @@ Inclua sinais adicionais descobertos na fase 0. Se um sinal depende de um tipo *
   - `endpoint_ref`: nome da Named Credential / Remote Site / registro de Custom Metadata que contém o endpoint
   - `host`: apenas domínio; endpoint dinâmico não resolvido → `DINAMICO`
 - `fase1/descartes.csv` `componente_id,id_sinal,evidencia,motivo`
+- Use as colunas de direção e mecanismo da matriz `diagnostico.md` como referência. Sinal que a base marca como anti-padrão (ex.: `S08`, callout direto em trigger) vira ponto de integração com a observação `anti-padrão A06`, não descarte.
 
 ### 1.3 Resolução de endpoints e sistemas externos
 - Resolva `callout:Nome` → arquivo da Named Credential → host. Resolva Remote Sites → host. Literais em `setEndpoint` → host.
   Endpoints vindos de Custom Metadata/Custom Setting: resolva se o registro estiver na base; senão `DINAMICO`.
+  Siga as regras de `regras_ligacao.md` (`L01`–`L09`, `L19`, `L22`, `L36`, `L37`, `L42`) e os casos difíceis do fim do arquivo. Valores de Custom Setting nunca estão no repositório (`N06`); Custom Metadata e Custom Labels estão (`N07`).
 - Agrupe por host/credencial e proponha sistemas externos:
   `fase1/sistemas_externos_proposto.csv`
   `sistema_externo_id,nome_proposto,hosts,credenciais,qtd_pontos,direcoes,evidencias,status_revisao,comentario_revisao`
@@ -68,7 +73,8 @@ Consolide todos os componentes de configuração de integração:
 `componente_id,tipo,host,tipo_autenticacao,certificado,vencimento_certificado,status_vencimento(valido|a_vencer|vencido|nao_disponivel),usado_por,evidencia`
 - `vencimento_certificado`: lido do XML do certificado (ex.: `expirationDate`). Se não existir na base → `nao_disponivel`.
 - `status_vencimento`: calculado a partir de `DATA_REFERENCIA` e `ALERTA_VENCIMENTO_DIAS`.
-- `tipo_autenticacao`: apenas o tipo (ex.: OAuth client credentials, JWT, senha, mTLS), **nunca valores**.
+- `tipo_autenticacao`: apenas o tipo (ex.: OAuth client credentials, JWT, senha, mTLS), **nunca valores**. Use os campos indicados em `guia_evidencias.md` (ex.: `namedCredentialType`, `authenticationProtocol`, `isClientCredentialEnabled`). Web Server × Username-Password não se distingue pelo XML: registre "não determinado" (`N11`).
+- Não copie o valor de nenhum campo listado como sensível no guia (coluna "Campos sensíveis").
 - `usado_por`: componentes que referenciam (via relações aprovadas).
 
 ### 1.5 Material de revisão humana (`fase1/revisao/`, seed=42)
