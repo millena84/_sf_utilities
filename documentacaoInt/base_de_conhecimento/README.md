@@ -42,12 +42,15 @@ Identificador de variante: `<desenho>.v<n>` (ex.: `b.2.v4`).
 | Ordem | Sequência aproximada. Linhas **autoriza** são verificadas pela plataforma no momento da chamada; aparecem junto do passo que dependem dela |
 | Componente | Nome funcional do papel no desenho |
 | Metadata type | Nome na Metadata API. `não é metadata` = ator (usuário, sistema externo, API padrão, registro, agendamento) |
+| O que faz nesta integração | Explicação em linguagem simples do papel da peça nesta variante. O que é cada metadata type está no glossário no topo de cada arquivo |
 | Relação | **executa** (roda lógica), **executa (DML)** (grava dados), **lê/referencia** (é consultado/apontado), **autoriza** (libera acesso), **ator** (participante fora da metadata) |
 | Acionado por / Aciona | Quem dispara o componente e o que ele dispara a seguir. `plataforma` = o próprio Salesforce |
 | Obrigatoriedade | **Obrigatório** na variante; **Opcional** = comum, mas pode faltar |
 | Como achar no projeto | Pasta/sufixo, campo XML ou padrão de código (`Cnn`) que comprova o componente; `[ID]` = fonte oficial. Detalhes em [guia_evidencias.md](guia_evidencias.md) |
 
 "Fluxo principal" lista só os passos obrigatórios que executam ou são atores.
+
+Cada desenho começa com um **mapa das variantes** que mostra se a variante usa **Remote Site Setting**. Ele só é necessário quando o Apex chama uma URL que não vem de uma Named Credential (E3, E4, E6); com Named Credential (E1, E2, E5) não é preciso.
 
 ## Eixos de multiplicação
 

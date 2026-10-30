@@ -7,6 +7,23 @@ from diagnostico import SINAIS
 from limites import LIMITES
 from antipadroes import ANTIPADROES
 from limites_plataforma import LIMITES_PLATAFORMA
+from glossario import GLOSSARIO
+import re as _re
+
+def tipos_de(mt):
+    return [p.strip().split(' ')[0] for p in _re.split(r',| ou |/|\+', mt) if p.strip()]
+
+def rss_info(rows):
+    tipos = [t for r in rows for t in tipos_de(r[1])]
+    if 'RemoteSiteSetting' in tipos:
+        return 'Sim, obrigatório', 'a URL não vem de uma Named Credential, então o domínio precisa estar liberado'
+    if 'NamedCredential' in tipos:
+        return 'Não', 'a Named Credential já autoriza o domínio [AX-RSS]'
+    if 'CspTrustedSite' in tipos:
+        return 'Não', 'a chamada sai do navegador; quem libera é o CSP Trusted Site'
+    if 'ExternalDataSource' in tipos:
+        return 'Não', 'o Salesforce Connect usa a External Data Source'
+    return 'Não se aplica', 'não há chamada de saída feita por Apex nesta variante'
 out = sys.argv[1]
 os.makedirs(out, exist_ok=True)
 def esc(s): return str(s).replace("|", "\\|")
@@ -17,7 +34,15 @@ AVISO = "> Gerado a partir de `_fonte/`. Não edite este arquivo: altere as defi
 # ---------- desenhos (um arquivo por seção) ----------
 total = {}
 for slug, titulo, ds in SECOES:
-    L = [f"# {titulo}", "", AVISO, "", "Convenções, legenda e códigos de variante: [README](README.md). Fontes citadas entre colchetes: [fontes_validacao.md](fontes_validacao.md).", "", "## Índice", ""]
+    L = [f"# {titulo}", "", AVISO, "", "Convenções, legenda e códigos de variante: [README](README.md). Fontes citadas entre colchetes: [fontes_validacao.md](fontes_validacao.md).", "",
+         "## Como ler", "",
+         "- Cada **desenho** (ex.: b.1) começa com um **mapa das variantes**: de onde vem o endereço do sistema externo e se a variante precisa de **Remote Site Setting**.",
+         "- **Remote Site Setting só é necessário quando o Apex chama uma URL que não vem de uma Named Credential** (URL fixa no código, em Custom Metadata, Custom Setting ou Custom Label). Com Named Credential (E1, E2, E5), não é preciso [AX-RSS].",
+         "- Na tabela de cada variante, a coluna **O que faz nesta integração** explica o papel de cada peça; o glossário abaixo diz o que é cada metadata type.", "",
+         "## O que é cada metadata type", "", "| Metadata type | O que é |", "|---|---|"]
+    usados = sorted({t for d in ds for _, rows in d["variantes"] for r in rows for t in tipos_de(r[1]) if t in GLOSSARIO})
+    L += [f"| `{t}` | {GLOSSARIO[t]} |" for t in usados]
+    L += ["", "## Índice", ""]
     for d in ds:
         L.append(f"- [{d['id']} — {d['titulo']}](#{d['id'].lower().replace('.', '')}) ({len(d['variantes'])} variantes)")
     for d in ds:
@@ -25,10 +50,16 @@ for slug, titulo, ds in SECOES:
         for o in d["obs"]: L.append(f"> Observação: {o}")
         for v in d["validar"]: L.append(f"> ⚠️ A validar: {v}")
         if d["obs"] or d["validar"]: L.append("")
+        L += ["**Mapa das variantes**", "", "| Variante | Resumo | Usa Remote Site Setting? | Por quê |", "|---|---|---|---|"]
+        for i, (nome, rows) in enumerate(d["variantes"], 1):
+            usa, pq = rss_info(rows)
+            L.append(f"| [{d['id']}.v{i}](#{(d['id']+'v'+str(i)).lower().replace('.', '')}) | {esc(nome)} | {usa} | {pq} |")
+        L.append("")
         for i, (nome, rows) in enumerate(d["variantes"], 1):
             fluxo = " → ".join(r[0] for r in rows if r[2] in ("executa", "ator", "executa (DML)") and r[6].startswith("Obrig"))
-            L += [f"### {d['id']}.v{i} — {nome}", "", f"Fluxo principal: {fluxo}", "",
-                  "| Ordem | Componente | Metadata type | Relação | Papel na integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |",
+            usa, pq = rss_info(rows)
+            L += [f"<a id=\"{(d['id']+'v'+str(i)).lower().replace('.', '')}\"></a>", "", f"### {d['id']}.v{i} — {nome}", "", f"Fluxo principal: {fluxo}", "", f"Remote Site Setting: **{usa}** — {pq}.", "",
+                  "| Ordem | Componente | Metadata type | Relação | O que faz nesta integração | Acionado por | Aciona | Obrigatoriedade | Como achar no projeto |",
                   "|---|---|---|---|---|---|---|---|---|"]
             for k, r in enumerate(rows, 1):
                 L.append("| " + " | ".join([str(k)] + [esc(x) for x in r] + [esc(evid(r[0], r[1]))]) + " |")
@@ -173,7 +204,7 @@ data = []
 for slug, titulo, ds in SECOES:
     for d in ds:
         data.append({"secao": slug, "id": d["id"], "titulo": d["titulo"], "resumo": d["resumo"], "observacoes": d["obs"], "a_validar": d["validar"],
-                     "variantes": [{"id": f"{d['id']}.v{i}", "nome": n, "componentes": [dict(ordem=k, **dict(zip(cols, r)), como_achar=evid(r[0], r[1])) for k, r in enumerate(rows, 1)]}
+                     "variantes": [{"id": f"{d['id']}.v{i}", "nome": n, "usa_remote_site_setting": rss_info(rows)[0], "remote_site_motivo": rss_info(rows)[1], "componentes": [dict(ordem=k, **dict(zip(cols, r)), como_achar=evid(r[0], r[1])) for k, r in enumerate(rows, 1)]}
                                    for i, (n, rows) in enumerate(d["variantes"], 1)]})
 json.dump({"eixos_endpoint": ENDPOINTS, "fluxos_oauth": FLOWS, "desenhos": data}, open(f"{out}/desenhos.json", "w"), ensure_ascii=False, indent=1)
 json.dump({"fontes": FONTES,
