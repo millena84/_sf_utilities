@@ -3,24 +3,24 @@ from blocks import *
 def D(id, titulo, resumo, variantes, obs=None, validar=None):
     return dict(id=id, titulo=titulo, resumo=resumo, variantes=variantes, obs=obs or [], validar=validar or [])
 
-USER = ator("Usuário", "inicia a ação na tela", "—", "página")
+USER = ator("Usuário", "Pessoa que usa o Salesforce e dispara a integração ao clicar em algo na tela. Ela fica esperando a resposta.", "—", "página")
 
 def origem_ui(kind):
     """Linhas de entrada para desenhos iniciados por usuário."""
     if kind == "LWC":
         return [USER,
-         R("Página Lightning", "FlexiPage", "lê/referencia", "posiciona o componente na página de registro, app ou home", "Usuário", "LWC", "Opcional (ou CustomTab / QuickAction)"),
-         R("Componente LWC", "LightningComponentBundle", "executa", "captura a ação e chama o Apex via `@AuraEnabled` (imperativo ou wire)", "Página Lightning", "Controller Apex"),
-         R("Controller Apex", "ApexClass", "executa", "método `@AuraEnabled`: ponto de entrada no servidor", "Componente LWC", "próximo componente")], "Controller Apex"
+         R("Página Lightning", "FlexiPage", "lê/referencia", "Página do Salesforce (de registro, app ou home) onde o componente foi colocado. É por ela que o usuário chega ao componente.", "Usuário", "LWC", "Opcional (ou CustomTab / QuickAction)"),
+         R("Componente LWC", "LightningComponentBundle", "executa", "Componente de tela (LWC). Mostra a interface, captura o clique e chama um método Apex no servidor (import `@salesforce/apex`).", "Página Lightning", "Controller Apex"),
+         R("Controller Apex", "ApexClass", "executa", "Classe Apex que recebe o pedido da tela. O método marcado com `@AuraEnabled` é a porta de entrada no servidor.", "Componente LWC", "próximo componente")], "Controller Apex"
     if kind == "FLOW":
         return [USER,
-         R("Ponto de entrada", "FlexiPage, QuickAction ou CustomTab", "lê/referencia", "onde o Screen Flow é exposto ao usuário", "Usuário", "Screen Flow", "Opcional"),
-         R("Screen Flow", "Flow", "executa", "coleta dados na tela e chama a ação Apex", "Ponto de entrada", "Classe invocável"),
-         R("Versão ativa do Flow", "FlowDefinition", "lê/referencia", "indica a versão ativa (formato legado)", "plataforma", "—", "Opcional"),
-         R("Classe invocável", "ApexClass", "executa", "método `@InvocableMethod`: ponto de entrada no servidor", "Screen Flow", "próximo componente")], "Classe invocável"
+         R("Ponto de entrada", "FlexiPage, QuickAction ou CustomTab", "lê/referencia", "Lugar onde o usuário encontra o Screen Flow: uma página, um botão de ação ou uma aba.", "Usuário", "Screen Flow", "Opcional"),
+         R("Screen Flow", "Flow", "executa", "Fluxo com telas, montado sem código. Coleta dados do usuário e chama uma ação Apex para falar com o sistema externo.", "Ponto de entrada", "Classe invocável"),
+         R("Versão ativa do Flow", "FlowDefinition", "lê/referencia", "Arquivo antigo que só indica qual versão do Flow está ativa.", "plataforma", "—", "Opcional"),
+         R("Classe invocável", "ApexClass", "executa", "Classe Apex que o Flow consegue chamar. O método marcado com `@InvocableMethod` é a porta de entrada no servidor.", "Screen Flow", "próximo componente")], "Classe invocável"
     raise KeyError(kind)
 
-APEX_ACCESS = lambda por: R("Permission Set (acesso às classes Apex)", "PermissionSet", "autoriza", "libera ao usuário as classes Apex chamadas pela UI", "plataforma", "—")
+APEX_ACCESS = lambda por: R("Permission Set (acesso às classes Apex)", "PermissionSet", "autoriza", "Dá ao usuário permissão para executar as classes Apex chamadas pela tela. Sem isso, a tela mostra erro de acesso.", "plataforma", "—")
 ORIG_NOME = {"LWC": "LWC", "FLOW": "Screen Flow"}
 
 def ui_callout(cadeia):
@@ -31,12 +31,12 @@ def ui_callout(cadeia):
             rows = list(rows)
             caller = entry
             if cadeia:
-                rows += [R("Classe de serviço", "ApexClass", "executa", "regra de negócio e montagem do payload", entry, "Classe cliente HTTP"),
-                         R("Classe cliente HTTP", "ApexClass", "executa", "monta `HttpRequest`, faz o callout e trata a resposta", "Classe de serviço", "Sistema externo"),
-                         R("Classes de DTO / wrapper", "ApexClass", "lê/referencia", "serializa e desserializa JSON", "Classe cliente HTTP", "—", "Opcional")]
+                rows += [R("Classe de serviço", "ApexClass", "executa", "Camada intermediária: aplica as regras de negócio e monta os dados que serão enviados.", entry, "Classe cliente HTTP"),
+                         R("Classe cliente HTTP", "ApexClass", "executa", "Classe que efetivamente chama o sistema externo: monta a requisição HTTP (`HttpRequest`), envia e interpreta a resposta.", "Classe de serviço", "Sistema externo"),
+                         R("Classes de DTO / wrapper", "ApexClass", "lê/referencia", "Classes que só representam os dados: convertem objetos Apex em JSON para enviar e o JSON recebido de volta em objetos.", "Classe cliente HTTP", "—", "Opcional")]
                 caller = "Classe cliente HTTP"
             else:
-                rows[-1] = rows[-1][:3] + (rows[-1][3] + " e faz o callout (`HttpRequest`)",) + rows[-1][4:5] + ("Sistema externo",) + rows[-1][6:]
+                rows[-1] = rows[-1][:3] + (rows[-1][3] + " Nesta variante, ela mesma chama o sistema externo (`HttpRequest`), sem classes intermediárias.",) + rows[-1][4:5] + ("Sistema externo",) + rows[-1][6:]
             rows += endpoint(e, caller)
             rows += [APEX_ACCESS(None)] + killswitch(caller) + logrows(caller)
             var.append((f"Origem {ORIG_NOME[o]} · endpoint {e} ({ENDPOINTS[e]})", rows))
@@ -47,9 +47,9 @@ def flow_http(origem="Screen Flow", trig="FLOW"):
     for e in NC_E:
         rows, _ = origem_ui("FLOW") if trig == "FLOW" else (None, None)
         rows = list(rows[:3]) if rows else []
-        rows += [R("Ação HTTP Callout", "ExternalServiceRegistration", "lê/referencia", "registro gerado pelo assistente de HTTP Callout (método, path, schema de resposta)", "Screen Flow", "Named Credential"),]
+        rows += [R("Ação HTTP Callout", "ExternalServiceRegistration", "lê/referencia", "Cadastro criado automaticamente quando alguém configura um HTTP Callout no Flow Builder. Guarda o que chamar (método e caminho) e o formato da resposta, para o Flow usar sem código.", "Screen Flow", "Named Credential"),]
         rows += endpoint(e, "Ação HTTP Callout")
-        rows += [R("Permission Set (acesso ao Flow)", "PermissionSet", "autoriza", "Run Flows ou acesso ao Flow específico", "plataforma", "—")]
+        rows += [R("Permission Set (acesso ao Flow)", "PermissionSet", "autoriza", "Dá ao usuário permissão para rodar o Flow.", "plataforma", "—")]
         var.append((f"Endpoint {e} ({ENDPOINTS[e]})", rows))
     return var
 
@@ -61,8 +61,8 @@ def ext_service():
                 rows, _ = origem_ui("FLOW"); rows = list(rows[:3]); caller = "Screen Flow"
             else:
                 rows, _ = origem_ui("LWC"); rows = list(rows); caller = "Controller Apex"
-                rows[-1] = rows[-1][:3] + ("chama a classe gerada no namespace `ExternalService`",) + rows[-1][4:5] + ("Registro de External Service",) + rows[-1][6:]
-            rows += [R("Registro de External Service", "ExternalServiceRegistration", "lê/referencia", "schema OpenAPI registrado; gera ações invocáveis e classes Apex", caller, "Named Credential")]
+                rows[-1] = rows[-1][:3] + ("Classe Apex que recebe o pedido da tela e chama a operação da API pelas classes geradas automaticamente (`ExternalService.<Servico>`).",) + rows[-1][4:5] + ("Registro de External Service",) + rows[-1][6:]
+            rows += [R("Registro de External Service", "ExternalServiceRegistration", "lê/referencia", "Cadastro da API externa a partir do contrato dela (OpenAPI). A plataforma transforma cada operação da API em uma ação que o Flow ou o Apex pode chamar, sem montar HTTP à mão.", caller, "Named Credential")]
             rows += endpoint(e, "Registro de External Service")
             var.append((f"Origem {'Screen Flow' if o=='FLOW' else 'LWC + Apex'} · endpoint {e}", rows))
     return var
@@ -72,7 +72,7 @@ def wsdl():
     for o in ("LWC", "FLOW"):
         for e in ALL_E:
             rows, entry = origem_ui(o); rows = list(rows)
-            rows += [R("Stub gerado (WSDL2Apex)", "ApexClass", "executa", "classe gerada a partir do WSDL; serializa SOAP e faz `WebServiceCallout.invoke`. O `endpoint_x` pode ser sobrescrito", entry, "Sistema externo")]
+            rows += [R("Stub gerado (WSDL2Apex)", "ApexClass", "executa", "Classe gerada automaticamente a partir do contrato SOAP (WSDL) do sistema externo. Monta a mensagem SOAP e faz a chamada (`WebServiceCallout.invoke`). O endereço fica em `endpoint_x` e pode ser trocado pelo código.", entry, "Sistema externo")]
             rows += endpoint(e, "Stub gerado (WSDL2Apex)")
             rows += [APEX_ACCESS(None)]
             var.append((f"Origem {ORIG_NOME[o]} · endpoint {e}", rows))
@@ -82,9 +82,9 @@ def continuation():
     var = []
     for e in ALL_E:
         rows, entry = origem_ui("LWC"); rows = list(rows)
-        rows[-1] = rows[-1][:3] + ("método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25)",) + rows[-1][4:5] + ("Sistema externo",) + rows[-1][6:]
+        rows[-1] = rows[-1][:3] + ("Classe Apex que inicia uma chamada demorada sem prender o servidor: devolve um objeto `Continuation` (método `@AuraEnabled(continuation=true)`) e a plataforma espera a resposta por ela.",) + rows[-1][4:5] + ("Sistema externo",) + rows[-1][6:]
         rows += endpoint(e, "Controller Apex")
-        rows += [R("Método de callback", "ApexClass", "executa", "recebe a resposta quando o sistema externo responde e devolve ao LWC", "plataforma (ao chegar a resposta)", "Componente LWC")]
+        rows += [R("Método de callback", "ApexClass", "executa", "Método chamado automaticamente quando a resposta chega. Ele trata o retorno e entrega o resultado para a tela.", "plataforma (ao chegar a resposta)", "Componente LWC")]
         var.append((f"Endpoint {e}", rows))
     return var
 
@@ -92,15 +92,15 @@ def omni_flexcard(com_dm):
     var = []
     for e in ("E1", "E2", "E3"):
         rows = [USER,
-          R("Página Lightning", "FlexiPage", "lê/referencia", "exibe a FlexCard", "Usuário", "FlexCard", "Opcional"),
-          R("FlexCard", "OmniUiCard", "executa", "fonte de dados do tipo Integration Procedure", "Página Lightning", "Integration Procedure"),
-          R("Integration Procedure", "OmniIntegrationProcedure", "executa", "orquestra; o elemento HTTP Action faz a chamada", "FlexCard", "Sistema externo")]
+          R("Página Lightning", "FlexiPage", "lê/referencia", "Página onde o cartão (FlexCard) aparece para o usuário.", "Usuário", "FlexCard", "Opcional"),
+          R("FlexCard", "OmniUiCard", "executa", "Cartão de tela do OmniStudio que mostra informações. Ele busca os dados chamando uma Integration Procedure.", "Página Lightning", "Integration Procedure"),
+          R("Integration Procedure", "OmniIntegrationProcedure", "executa", "Roteiro de integração do OmniStudio, montado sem código. Um passo do tipo HTTP Action chama o sistema externo.", "FlexCard", "Sistema externo")]
         if com_dm:
-            rows.append(R("Data Mapper / DataRaptor Transform", "OmniDataTransform", "executa", "transforma a resposta externa no formato da FlexCard", "Integration Procedure", "—"))
+            rows.append(R("Data Mapper / DataRaptor Transform", "OmniDataTransform", "executa", "Ferramenta de mapeamento do OmniStudio: converte a resposta do sistema externo no formato que o cartão espera.", "Integration Procedure", "—"))
         if e in ("E1", "E2"):
             rows += endpoint(e, "Integration Procedure")
         else:
-            rows += [R("Remote Site Setting", "RemoteSiteSetting", "autoriza", "libera a URL fixa configurada na HTTP Action", "plataforma", "—"), ator(EXT, "responde", "Integration Procedure", "—")]
+            rows += [R("Remote Site Setting", "RemoteSiteSetting", "autoriza", "Lista de domínios externos permitidos. Como a URL foi escrita direto na HTTP Action (sem Named Credential), o domínio **precisa** estar cadastrado aqui.", "plataforma", "—"), ator(EXT, "O sistema de fora do Salesforce. Recebe a chamada, processa e devolve a resposta.", "Integration Procedure", "—")]
         var.append((f"{'Com' if com_dm else 'Sem'} Data Mapper · endpoint {'E3 (URL fixa na HTTP Action + Remote Site)' if e=='E3' else e}", rows))
     return var
 
@@ -109,16 +109,16 @@ def omniscript():
     for via in ("IP", "RA"):
         for e in (("E1", "E2", "E3") if via == "IP" else ALL_E):
             rows = [USER,
-              R("Página Lightning / Experience", "FlexiPage", "lê/referencia", "exibe o OmniScript", "Usuário", "OmniScript", "Opcional"),
-              R("OmniScript", "OmniScript", "executa", "guia o usuário; chama a etapa de integração", "Página", "Integration Procedure" if via == "IP" else "Classe Remote Action")]
+              R("Página Lightning / Experience", "FlexiPage", "lê/referencia", "Página onde o processo guiado (OmniScript) aparece.", "Usuário", "OmniScript", "Opcional"),
+              R("OmniScript", "OmniScript", "executa", "Processo guiado de várias telas do OmniStudio. Em uma das etapas, chama a integração.", "Página", "Integration Procedure" if via == "IP" else "Classe Remote Action")]
             if via == "IP":
-                rows.append(R("Integration Procedure", "OmniIntegrationProcedure", "executa", "HTTP Action faz a chamada", "OmniScript", "Sistema externo"))
+                rows.append(R("Integration Procedure", "OmniIntegrationProcedure", "executa", "Roteiro de integração do OmniStudio. Um passo do tipo HTTP Action chama o sistema externo.", "OmniScript", "Sistema externo"))
                 if e == "E3":
-                    rows += [R("Remote Site Setting", "RemoteSiteSetting", "autoriza", "libera a URL fixa", "plataforma", "—"), ator(EXT, "responde", "Integration Procedure", "—")]
+                    rows += [R("Remote Site Setting", "RemoteSiteSetting", "autoriza", "Lista de domínios externos permitidos. Como a URL é fixa (sem Named Credential), o domínio **precisa** estar cadastrado aqui.", "plataforma", "—"), ator(EXT, "O sistema de fora do Salesforce. Recebe a chamada, processa e devolve a resposta.", "Integration Procedure", "—")]
                 else:
                     rows += endpoint(e, "Integration Procedure")
             else:
-                rows.append(R("Classe Remote Action", "ApexClass", "executa", "implementa `Callable` (ou a interface do pacote); faz o callout", "OmniScript", "Sistema externo"))
+                rows.append(R("Classe Remote Action", "ApexClass", "executa", "Classe Apex chamada pelo OmniScript (implementa `Callable` ou a interface do pacote). Ela chama o sistema externo.", "OmniScript", "Sistema externo"))
                 rows += endpoint(e, "Classe Remote Action") + [APEX_ACCESS(None)]
             var.append((f"Via {'Integration Procedure' if via=='IP' else 'Remote Action (Apex)'} · endpoint {e}", rows))
     return var
@@ -126,14 +126,14 @@ def omniscript():
 def browser_fetch():
     var = []
     for src in ("JS", "LABEL", "CMDT"):
-        rows = [USER, R("Componente LWC", "LightningComponentBundle", "executa", "chama a API externa com `fetch()` direto do navegador", "Página", "Sistema externo")]
+        rows = [USER, R("Componente LWC", "LightningComponentBundle", "executa", "Componente de tela que chama a API externa direto do navegador do usuário (`fetch()`), sem passar pelo servidor Salesforce.", "Página", "Sistema externo")]
         if src == "LABEL":
-            rows.append(R("Custom Label", "CustomLabels", "lê/referencia", "URL importada via `@salesforce/label`", "Componente LWC", "—"))
+            rows.append(R("Custom Label", "CustomLabels", "lê/referencia", "Texto configurável (Custom Label) com a URL da API, lido pelo componente.", "Componente LWC", "—"))
         if src == "CMDT":
-            rows += [R("Controller Apex", "ApexClass", "executa", "devolve ao LWC a URL lida do CMDT", "Componente LWC", "Registro de Custom Metadata"),
-                     R("Registro de Custom Metadata", "CustomMetadata (+ CustomObject __mdt)", "lê/referencia", "URL por ambiente", "Controller Apex", "—")]
-        rows += [R("CSP Trusted Site", "CspTrustedSite", "autoriza", "libera o domínio em `connect-src` no navegador", "navegador", "—"),
-                 ator(EXT, "responde; precisa liberar CORS para o domínio Lightning", "Componente LWC", "—")]
+            rows += [R("Controller Apex", "ApexClass", "executa", "Classe Apex que só lê a URL na configuração e entrega ao componente.", "Componente LWC", "Registro de Custom Metadata"),
+                     R("Registro de Custom Metadata", "CustomMetadata (+ CustomObject __mdt)", "lê/referencia", "Registro de configuração com a URL da API em cada ambiente.", "Controller Apex", "—")]
+        rows += [R("CSP Trusted Site", "CspTrustedSite", "autoriza", "Lista de domínios que o **navegador** pode acessar a partir de páginas do Salesforce (regra de segurança CSP). Aqui não se usa Remote Site Setting: ele vale só para chamadas feitas pelo servidor (Apex).", "navegador", "—"),
+                 ator(EXT, "O sistema de fora do Salesforce. Como a chamada vem do navegador, ele precisa permitir (CORS) chamadas vindas do domínio do Salesforce.", "Componente LWC", "—")]
         var.append(({"JS": "URL no JavaScript", "LABEL": "URL em Custom Label", "CMDT": "URL em Custom Metadata via Apex"}[src], rows))
     return var
 
@@ -142,20 +142,20 @@ def sf_connect(adapter):
     codes = ALL_E if adapter else ("PROPRIA", "NC")
     for e in codes:
         rows = [USER,
-          R("Layout / Página / Aba", "Layout, FlexiPage ou CustomTab", "lê/referencia", "exibe os registros externos", "Usuário", "External Object"),
-          R("External Object", "CustomObject (__x)", "lê/referencia", "representa a tabela externa; cada leitura gera consulta remota", "Página", "External Data Source"),
-          R("Campos e relacionamentos externos", "CustomField", "lê/referencia", "colunas; External Lookup / Indirect Lookup ligam a objetos do Salesforce", "External Object", "—"),
-          R("External Data Source", "ExternalDataSource", "lê/referencia", "tipo OData 2.0/4.0, cross-org ou Apex; URL e modo de identidade", "External Object", "adaptador" if adapter else "Sistema externo"),
-          R("Permission Set", "PermissionSet", "autoriza", "acesso ao External Object e à External Data Source (identidade por usuário)", "plataforma", "—")]
+          R("Layout / Página / Aba", "Layout, FlexiPage ou CustomTab", "lê/referencia", "Tela onde os dados externos aparecem como se fossem registros do Salesforce.", "Usuário", "External Object"),
+          R("External Object", "CustomObject (__x)", "lê/referencia", "Objeto \"espelho\" (sufixo `__x`): representa uma tabela do sistema externo. Os dados não são copiados; cada vez que alguém abre a tela, o Salesforce consulta o sistema externo.", "Página", "External Data Source"),
+          R("Campos e relacionamentos externos", "CustomField", "lê/referencia", "Colunas da tabela externa. Campos especiais (External Lookup, Indirect Lookup) ligam esses dados a registros do Salesforce.", "External Object", "—"),
+          R("External Data Source", "ExternalDataSource", "lê/referencia", "Cadastro da fonte de dados externa: qual protocolo usa (OData, outra org Salesforce ou adaptador Apex), o endereço e com qual identidade consultar.", "External Object", "adaptador" if adapter else "Sistema externo"),
+          R("Permission Set", "PermissionSet", "autoriza", "Dá ao usuário permissão para ver o objeto externo e usar a fonte de dados.", "plataforma", "—")]
         if adapter:
-            rows += [R("Provider do adaptador", "ApexClass", "executa", "estende `DataSource.Provider`: declara capacidades e autenticação", "External Data Source", "Connection"),
-                     R("Connection do adaptador", "ApexClass", "executa", "estende `DataSource.Connection`: `sync`, `query`, `search`; faz o callout", "Provider", "Sistema externo")]
+            rows += [R("Provider do adaptador", "ApexClass", "executa", "Classe Apex que \"apresenta\" o adaptador à plataforma: diz o que ele sabe fazer e como autentica.", "External Data Source", "Connection"),
+                     R("Connection do adaptador", "ApexClass", "executa", "Classe Apex que faz o trabalho: descreve as tabelas e, a cada consulta ou busca, chama o sistema externo.", "Provider", "Sistema externo")]
             rows += endpoint(e, "Connection do adaptador")
             label = f"Adaptador Apex · endpoint {e}"
         elif e == "NC":
             rows += endpoint("E1", "External Data Source"); label = "Autenticação via Named Credential"
         else:
-            rows += [ator(EXT, "serviço OData; responde às consultas", "External Data Source", "—")]; label = "Autenticação na própria External Data Source"
+            rows += [ator(EXT, "Serviço externo no padrão OData que responde às consultas.", "External Data Source", "—")]; label = "Autenticação na própria External Data Source"
         var.append((label, rows))
     return var
 
@@ -163,18 +163,18 @@ def quick_action():
     var = []
     for o in ("FLOW", "LWC"):
         for e in ALL_E:
-            rows = [USER, R("Quick Action", "QuickAction", "executa", "botão na página do registro; tipo Flow ou LWC", "Usuário", "Screen Flow" if o == "FLOW" else "Componente LWC"),
-                    R("Layout / Página (onde a ação aparece)", "Layout ou FlexiPage", "lê/referencia", "expõe a ação", "plataforma", "—")]
+            rows = [USER, R("Quick Action", "QuickAction", "executa", "Botão de ação na página do registro. Ao clicar, abre um Flow ou um componente LWC.", "Usuário", "Screen Flow" if o == "FLOW" else "Componente LWC"),
+                    R("Layout / Página (onde a ação aparece)", "Layout ou FlexiPage", "lê/referencia", "Configuração da página que faz o botão aparecer.", "plataforma", "—")]
             if o == "FLOW":
-                rows += [R("Screen Flow", "Flow", "executa", "recebe `recordId`, chama o Apex e grava o retorno", "Quick Action", "Classe invocável"),
-                         R("Classe invocável", "ApexClass", "executa", "faz o callout", "Screen Flow", "Sistema externo")]
+                rows += [R("Screen Flow", "Flow", "executa", "Fluxo com tela que recebe o registro atual, chama o Apex e grava no registro o que voltou do sistema externo.", "Quick Action", "Classe invocável"),
+                         R("Classe invocável", "ApexClass", "executa", "Classe Apex que chama o sistema externo.", "Screen Flow", "Sistema externo")]
                 c = "Classe invocável"
             else:
-                rows += [R("Componente LWC (screen ou headless action)", "LightningComponentBundle", "executa", "recebe `recordId` e chama o Apex", "Quick Action", "Controller Apex"),
-                         R("Controller Apex", "ApexClass", "executa", "faz o callout", "Componente LWC", "Sistema externo")]
+                rows += [R("Componente LWC (screen ou headless action)", "LightningComponentBundle", "executa", "Componente de tela aberto pelo botão; recebe o registro atual e chama o Apex.", "Quick Action", "Controller Apex"),
+                         R("Controller Apex", "ApexClass", "executa", "Classe Apex que chama o sistema externo.", "Componente LWC", "Sistema externo")]
                 c = "Controller Apex"
             rows += endpoint(e, c)
-            rows += [R("Objeto do registro", "CustomObject + CustomField", "executa (DML)", "recebe os dados de enriquecimento", c, "triggers/flows do objeto"), APEX_ACCESS(None)]
+            rows += [R("Objeto do registro", "CustomObject + CustomField", "executa (DML)", "Registro que recebe os dados trazidos do sistema externo (\"enriquecimento\").", c, "triggers/flows do objeto"), APEX_ACCESS(None)]
             var.append((f"Quick Action → {ORIG_NOME[o]} · endpoint {e}", rows))
     return var
 
