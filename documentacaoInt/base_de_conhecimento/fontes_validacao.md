@@ -59,6 +59,17 @@ Páginas oficiais consultadas em 2026-10-30. O ID entre colchetes é usado nos o
 | MA-EXB | <https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_experiencebundle.htm> |
 | MA-DEB | <https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_digitalexperiencebundle.htm> |
 | MA-TYPES | <https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm> |
+| WA-TRUST | <https://architect.salesforce.com/docs/architect/well-architected/guide/trust.html> |
+| WA-REL | <https://architect.salesforce.com/docs/architect/well-architected/guide/reliability.html> |
+| WA-OPS | <https://architect.salesforce.com/docs/architect/well-architected/guide/operational-excellence.html> |
+| AX-GOV | <https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm> |
+| PE-LIM | <https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm> |
+| CDC-LIM | <https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_allocations.htm> |
+| LIM-API | <https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm> |
+| LIM-BULK | <https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_bulkapi.htm> |
+| LWC-CONT | <https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-auraenabled.html> |
+| LWC-CONTL | <https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-limits.html> |
+| LWC-IMP | <https://developer.salesforce.com/docs/platform/lwc/guide/apex-import-method.html> |
 | MA-CAPP | <https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_customapplication.htm> |
 | AX-TRG | <https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_triggers.htm> |
 | AX-LIM | <https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_timeouts.htm> |
@@ -99,7 +110,8 @@ Páginas oficiais consultadas em 2026-10-30. O ID entre colchetes é usado nos o
 | Callout em trigger de Platform Event | **confirmado**: "with some exceptions, you generally can’t make Apex callouts from triggers" | [PE-SUB](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_apex.htm) |
 | Callout em DML pendente | **confirmado**: não é possível com operações pendentes (DML, async, e-mail) na mesma transação | [AX-LIM](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_timeouts.htm) |
 | Limites de callout | **confirmado**: 100 por transação; timeout padrão 10 s, máx. 120 s; 120 s acumulados | [AX-LIM](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_timeouts.htm) |
-| Continuation | **confirmado** para Visualforce e "Lightning component": 3 paralelos, 3 encadeados, 120 s. Anotação em LWC: não confirmada | [AX-CONT](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_continuation_process.htm), [AX-CONTL](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_continuation_limits.htm) |
+| Continuation | **confirmado**: 3 paralelos, 3 encadeados, 120 s; em LWC o método usa `@AuraEnabled(continuation=true)` | [AX-CONT](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_continuation_process.htm), [AX-CONTL](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_continuation_limits.htm), [LWC-CONT](https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-auraenabled.html) |
+| LWC chamando Apex | **confirmado**: `import x from '@salesforce/apex/[namespace.]Classe.metodo'` | [LWC-IMP](https://developer.salesforce.com/docs/platform/lwc/guide/apex-import-method.html) |
 | HTTP Callout do Flow | **confirmado**: gera ExternalServiceRegistration com `registrationProviderType`=SchemaInferred | [MA-ESR](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_externalserviceregistration.htm) |
 | MuleSoft como fonte de External Service | **confirmado**: `registrationProviderType` MuleSoft / Anypoint | [MA-ESR](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_externalserviceregistration.htm) |
 | Event Relay | **confirmado**: `destinationResourceName`=`callout:Nome` (conta AWS) e `eventChannel` `X__chn`. Tipo da Named Credential: não informado | [MA-ERC](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_eventrelayconfig.htm) |
@@ -111,5 +123,5 @@ Páginas oficiais consultadas em 2026-10-30. O ID entre colchetes é usado nos o
 | Retry de trigger de evento | **confirmado**: até 10 execuções (1 + 9) com `EventBus.RetryableException` | [PE-RETRY](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_apex_refire.htm) |
 | OmniStudio padrão como metadata | **não confirmado**: os tipos não estão na lista de Metadata Types (API 68.0) | [MA-TYPES](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm) |
 | Outbound Message como ação de Flow | **não confirmado**: o valor não aparece em `actionType` | [MA-FLOW](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_visual_workflow.htm) |
-| Callout em Platform Event–Triggered Flow e em Schedule-Triggered Flow | **não confirmado** nas páginas consultadas | — |
+| Callout em Platform Event–Triggered Flow e em Schedule-Triggered Flow | **não confirmado**: a fonte é o help.salesforce.com, que não abre neste ambiente (depende de a.sfdcstatic.com, bloqueado) | — |
 | Data Cloud | **não confirmado** (não pesquisado nesta rodada) | — |

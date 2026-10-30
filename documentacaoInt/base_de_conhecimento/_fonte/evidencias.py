@@ -29,7 +29,18 @@ FONTES = {
  "MA-CLS": MA.format("meta_classes"), "MA-TRG": MA.format("meta_triggers"), "MA-PAGE": MA.format("meta_pages"),
  "MA-ONC": MA.format("meta_outboundnetworkconnection"), "MA-CP": MA.format("meta_custompermission"),
  "MA-ET": MA.format("meta_emailtemplate"), "MA-EXB": MA.format("meta_experiencebundle"), "MA-DEB": MA.format("meta_digitalexperiencebundle"),
- "MA-TYPES": MA.format("meta_types_list"), "MA-CAPP": MA.format("meta_customapplication"),
+ "MA-TYPES": MA.format("meta_types_list"),
+ "WA-TRUST": "https://architect.salesforce.com/docs/architect/well-architected/guide/trust.html",
+ "WA-REL": "https://architect.salesforce.com/docs/architect/well-architected/guide/reliability.html",
+ "WA-OPS": "https://architect.salesforce.com/docs/architect/well-architected/guide/operational-excellence.html",
+ "AX-GOV": AX.format("apex_gov_limits"),
+ "PE-LIM": PE.format("platform_event_limits"),
+ "CDC-LIM": CDC.format("cdc_allocations"),
+ "LIM-API": "https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm",
+ "LIM-BULK": "https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_bulkapi.htm",
+ "LWC-CONT": "https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-auraenabled.html",
+ "LWC-CONTL": "https://developer.salesforce.com/docs/platform/lwc/guide/apex-continuations-limits.html",
+ "LWC-IMP": "https://developer.salesforce.com/docs/platform/lwc/guide/apex-import-method.html", "MA-CAPP": MA.format("meta_customapplication"),
  "AX-TRG": AX.format("apex_triggers"), "AX-LIM": AX.format("apex_callouts_timeouts"), "AX-NC": AX.format("apex_callouts_named_credentials"),
  "AX-RSS": AX.format("apex_callouts_remote_site_settings"), "AX-HTTP": AX.format("apex_callouts_http"),
  "AX-CERT": AX.format("apex_callouts_client_certs_http"), "AX-FUT": AX.format("apex_invoking_future_methods"),
@@ -95,7 +106,7 @@ TIPOS = {
  "CustomTab": ("tabs", ".tab", "10.0", "`url` (Web Tab), `page`, `lwcComponent`, `flexiPage`, `auraComponent`", "—", "MA-TAB"),
  "FlexiPage": ("flexipages", ".flexipage", "29.0", "componentes da página (`componentName`) — LWC, FlexCard, Canvas", "—", "MA-FP"),
  "Layout": ("layouts", ".layout (nv)", "—", "botões/ações e campos exibidos", "—", "MA-LAY"),
- "LightningComponentBundle": ("lwc", "(bundle: pasta com .js, .html, .js-meta.xml)", "—", "`targetConfigs` (onde aparece); no JS: `import ... from '@salesforce/apex/...'`, `lightning/empApi`, `fetch(` (nv: padrões de código JS)", "—", "MA-LWC"),
+ "LightningComponentBundle": ("lwc", "(bundle: pasta com .js, .html, .js-meta.xml)", "—", "`targetConfigs` (onde aparece); no JS: C24 `@salesforce/apex/...` [LWC-IMP]; `lightning/empApi` e `fetch(` (nv)", "—", "MA-LWC"),
  "ApexClass": ("classes", ".cls + .cls-meta.xml", "—", "ver padrões de código Apex", "credenciais literais no código", "MA-CLS"),
  "ApexTrigger": ("triggers", ".trigger + -meta.xml", "—", "`trigger X on Objeto (...)`; em `X__e` ou `XChangeEvent` só `after insert`", "—", "MA-TRG"),
  "ApexPage": ("pages", ".page", "—", "`<apex:canvasApp>`, controller com Continuation", "—", "MA-PAGE"),
@@ -106,6 +117,7 @@ TIPOS = {
 
 NAO_CONFIRMADOS = {
  "OmniDataTransform/OmniIntegrationProcedure/OmniScript/OmniUiCard": "não constam na lista de Metadata Types do Metadata API Developer Guide (API 68.0) [MA-TYPES]; pasta e sufixo não confirmados",
+ "Flow: Outbound Message como ação; callout em Flow disparado por evento ou agendado": "a fonte seria o help.salesforce.com, que não abre neste ambiente (depende de a.sfdcstatic.com, bloqueado pela rede)",
 }
 
 # Padrões de código: (id, padrão a procurar, o que significa, fonte)
@@ -132,6 +144,8 @@ CODIGO = [
  ("C20", "`throw new EventBus.RetryableException(`", "retry do trigger de evento (até 10 execuções: 1 + 9 retries)", "PE-RETRY"),
  ("C21", "`trigger X on YChangeEvent (after insert)` / `Y__ChangeEvent`", "assinante Apex de Change Data Capture (roda como Automated Process)", "CDC-TRG"),
  ("C22", "`@InvocableMethod(... callout=true ...)`", "ação invocável que faz callout (modificador `callout`, usado por Screen Flow para decidir a transação)", "AX-INV"),
+ ("C24", "`import x from '@salesforce/apex/Classe.metodo'` (com namespace se for de pacote)", "LWC chama método Apex", "LWC-IMP"),
+ ("C25", "`@AuraEnabled(continuation=true)` (opcionalmente `cacheable=true`)", "método Apex chamado por LWC que devolve Continuation; máx. 3 callouts por Continuation e uma Continuation por vez no cliente", "LWC-CONT, LWC-CONTL"),
  ("C23", "`HttpCalloutMock`, `WebServiceMock`, `@IsTest`", "classe de teste: **descartar** como ponto de integração", "AX-HTTP"),
 ]
 
@@ -151,6 +165,7 @@ def evid(comp, mtype):
      ("provider do adaptador", "C14 `extends DataSource.Provider`"),
      ("connection do adaptador", "C14 `extends DataSource.Connection`"),
      ("callback", "C17 método indicado em `continuationMethod`"),
+     ("componente lwc", "`lwc/<nome>/`; chama Apex via C24 `@salesforce/apex/Classe.metodo`"),
      ("classe invocável", "C22 `@InvocableMethod` (com `callout=true` se chamar sistema externo)"),
      ("classe publicadora", "C18 `EventBus.publish(`"),
      ("trigger do evento", "C19 `trigger ... on X__e (after insert)`"),

@@ -1,0 +1,361 @@
+{
+ "antipadroes": [
+  {
+   "id": "A01",
+   "antipadrao": "Segredo no código ou em configuração versionada",
+   "como_detectar": "senha/token/client_secret literal em Apex; `values` de Custom Metadata, Custom Setting ou Custom Label com segredo (E4/E6)",
+   "risco": "vazamento por repositório, logs e mensagens de erro",
+   "recomendacao": "\"Never embed credentials in code, configuration files, or version control. Use named credentials and external credentials\"",
+   "fonte": "WA-TRUST"
+  },
+  {
+   "id": "A02",
+   "antipadrao": "URL fixa no código",
+   "como_detectar": "C03 `setEndpoint('https://...')` literal + Remote Site Setting (E3)",
+   "risco": "troca de ambiente exige deploy; credencial costuma ir junto no código",
+   "recomendacao": "autenticação e endpoint centralizados em Named Credential / External Credential",
+   "fonte": "WA-TRUST, AX-NC"
+  },
+  {
+   "id": "A03",
+   "antipadrao": "Fluxo OAuth Username-Password",
+   "como_detectar": "não aparece no XML do app (N11); procurar no código/config do cliente ou documentação do sistema externo",
+   "risco": "fluxo bloqueado por padrão em orgs criadas a partir do Summer '23 e com aposentadoria publicada",
+   "recomendacao": "\"Do not use the Username-Password Flow\"; usar JWT Bearer (servidor-servidor) ou outro fluxo adequado",
+   "fonte": "WA-TRUST"
+  },
+  {
+   "id": "A04",
+   "antipadrao": "Um app (Connected App/ECA) compartilhado por várias integrações",
+   "como_detectar": "vários sistemas externos descritos com o mesmo `consumerKey`/app; escopos amplos (`scopes`/`commaSeparatedOauthScopes` com `Full`)",
+   "risco": "um token comprometido alcança tudo; auditoria confusa",
+   "recomendacao": "\"One registration per integration\"; escopos mínimos; preferir External Client App em integrações novas",
+   "fonte": "WA-TRUST"
+  },
+  {
+   "id": "A05",
+   "antipadrao": "Usuário de integração com permissões demais ou compartilhado com pessoas",
+   "como_detectar": "Profile/Permission Set do usuário de integração com Modify All/View All; ausência de API Only",
+   "risco": "acesso indevido e falta de rastreabilidade",
+   "recomendacao": "usuário de integração dedicado, API Only, Permission Sets de menor privilégio; \"Minimum Access - API Only Integrations\" em builds novos",
+   "fonte": "WA-TRUST"
+  },
+  {
+   "id": "A06",
+   "antipadrao": "Callout síncrono em trigger",
+   "como_detectar": "S08: C02 no contexto do trigger sem async",
+   "risco": "callout não permitido em trigger (falha em execução)",
+   "recomendacao": "\"Callouts must be made asynchronously from a trigger\"",
+   "fonte": "AX-TRG"
+  },
+  {
+   "id": "A07",
+   "antipadrao": "Callout depois de DML na mesma transação",
+   "como_detectar": "DML (`insert`/`update`) antes de C02 no mesmo método/transação",
+   "risco": "erro de operação pendente (uncommitted work)",
+   "recomendacao": "fazer o callout antes do DML ou mover para async",
+   "fonte": "AX-LIM"
+  },
+  {
+   "id": "A08",
+   "antipadrao": "Callout sem timeout definido ou sem orçamento de tempo",
+   "como_detectar": "C02 sem C05 `setTimeout`; vários callouts em sequência na mesma transação",
+   "risco": "padrão de 10 s pode ser curto; soma limitada a 120 s por transação",
+   "recomendacao": "\"Configure appropriate timeouts for all integration callouts\" e orçar os 120 s",
+   "fonte": "WA-REL, AX-LIM"
+  },
+  {
+   "id": "A09",
+   "antipadrao": "Falha sem retry ou retry sem critério",
+   "como_detectar": "async sem Finalizer (C10), sem fila (G.1) e sem tratamento de status HTTP; ou retry imediato em loop",
+   "risco": "perda silenciosa de mensagens ou tempestade de retries",
+   "recomendacao": "retry com backoff exponencial; não repetir 4xx (exceto 429); reenfileirar em async após erro de limite; fila em Platform Event ou objeto",
+   "fonte": "WA-REL"
+  },
+  {
+   "id": "A10",
+   "antipadrao": "Sem circuit breaker em integração instável",
+   "como_detectar": "muitos callouts ao mesmo host sem checagem de estado",
+   "risco": "timeouts em cascata consomem tempo e limites",
+   "recomendacao": "circuit breaker com estado em Platform Cache e Platform Events para propagar",
+   "fonte": "WA-REL"
+  },
+  {
+   "id": "A11",
+   "antipadrao": "Sem log nem correlação",
+   "como_detectar": "nenhum objeto de log (`__c`), nenhum ID de correlação no payload",
+   "risco": "falhas passam despercebidas; diagnóstico difícil",
+   "recomendacao": "registrar início/fim, contagens, erros e IDs de correlação; monitorar sucesso, latência e retries",
+   "fonte": "WA-OPS"
+  },
+  {
+   "id": "A12",
+   "antipadrao": "Processamento não idempotente",
+   "como_detectar": "Batch/Queueable que reenvia sem chave (sem External ID/upsert, sem status de envio)",
+   "risco": "duplicidade em reprocessamento",
+   "recomendacao": "\"Batch jobs implement idempotency and comprehensive logging\"; upsert por External ID",
+   "fonte": "WA-OPS"
+  },
+  {
+   "id": "A13",
+   "antipadrao": "Writeback sem proteção contra recursão",
+   "como_detectar": "trigger que enfileira callout e depois atualiza o mesmo objeto sem flag/campo de controle",
+   "risco": "loop de execuções e consumo de limites assíncronos",
+   "recomendacao": "campo de controle ou guarda estática antes de reenfileirar",
+   "fonte": "heurística"
+  },
+  {
+   "id": "A14",
+   "antipadrao": "Recursos legados em integração nova",
+   "como_detectar": "Workflow com `outboundMessages` (D.4); Named Credential `namedCredentialType`=Legacy; Connected App nova",
+   "risco": "manutenção e suporte decrescentes",
+   "recomendacao": "Flow, Named Credential com External Credential e External Client App (criação de Connected App nova desabilitada por padrão desde o Spring '26)",
+   "fonte": "WA-TRUST, MA-NC"
+  },
+  {
+   "id": "A15",
+   "antipadrao": "Webhook público sem validação",
+   "como_detectar": "S31 (Site + Apex REST) sem verificação de assinatura/token no código",
+   "risco": "qualquer um na internet pode chamar o endpoint",
+   "recomendacao": "validar assinatura; evitar guest user para ações de backend (usar usuário de integração dedicado)",
+   "fonte": "WA-TRUST"
+  },
+  {
+   "id": "A16",
+   "antipadrao": "Certificado autoassinado em produção",
+   "como_detectar": "`certs/*.crt` usado por Named Credential/app de integração de produção",
+   "risco": "quebra a cadeia de confiança com clientes externos",
+   "recomendacao": "\"Production integrations require certificates that are signed by trusted Certificate Authorities\"",
+   "fonte": "WA-TRUST"
+  },
+  {
+   "id": "A17",
+   "antipadrao": "Remote Site com `disableProtocolSecurity`=true",
+   "como_detectar": "`remoteSiteSettings/*.remoteSite`",
+   "risco": "dados podem trafegar de HTTPS para HTTP",
+   "recomendacao": "manter false; usar só HTTPS",
+   "fonte": "MA-RSS"
+  },
+  {
+   "id": "A18",
+   "antipadrao": "Muitos jobs assíncronos por registro",
+   "como_detectar": "trigger que enfileira um future/Queueable por registro, sem agrupar",
+   "risco": "consome o limite diário de execuções assíncronas e de enfileiramento (50 por transação síncrona)",
+   "recomendacao": "agrupar registros por job; Batch para volume",
+   "fonte": "AX-GOV"
+  }
+ ],
+ "limites_plataforma": [
+  {
+   "area": "Callout Apex",
+   "limite": "Callouts (HTTP ou web service) por transação",
+   "valor": "100",
+   "desenhos": "b.*, D.1, F.1, F.2, G.1",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Callout Apex",
+   "limite": "Timeout padrão / máximo por callout",
+   "valor": "10 s / 120.000 ms",
+   "desenhos": "b.*, D.*, F.*",
+   "fonte": "AX-LIM"
+  },
+  {
+   "area": "Callout Apex",
+   "limite": "Timeout acumulado de callouts por transação",
+   "valor": "120 s",
+   "desenhos": "b.1, F.1 (vários callouts)",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Callout Apex",
+   "limite": "Tamanho de request ou response",
+   "valor": "6 MB síncrono / 12 MB assíncrono",
+   "desenhos": "b.*, D.*, F.*",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Callout Apex",
+   "limite": "Callouts concorrentes para fora (só Developer Edition)",
+   "valor": "20",
+   "desenhos": "—",
+   "fonte": "AX-LIM"
+  },
+  {
+   "area": "Continuation",
+   "limite": "Callouts paralelos / encadeados por continuation; timeout",
+   "valor": "3 / 3; 120 s",
+   "desenhos": "b.6",
+   "fonte": "AX-CONTL"
+  },
+  {
+   "area": "Apex assíncrono",
+   "limite": "Métodos @future por invocação",
+   "valor": "50 (0 em batch/future; 50 em queueable)",
+   "desenhos": "D.1",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Apex assíncrono",
+   "limite": "Jobs enfileirados com System.enqueueJob por transação",
+   "valor": "50 síncrono / 1 assíncrono",
+   "desenhos": "D.1, D.3, F.2, G.1",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Apex assíncrono",
+   "limite": "Execuções assíncronas (batch, future, queueable, scheduled) em 24 h",
+   "valor": "250.000 ou 200 × licenças aplicáveis (o maior)",
+   "desenhos": "D.*, F.*, G.1",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Apex assíncrono",
+   "limite": "Batch jobs em fila ou ativos ao mesmo tempo; flex queue em Holding",
+   "valor": "5; 100",
+   "desenhos": "F.1, G.1",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Apex assíncrono",
+   "limite": "Classes agendadas ao mesmo tempo",
+   "valor": "100 (5 em Developer Edition)",
+   "desenhos": "F.1, F.2, G.1",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Apex transação",
+   "limite": "CPU",
+   "valor": "10.000 ms síncrono / 60.000 ms assíncrono",
+   "desenhos": "todos com Apex",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Apex transação",
+   "limite": "Heap",
+   "valor": "10 MB síncrono / 25 MB assíncrono (50 MB em Email Services)",
+   "desenhos": "payloads grandes; H.4",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Apex transação",
+   "limite": "SOQL / DML por transação",
+   "valor": "100 síncrono, 200 assíncrono / 150",
+   "desenhos": "todos com Apex",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Apex transação",
+   "limite": "EventBus.publish (publicação imediata) por transação",
+   "valor": "150",
+   "desenhos": "D.3, E.1",
+   "fonte": "AX-GOV"
+  },
+  {
+   "area": "Platform Event",
+   "limite": "Entrega de eventos em 24 h (Pub/Sub, CometD, empApi, Event Relay) sem add-on",
+   "valor": "50.000 Performance/Unlimited; 25.000 Enterprise; 10.000 Developer",
+   "desenhos": "E.1, E.2, E.3, E.4, M.2",
+   "fonte": "PE-LIM"
+  },
+  {
+   "area": "Platform Event",
+   "limite": "Publicação por hora sem add-on",
+   "valor": "25.000",
+   "desenhos": "D.3, E.1, H.2",
+   "fonte": "PE-LIM"
+  },
+  {
+   "area": "Platform Event",
+   "limite": "Definições de Platform Event por org",
+   "valor": "100 Performance/Unlimited; 50 Enterprise; 5 Developer",
+   "desenhos": "D.3, E.1, H.2",
+   "fonte": "PE-LIM"
+  },
+  {
+   "area": "Platform Event",
+   "limite": "Clientes CometD concorrentes",
+   "valor": "2.000 Performance/Unlimited; 1.000 Enterprise; 20 Developer",
+   "desenhos": "E.1, E.2 (CometD), LWC com empApi",
+   "fonte": "PE-LIM"
+  },
+  {
+   "area": "Platform Event",
+   "limite": "Retry de trigger de evento",
+   "valor": "até 10 execuções (1 + 9)",
+   "desenhos": "D.3, H.2",
+   "fonte": "PE-RETRY"
+  },
+  {
+   "area": "Platform Event",
+   "limite": "Lote do trigger de evento",
+   "valor": "padrão 2.000; configurável 1–2.000 (PlatformEventSubscriberConfig)",
+   "desenhos": "D.3, H.2",
+   "fonte": "MA-PESC"
+  },
+  {
+   "area": "CDC",
+   "limite": "Entidades selecionadas sem add-on",
+   "valor": "5",
+   "desenhos": "E.2, E.3, M.2",
+   "fonte": "CDC-LIM"
+  },
+  {
+   "area": "CDC",
+   "limite": "Tamanho máximo da mensagem de change event",
+   "valor": "1 MB (acima vira gap event)",
+   "desenhos": "E.2, E.3, M.2",
+   "fonte": "CDC-LIM"
+  },
+  {
+   "area": "CDC",
+   "limite": "Entrega de eventos em 24 h (compartilhada com Platform Events de alto volume)",
+   "valor": "50.000 / 25.000 / 10.000 (como acima)",
+   "desenhos": "E.2, E.3, M.2",
+   "fonte": "CDC-LIM"
+  },
+  {
+   "area": "API de entrada",
+   "limite": "Requisições concorrentes de 20 s ou mais",
+   "valor": "25 em produção e sandbox; 5 em Developer/Trial",
+   "desenhos": "g.*, H.1, M.3, M.4",
+   "fonte": "LIM-API"
+  },
+  {
+   "area": "API de entrada",
+   "limite": "Timeout de chamada REST/SOAP (exceto query)",
+   "valor": "10 minutos",
+   "desenhos": "g.*",
+   "fonte": "LIM-API"
+  },
+  {
+   "area": "API de entrada",
+   "limite": "Requisições de API em 24 h (Enterprise)",
+   "valor": "100.000 + (licenças × chamadas por tipo de licença) + add-ons",
+   "desenhos": "g.*, H.*, M.*; publicar evento via REST/SOAP/Bulk também consome",
+   "fonte": "LIM-API, PE-LIM"
+  },
+  {
+   "area": "Bulk API",
+   "limite": "Batches em 24 h (compartilhado Bulk API e 2.0)",
+   "valor": "15.000",
+   "desenhos": "H.1, M.4",
+   "fonte": "LIM-BULK"
+  },
+  {
+   "area": "Bulk API",
+   "limite": "Registros enviados em 24 h",
+   "valor": "150.000.000",
+   "desenhos": "H.1, M.4",
+   "fonte": "LIM-BULK"
+  },
+  {
+   "area": "Bulk API",
+   "limite": "Recomendação de volume",
+   "valor": "acima de 2.000 registros: Bulk API 2.0; abaixo: chamadas síncronas em lote (ex.: Composite)",
+   "desenhos": "g.2, H.1",
+   "fonte": "LIM-BULK"
+  }
+ ],
+ "consultado_em": "2026-10-30"
+}

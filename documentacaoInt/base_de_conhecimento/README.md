@@ -18,6 +18,11 @@ Uso no pacote de prompts (`documentacaoInt/`): é material de consulta, principa
 | [outras.md](outras.md) | Org↔org, UI, SSO, Data Cloud | N.1–N.4 |
 | [guia_evidencias.md](guia_evidencias.md) | Como achar cada componente nos arquivos: pasta, sufixo, campos XML, padrões de código Apex, campos sensíveis | — |
 | [regras_ligacao.md](regras_ligacao.md) | Como seguir de um componente ao próximo (documentado × heurística) | — |
+| [diagnostico.md](diagnostico.md) | Do sinal encontrado no projeto para os desenhos candidatos, com confiança; assinatura mínima de cada desenho | — |
+| [limites_da_fonte.md](limites_da_fonte.md) | O que o repositório não mostra e como registrar | — |
+| [antipadroes.md](antipadroes.md) | 18 anti-padrões: como detectar, risco e recomendação oficial (Well-Architected) | — |
+| [limites_plataforma.md](limites_plataforma.md) | Limites de Apex, callout, eventos, CDC, API e Bulk, com fonte e data | — |
+| [exemplos/](exemplos/README.md) | 3 exemplos completos **fictícios**, do projeto ao documento final | — |
 | [fontes_validacao.md](fontes_validacao.md) | Páginas oficiais consultadas e resultado da validação dos itens ⚠️ | — |
 
 Identificador de variante: `<desenho>.v<n>` (ex.: `b.2.v4`).
@@ -25,8 +30,10 @@ Identificador de variante: `<desenho>.v<n>` (ex.: `b.2.v4`).
 | Arquivo de apoio | Uso |
 |---|---|
 | `desenhos.json` | Desenhos em JSON (desenho → variantes → componentes, com `como_achar`). Preferível para agentes e scripts |
+| `riscos_e_limites_plataforma.json` | Anti-padrões e limites da plataforma em JSON |
+| `diagnostico_e_limites.json` | Sinais de diagnóstico e limites da fonte em JSON |
 | `evidencias_e_ligacoes.json` | Catálogo de tipos, padrões de código, regras de ligação e fontes em JSON |
-| `_fonte/` | Definições (`blocks.py`, `designs.py`, `evidencias.py`, `ligacoes.py`) e gerador (`render.py`). Edite as definições e regenere: `python3 _fonte/render.py .` a partir desta pasta |
+| `_fonte/` | Definições (`blocks.py`, `designs.py`, `evidencias.py`, `ligacoes.py`, `diagnostico.py`, `limites.py`, `antipadroes.py`, `limites_plataforma.py`) e gerador (`render.py`). Edite as definições e regenere: `python3 _fonte/render.py .` a partir desta pasta |
 
 ## Como ler cada tabela
 
@@ -84,8 +91,7 @@ Continuam **não confirmados** (marcados com ⚠️ nos desenhos):
 
 - metadata types do OmniStudio padrão (não constam na lista de Metadata Types da API 68.0);
 - ação Outbound Message em Flow;
-- callout em Platform Event–Triggered Flow e em Schedule-Triggered Flow;
-- anotação de Continuation em LWC;
+- callout em Platform Event–Triggered Flow e em Schedule-Triggered Flow (a fonte é o help.salesforce.com, que não abre neste ambiente);
 - tipo de Named Credential exigido pelo Event Relay;
 - Data Cloud.
 

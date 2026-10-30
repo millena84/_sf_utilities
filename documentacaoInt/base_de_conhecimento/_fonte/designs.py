@@ -82,7 +82,7 @@ def continuation():
     var = []
     for e in ALL_E:
         rows, entry = origem_ui("LWC"); rows = list(rows)
-        rows[-1] = rows[-1][:3] + ("método `@AuraEnabled(continuation=true cacheable=true)` que devolve um `Continuation`",) + rows[-1][4:5] + ("Sistema externo",) + rows[-1][6:]
+        rows[-1] = rows[-1][:3] + ("método `@AuraEnabled(continuation=true)` que devolve um `Continuation` (C25)",) + rows[-1][4:5] + ("Sistema externo",) + rows[-1][6:]
         rows += endpoint(e, "Controller Apex")
         rows += [R("Método de callback", "ApexClass", "executa", "recebe a resposta quando o sistema externo responde e devolve ao LWC", "plataforma (ao chegar a resposta)", "Componente LWC")]
         var.append((f"Endpoint {e}", rows))
@@ -184,7 +184,7 @@ OUT_SYNC = [
  D("b.3", "Screen Flow → ação HTTP Callout (declarativa)", "Sem Apex. O assistente de HTTP Callout gera um registro de External Service.", flow_http(), obs=["HTTP Callout exige Named Credential: as variantes E3–E6 não existem para este desenho.", "No XML, o registro gerado pelo HTTP Callout tem `registrationProviderType`=SchemaInferred (API 57.0+) [MA-ESR]."]),
  D("b.4", "Flow ou Apex → External Service (OpenAPI)", "A API é registrada por um schema OpenAPI; Flow e Apex usam as ações geradas.", ext_service(), obs=["External Services exigem Named Credential."]),
  D("b.5", "LWC / Screen Flow → stub SOAP gerado (WSDL2Apex)", "Callout SOAP com classes geradas a partir do WSDL.", wsdl()),
- D("b.6", "LWC → Apex Continuation", "Chamada longa (até 120 s) sem prender thread do servidor.", continuation(), obs=["Confirmado [AX-CONTL]: até 3 callouts paralelos, 3 encadeados, timeout máximo de 120 s por continuation."], validar=["Anotação usada em LWC (`@AuraEnabled(continuation=true ...)`): a página do Apex Developer Guide fala de Visualforce e \"Lightning component\", sem a anotação."]),
+ D("b.6", "LWC → Apex Continuation", "Chamada longa (até 120 s) sem prender thread do servidor.", continuation(), obs=["Confirmado [AX-CONTL]: até 3 callouts paralelos, 3 encadeados, timeout máximo de 120 s por continuation.", "Confirmado [LWC-CONT]: o método é anotado com `@AuraEnabled(continuation=true)` (pode ter `cacheable=true`); o LWC processa uma Continuation por vez [LWC-CONTL]."]),
  D("c.1", "FlexCard → Integration Procedure → HTTP Action", "Exibição de dado externo via OmniStudio.", omni_flexcard(False) + omni_flexcard(True), validar=["`OmniUiCard`, `OmniIntegrationProcedure`, `OmniDataTransform` e `OmniScript` não constam na lista de Metadata Types do Metadata API Developer Guide (API 68.0) [MA-TYPES]. Confirmar na documentação do OmniStudio. No pacote gerenciado (Vlocity) esses itens são registros/DataPacks."]),
  D("c.2", "OmniScript → Integration Procedure ou Remote Action", "Processo guiado com etapa de integração.", omniscript(), validar=["Mesmos pontos do c.1; interface da Remote Action depende do runtime (padrão ou pacote)."]),
  D("d.1", "LWC → fetch direto do navegador", "Sem servidor Salesforce no meio. Só para APIs públicas ou com token do próprio usuário.", browser_fetch(), obs=["Não usa Named Credential nem Remote Site Setting: quem autoriza é a CSP (`CspTrustedSite`) e o CORS do sistema externo."]),

@@ -1,0 +1,467 @@
+{
+ "sinais": [
+  {
+   "id": "S01",
+   "sinal": "Classe com `@RestResource`",
+   "evidencia": "C11",
+   "direcao_mecanismo": "IN · REST (Apex REST)",
+   "desenhos_candidatos": "g.3; H.3 se a classe só enfileira (C07/C18); M.3",
+   "confianca": "alta",
+   "confirmar": "quem chama: app de entrada (Connected App/ECA) ou Site (S31)"
+  },
+  {
+   "id": "S02",
+   "sinal": "Classe `global` com métodos `webservice`",
+   "evidencia": "C12",
+   "direcao_mecanismo": "IN · SOAP (Apex SOAP)",
+   "desenhos_candidatos": "g.4",
+   "confianca": "alta",
+   "confirmar": "app de entrada"
+  },
+  {
+   "id": "S03",
+   "sinal": "Campo `externalId`=true sem Apex REST/SOAP que grave o objeto",
+   "evidencia": "MA-CF",
+   "direcao_mecanismo": "INBOUND_PRESUMIDO · API padrão",
+   "desenhos_candidatos": "g.1, g.2, H.1, M.3, M.4",
+   "confianca": "baixa",
+   "confirmar": "documentação do sistema externo ou logs de API (fora do repositório)"
+  },
+  {
+   "id": "S04",
+   "sinal": "Connected App ou External Client App",
+   "evidencia": "MA-CA, MA-ECA",
+   "direcao_mecanismo": "IN (cliente externo) ou UI/SSO",
+   "desenhos_candidatos": "g.*, H.*, M.2–M.5; N.2 se `canvasConfig`/`.ecaCanvas`; N.3 se SAML",
+   "confianca": "média",
+   "confirmar": "o que o app habilita: OAuth, Canvas ou SAML"
+  },
+  {
+   "id": "S05",
+   "sinal": "App com Client Credentials (`isClientCredentialEnabled` / `isClientCredentialsFlowEnabled`)",
+   "evidencia": "MA-CA, MA-ECAG",
+   "direcao_mecanismo": "IN · máquina a máquina",
+   "desenhos_candidatos": "g.*, H.*, M.3–M.5",
+   "confianca": "alta",
+   "confirmar": "qual API o cliente usa (não aparece no XML)"
+  },
+  {
+   "id": "S06",
+   "sinal": "`callout:` ou `HttpRequest` em classe chamada por `@AuraEnabled`",
+   "evidencia": "C01/C02 + L45",
+   "direcao_mecanismo": "OUT · SYNC (UI)",
+   "desenhos_candidatos": "b.1, b.2 (E1–E6 pela fonte do endpoint)",
+   "confianca": "alta",
+   "confirmar": "fonte do endpoint (guia, seção 4)"
+  },
+  {
+   "id": "S07",
+   "sinal": "Callout em classe chamada por `@future(callout=true)` ou Queueable a partir de trigger",
+   "evidencia": "C06/C07 + L16/L40",
+   "direcao_mecanismo": "OUT · ASYNC",
+   "desenhos_candidatos": "D.1; M.1 se o host for de middleware",
+   "confianca": "alta",
+   "confirmar": "fonte do endpoint e se há writeback no registro"
+  },
+  {
+   "id": "S08",
+   "sinal": "Callout direto no contexto do trigger (sem async)",
+   "evidencia": "C02 + L16",
+   "direcao_mecanismo": "anti-padrão",
+   "desenhos_candidatos": "nenhum: callout precisa ser assíncrono em trigger [AX-TRG]",
+   "confianca": "alta",
+   "confirmar": "pode ser código morto ou caminho que falha em execução"
+  },
+  {
+   "id": "S09",
+   "sinal": "Flow com `actionType`=externalService + ESR `SchemaInferred`",
+   "evidencia": "L10 + MA-ESR",
+   "direcao_mecanismo": "OUT · HTTP Callout declarativo",
+   "desenhos_candidatos": "b.3 (Screen Flow), D.2 (`pathType`=AsyncAfterCommit), F.3 (`triggerType`=Scheduled)",
+   "confianca": "alta",
+   "confirmar": "tipo de Flow pelo `start`"
+  },
+  {
+   "id": "S10",
+   "sinal": "ESR com `registrationProviderType` MuleSoft ou Anypoint",
+   "evidencia": "MA-ESR",
+   "direcao_mecanismo": "OUT · MuleSoft",
+   "desenhos_candidatos": "M.7",
+   "confianca": "alta",
+   "confirmar": "quem chama (Flow L10 ou Apex L41)"
+  },
+  {
+   "id": "S11",
+   "sinal": "ESR com outro provedor (Standard/Custom) chamado por Flow ou `ExternalService.`",
+   "evidencia": "L10/L41",
+   "direcao_mecanismo": "OUT · External Service",
+   "desenhos_candidatos": "b.4; D.2/F.3 conforme o Flow",
+   "confianca": "alta",
+   "confirmar": "Named Credential do ESR (L09)"
+  },
+  {
+   "id": "S12",
+   "sinal": "`WebServiceCallout.invoke` / `endpoint_x`",
+   "evidencia": "C15",
+   "direcao_mecanismo": "OUT · SOAP",
+   "desenhos_candidatos": "b.5; D.1/F.1 se chamado de async",
+   "confianca": "alta",
+   "confirmar": "valor de `endpoint_x` (L42)"
+  },
+  {
+   "id": "S13",
+   "sinal": "`new Continuation(` / `@AuraEnabled(continuation=true)`",
+   "evidencia": "C17",
+   "direcao_mecanismo": "OUT · SYNC longo",
+   "desenhos_candidatos": "b.6",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S14",
+   "sinal": "Integration Procedure / FlexCard / OmniScript com HTTP Action",
+   "evidencia": "não confirmado",
+   "direcao_mecanismo": "OUT · OmniStudio",
+   "desenhos_candidatos": "c.1, c.2, M.6",
+   "confianca": "média",
+   "confirmar": "formato dos arquivos OmniStudio no projeto (não confirmado)"
+  },
+  {
+   "id": "S15",
+   "sinal": "CspTrustedSite com `isApplicableToConnectSrc` + LWC com `fetch(`",
+   "evidencia": "MA-CSP",
+   "direcao_mecanismo": "OUT · navegador",
+   "desenhos_candidatos": "d.1",
+   "confianca": "média",
+   "confirmar": "o LWC chama esse host? (`fetch` = padrão JS, nv)"
+  },
+  {
+   "id": "S16",
+   "sinal": "CspTrustedSite com `isApplicableToFrameSrc` + LWC com `<iframe>`",
+   "evidencia": "MA-CSP",
+   "direcao_mecanismo": "UI",
+   "desenhos_candidatos": "N.2 (iframe)",
+   "confianca": "média",
+   "confirmar": "—"
+  },
+  {
+   "id": "S17",
+   "sinal": "ExternalDataSource + objeto `__x`",
+   "evidencia": "L22/L23/L24",
+   "direcao_mecanismo": "OUT · virtualização",
+   "desenhos_candidatos": "e.1 (`type` OData/OData4/SfdcOrg), e.2 (`type`=ApexClassId), N.1 (SfdcOrg)",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S18",
+   "sinal": "QuickAction `type` Flow/LightningWebComponent cujo destino faz callout",
+   "evidencia": "L25 + S06/S09",
+   "direcao_mecanismo": "OUT · SYNC sob demanda",
+   "desenhos_candidatos": "f.1",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S19",
+   "sinal": "Publicação de `X__e` (C18 ou `recordCreates`)",
+   "evidencia": "C18/L13",
+   "direcao_mecanismo": "EVENTO · publica",
+   "desenhos_candidatos": "D.3 se houver assinante no projeto (C19/L12); senão E.1 (externo assina)",
+   "confianca": "média",
+   "confirmar": "assinantes externos não aparecem no projeto"
+  },
+  {
+   "id": "S20",
+   "sinal": "Trigger ou Flow assinando `X__e` sem publicador no projeto",
+   "evidencia": "C19/L12",
+   "direcao_mecanismo": "EVENTO · IN",
+   "desenhos_candidatos": "H.2",
+   "confianca": "média",
+   "confirmar": "publicador externo (fora do repositório)"
+  },
+  {
+   "id": "S21",
+   "sinal": "`PlatformEventChannelMember` em ChangeEvents",
+   "evidencia": "L18",
+   "direcao_mecanismo": "EVENTO · CDC",
+   "desenhos_candidatos": "E.2 (externo, ou M.2); E.2 interno se houver trigger em `XChangeEvent` (C21)",
+   "confianca": "média",
+   "confirmar": "assinante externo não aparece"
+  },
+  {
+   "id": "S22",
+   "sinal": "Canal customizado com `enrichedFields`/`filterExpression`",
+   "evidencia": "L18",
+   "direcao_mecanismo": "EVENTO · canal",
+   "desenhos_candidatos": "E.3; E.4 se houver EventRelayConfig",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S23",
+   "sinal": "`EventRelayConfig`",
+   "evidencia": "L19",
+   "direcao_mecanismo": "EVENTO · AWS",
+   "desenhos_candidatos": "E.4",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S24",
+   "sinal": "`ManagedEventSubscription`",
+   "evidencia": "L20",
+   "direcao_mecanismo": "EVENTO · assinante Pub/Sub",
+   "desenhos_candidatos": "E.1, E.2, M.2",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S25",
+   "sinal": "Workflow com `outboundMessages`",
+   "evidencia": "L28",
+   "direcao_mecanismo": "OUT · SOAP (Outbound Message)",
+   "desenhos_candidatos": "D.4",
+   "confianca": "alta",
+   "confirmar": "regra ativa que dispara"
+  },
+  {
+   "id": "S26",
+   "sinal": "Schedulable que dispara Batch/Queueable com `AllowsCallouts`",
+   "evidencia": "C08/C09/C07 + L40",
+   "direcao_mecanismo": "OUT/IN · lote",
+   "desenhos_candidatos": "F.1 (Batch), F.2 (Queueable encadeado)",
+   "confianca": "alta",
+   "confirmar": "agendamento real (não está no repositório)"
+  },
+  {
+   "id": "S27",
+   "sinal": "Flow `triggerType`=Scheduled com ação de callout",
+   "evidencia": "MA-FLOW",
+   "direcao_mecanismo": "OUT · lote declarativo",
+   "desenhos_candidatos": "F.3",
+   "confianca": "média",
+   "confirmar": "suporte a callout em Flow agendado (não confirmado)"
+  },
+  {
+   "id": "S28",
+   "sinal": "Objeto `__c` com campos de status/tentativas/payload + processador async",
+   "evidencia": "heurística",
+   "direcao_mecanismo": "OUT · fila",
+   "desenhos_candidatos": "G.1",
+   "confianca": "média",
+   "confirmar": "—"
+  },
+  {
+   "id": "S29",
+   "sinal": "`EmailServicesFunction`",
+   "evidencia": "L21",
+   "direcao_mecanismo": "IN · e-mail",
+   "desenhos_candidatos": "H.4",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S30",
+   "sinal": "Trigger/Flow em ContentVersion + app de entrada",
+   "evidencia": "heurística",
+   "direcao_mecanismo": "IN · arquivos",
+   "desenhos_candidatos": "H.5",
+   "confianca": "baixa",
+   "confirmar": "origem dos arquivos"
+  },
+  {
+   "id": "S31",
+   "sinal": "CustomSite cujo `guestProfile` libera classe Apex REST",
+   "evidencia": "L34",
+   "direcao_mecanismo": "IN · webhook público",
+   "desenhos_candidatos": "g.6",
+   "confianca": "alta",
+   "confirmar": "validação de assinatura no código"
+  },
+  {
+   "id": "S32",
+   "sinal": "Campo de controle (ex.: status \"enviado\") atualizado só por fora",
+   "evidencia": "heurística",
+   "direcao_mecanismo": "IN · polling",
+   "desenhos_candidatos": "M.5",
+   "confianca": "baixa",
+   "confirmar": "não detectável só pelo projeto"
+  },
+  {
+   "id": "S33",
+   "sinal": "Named Credential apontando para outra org Salesforce",
+   "evidencia": "MA-NC",
+   "direcao_mecanismo": "OUT · org↔org",
+   "desenhos_candidatos": "N.1, F.4",
+   "confianca": "média",
+   "confirmar": "host da outra org"
+  },
+  {
+   "id": "S34",
+   "sinal": "`AuthProvider` com `registrationHandler` ou `SamlSsoConfig`",
+   "evidencia": "L32 / MA-SAML",
+   "direcao_mecanismo": "SSO",
+   "desenhos_candidatos": "N.3",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S35",
+   "sinal": "WebLink `linkType`=url ou CustomTab com `url` para host externo",
+   "evidencia": "L26/L27",
+   "direcao_mecanismo": "UI",
+   "desenhos_candidatos": "N.2",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S36",
+   "sinal": "Host de Named Credential/Remote Site com padrão de middleware (ex.: domínio do MuleSoft)",
+   "evidencia": "heurística",
+   "direcao_mecanismo": "MID",
+   "desenhos_candidatos": "M.1",
+   "confianca": "média",
+   "confirmar": "confirmar com o time qual host é middleware"
+  },
+  {
+   "id": "S37",
+   "sinal": "Só `HttpCalloutMock`/`WebServiceMock` (classe de teste)",
+   "evidencia": "C23",
+   "direcao_mecanismo": "descartar",
+   "desenhos_candidatos": "nenhum",
+   "confianca": "alta",
+   "confirmar": "—"
+  },
+  {
+   "id": "S38",
+   "sinal": "Remote Site ou Named Credential sem referência no projeto",
+   "evidencia": "L01/L08",
+   "direcao_mecanismo": "lacuna",
+   "desenhos_candidatos": "qualquer OUT (E4/E5: nome/URL vindo de configuração)",
+   "confianca": "baixa",
+   "confirmar": "procurar valores em Custom Metadata, Labels e Settings (L36)"
+  }
+ ],
+ "limites": [
+  {
+   "id": "N01",
+   "informacao": "Agendamento de Apex (quando roda)",
+   "por_que": "o agendamento é feito na tela Schedule Apex ou por `System.schedule`; a classe Schedulable está no projeto, o agendamento não",
+   "efeito": "F.1/F.2: registrar a classe e marcar a frequência como \"Não informado\"",
+   "fonte": "AX-SCH"
+  },
+  {
+   "id": "N02",
+   "informacao": "Agendamento de Flow agendado",
+   "por_que": "fica no próprio Flow (`start`), então **está** no projeto",
+   "efeito": "F.3: frequência pode ser documentada",
+   "fonte": "MA-FLOW"
+  },
+  {
+   "id": "N03",
+   "informacao": "Segredos de Named Credential, External Credential e Connected App",
+   "por_que": "credenciais ficam criptografadas na org; campos como `password` e `consumerSecret` podem vir vazios ou mascarados",
+   "efeito": "nunca copiar valor; registrar só que existe credencial",
+   "fonte": "MA-NC"
+  },
+  {
+   "id": "N04",
+   "informacao": "Quais usuários têm cada Permission Set",
+   "por_que": "atribuição é dado (PermissionSetAssignment), não metadata",
+   "efeito": "não afirmar qual usuário executa a integração; só o Permission Set exigido",
+   "fonte": "nv"
+  },
+  {
+   "id": "N05",
+   "informacao": "Usuário de integração (registro, licença, perfil efetivo)",
+   "por_que": "o XML guarda apenas o nome de usuário (`user`, `runAsUser`, `integrationUser`, `clientCredentialsFlowUser`)",
+   "efeito": "registrar que há usuário configurado, sem o nome (proteção de dados)",
+   "fonte": "MA-PESC, MA-ESF, MA-WF, MA-ECAOP"
+  },
+  {
+   "id": "N06",
+   "informacao": "Valores de Custom Setting",
+   "por_que": "registros de Custom Setting são dados; a definição está no projeto, os valores não",
+   "efeito": "E6 com Custom Setting: endpoint \"Não informado\"",
+   "fonte": "nv"
+  },
+  {
+   "id": "N07",
+   "informacao": "Valores de Custom Metadata e Custom Labels",
+   "por_que": "**estão** no projeto (`customMetadata/*.md`, `labels/CustomLabels.labels`)",
+   "efeito": "E4/E5/E6 com Label: endpoint pode ser resolvido",
+   "fonte": "MA-CMD, MA-LBL"
+  },
+  {
+   "id": "N08",
+   "informacao": "Assinantes externos de Platform Event/CDC (Pub/Sub, CometD, middleware)",
+   "por_que": "a conexão é feita pelo cliente externo; o projeto só mostra o evento e, se houver, `ManagedEventSubscription`",
+   "efeito": "E.1/E.2/M.2: assinante externo \"presumido\"",
+   "fonte": "MA-MES"
+  },
+  {
+   "id": "N09",
+   "informacao": "Publicadores externos de Platform Event",
+   "por_que": "publicação via API não deixa rastro no projeto",
+   "efeito": "H.2: publicador \"presumido\"",
+   "fonte": "PE-SUB"
+  },
+  {
+   "id": "N10",
+   "informacao": "Quem usa as APIs padrão (REST, SOAP, Bulk, Composite, GraphQL)",
+   "por_que": "chamadas de entrada não exigem código na org",
+   "efeito": "g.1/g.2/g.7/H.1/M.3/M.4: só INBOUND_PRESUMIDO (campo External ID, app de entrada)",
+   "fonte": "nv"
+  },
+  {
+   "id": "N11",
+   "informacao": "Fluxo OAuth usado pelo cliente (Web Server × Username-Password)",
+   "por_que": "a escolha é do cliente externo; o XML do app não distingue",
+   "efeito": "registrar \"não determinado\"",
+   "fonte": "MA-CA"
+  },
+  {
+   "id": "N12",
+   "informacao": "Comportamento do sistema externo e do middleware",
+   "por_que": "configuração do MuleSoft, contratos e regras do outro lado ficam fora da org",
+   "efeito": "documentar só o lado Salesforce e o host",
+   "fonte": "—"
+  },
+  {
+   "id": "N13",
+   "informacao": "Volume, frequência real, erros e logs",
+   "por_que": "dados de execução (logs, Event Monitoring, fila de Outbound Message, uso de API)",
+   "efeito": "não estimar volumetria",
+   "fonte": "nv"
+  },
+  {
+   "id": "N14",
+   "informacao": "Componentes de pacote gerenciado",
+   "por_que": "Flows de pacote gerenciado não são acessíveis via Metadata API (exceto templates); código de pacote não vem no projeto",
+   "efeito": "registrar a dependência do pacote sem detalhar o conteúdo",
+   "fonte": "MA-FLOW"
+  },
+  {
+   "id": "N15",
+   "informacao": "Componentes que nunca passaram pelo repositório",
+   "por_que": "o repositório só tem o que foi versionado ou recuperado; configurações feitas direto na org podem faltar",
+   "efeito": "ausência no projeto não prova ausência na org",
+   "fonte": "—"
+  },
+  {
+   "id": "N16",
+   "informacao": "Status ativo/inativo efetivo em produção",
+   "por_que": "o XML traz o status versionado (ex.: Flow `status`, RemoteSiteSetting `isActive`), que pode divergir da org",
+   "efeito": "registrar o status do XML e a data do repositório",
+   "fonte": "MA-FLOW, MA-RSS"
+  },
+  {
+   "id": "N17",
+   "informacao": "Itens OmniStudio",
+   "por_que": "formato no projeto não confirmado (ausentes da lista de Metadata Types da API 68.0); no pacote gerenciado são dados (DataPacks)",
+   "efeito": "registrar o que houver nos arquivos, sem afirmar estrutura",
+   "fonte": "MA-TYPES"
+  }
+ ]
+}
