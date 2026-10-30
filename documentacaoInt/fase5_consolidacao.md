@@ -14,7 +14,7 @@ Transformar as jornadas em uma documentação navegável: índice, catálogos e 
 - Todos os artefatos aprovados das fases 0–3 e os docs/CSVs da fase 4 desta org.
 
 ## P. Pré-checagem
-- Toda sigla prevista tem pasta na fase 4 com `validation_report.md` aprovado; as que não têm são listadas (ALERTA — não bloqueia, entram em "Pendentes" no índice).
+- Toda sigla prevista tem pasta na fase 4 com `validation_report.md` aprovado **e** `fase4R/<SIGLA>/leitura_critica.md` com conclusão **APTO**; as que não têm são listadas (ALERTA — não bloqueia, entram em "Pendentes" no índice).
 - Todo assunto aprovado na fase 3 pertence a alguma sigla documentada ou é listado como "assunto sem sigla" (ALERTA).
 - Falhou de forma bloqueante → `fase5/PRECHECK_FALHOU.md` e encerre.
 
@@ -68,3 +68,6 @@ Termos de negócio dos assuntos e siglas técnicas usadas nos docs.
 
 ## Entrega
 Docs acima + `fase5/validation_report.md` + `fase5/RESUMO_FASE5.md`.
+
+### 📝 Arquivos que a revisora altera e salva como `_aprovado`
+Nenhum.

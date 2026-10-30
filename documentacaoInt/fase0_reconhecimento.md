@@ -146,4 +146,13 @@ Gere em `fase0/revisao/` (seed=42, `AMOSTRA_REVISAO` linhas):
 - `recon.md`: escopo, formato do projeto, volumes por tipo, tipos fora do escopo que parecem relevantes para integração
   (ex.: NamedCredential, RemoteSiteSetting, ConnectedApp, ExternalServiceRegistration, PlatformEventChannel, CustomMetadata),
   regras de relação encontradas, assuntos com vocabulário forte/fraco, riscos e recomendação para a fase 1.
+
+### 📝 Arquivos que a revisora altera e salva como `_aprovado`
+| Arquivo gerado (`_proposto`) | O que preencher | Salvar como | Exigido por |
+|---|---|---|---|
+| `fase0/relation_rules_proposto.csv` | `status_revisao` de cada regra | `fase0/relation_rules_aprovado.csv` | Fases 1, 2 |
+| `fase0/termos_genericos_proposto.csv` | `status_revisao` de cada termo | `fase0/termos_genericos_aprovado.csv` | Fase 3 |
+| `fase0/glossario_proposto.csv` | `status_revisao`; ajustar termos quando preciso | `fase0/glossario_aprovado.csv` | Fases 3, 4 |
+
+Outra ação (sem `_aprovado`): completar `fase0/revisao/gabarito_<ORG>_PARA_PREENCHER.csv` (um componente por linha, sem linhas vazias) e salvar como `_entradas/gabarito_<ORG>.csv`.
 - Atualize `<ORG>/decisions.md` e `<ORG>/questions.md`.

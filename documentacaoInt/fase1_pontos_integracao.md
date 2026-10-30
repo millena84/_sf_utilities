@@ -119,3 +119,9 @@ Para cada ponto de integração, registre **o que foi encontrado** para cada um 
 ## Entrega
 Arquivos acima + `fase1/validation_report.md` + `fase1/RESUMO_FASE1.md` (incluir tabela: pontos por direção × mecanismo, e pontos por sistema externo).
 Atualize `decisions.md` e `questions.md`.
+
+### 📝 Arquivos que a revisora altera e salva como `_aprovado`
+| Arquivo gerado (`_proposto`) | O que preencher | Salvar como | Exigido por |
+|---|---|---|---|
+| `fase1/sistemas_externos_proposto.csv` | `status_revisao`; nome correto do sistema em `comentario_revisao` quando `ajustado` | `fase1/sistemas_externos_aprovado.csv` | Fases 2, 3, 4 |
+

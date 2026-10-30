@@ -115,3 +115,12 @@ Para cada assunto, pontue cada componente pelos termos aprovados:
 ## Entrega
 Arquivos acima + `fase3/validation_report.md` + `fase3/RESUMO_FASE3.md` (incluir `resumo_assuntos` em tabela e, se houver, recall do gabarito).
 Atualize `decisions.md` e `questions.md`.
+
+### 📝 Arquivos que a revisora altera e salva como `_aprovado`
+| Arquivo gerado (`_proposto`) | O que preencher | Salvar como | Exigido por |
+|---|---|---|---|
+| `fase3/matriz_componente_assunto_proposto.csv` | `status_revisao` (ALTA em bloco; MEDIA por assunto) | `fase3/matriz_componente_assunto_aprovado.csv` | Fase 4 |
+| `fase3/conflitos_proposto.csv` | `status_revisao`; solução em `comentario_revisao` quando `ajustado` | `fase3/conflitos_aprovado.csv` | Fase 4 |
+| `fase3/pontos_orfaos_proposto.csv` | `status_revisao`; decisão (`anexar:<id_assunto>`, `novo_assunto`, `ignorar`) em `comentario_revisao` quando `ajustado` | `fase3/pontos_orfaos_aprovado.csv` | Fase 4 (obrigatório) |
+
+**Atenção:** um `_aprovado` nunca é sobrescrito por uma nova execução. Se a fase for rodada de novo, o `_proposto` muda: refaça o `_aprovado` a partir dele.

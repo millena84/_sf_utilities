@@ -86,3 +86,10 @@ Proponha, com justificativa:
 ## Entrega
 Arquivos acima + `fase2/graph.json` (nós e arestas, para reuso) + `fase2/validation_report.md` + `fase2/RESUMO_FASE2.md`.
 Atualize `decisions.md` e `questions.md`.
+
+### 📝 Arquivos que a revisora altera e salva como `_aprovado`
+| Arquivo gerado (`_proposto`) | O que preencher | Salvar como | Exigido por |
+|---|---|---|---|
+| `fase2/infra_hubs_proposto.csv` | `status_revisao` (na dúvida sobre classe com regra de negócio: `rejeitado`) | `fase2/infra_hubs_aprovado.csv` | Fase 3 |
+
+Opcional: regras de `fase2/regras_sugeridas_base.csv` que você aprovar são acrescentadas em `fase0/relation_rules_aprovado.csv`, e a Fase 2 é rodada de novo.

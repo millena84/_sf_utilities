@@ -9,6 +9,7 @@
 | `modelo_esqueletos/` | Esqueletos oficiais dos documentos (`01` sigla, `02` integração) e o registro de decisões (`00`). Copie `01` e `02` para `<DIR_TRABALHO>/_projeto/templates/` |
 | `faseM_modelo_referencia.md` | Prompt que analisa o modelo do time e gera guia de estilo, sintaxe dos blocos, mapa de seções e gabarito |
 | `fase0_reconhecimento.md` … `fase5_consolidacao.md` | Prompts. Cole um por sessão do Devin; os parâmetros vêm do `config.json` |
+| `fase4R_leitura_critica.md` | Leitura crítica dos documentos de cada sigla, por alguém que precisa entender, rastrear e intervir (sessão nova do Devin) |
 | `checklist_validacao.md` | Seu checklist de revisão, com portão, revisão humana e liberação |
 | `base_de_conhecimento/` | Base de consulta das fases 1, 2 e 4: desenhos de integração (382 variantes), guia de evidências, regras de ligação, diagnóstico, limites e anti-padrões. Copie para `<DIR_TRABALHO>/_projeto/base_de_conhecimento/`. Ver o README da pasta e a seção 14 de `00_regras_gerais.md` |
 
@@ -37,9 +38,37 @@
 ```
 Fase M (uma vez, sem org) → revisão
 Fase 0 → revisão → Fase 1 → revisão → Fase 2 → revisão → Fase 3 → revisão
-      → Fase 4 (uma sessão por sigla; comece pela sigla do modelo) → revisão → Fase 5 → revisão
+      → Fase 4 (por sigla; comece pela sigla do modelo) → Fase 4R (sessão nova) → [se NÃO APTO: Fase 4 de novo + 4R]
+      → revisão humana dos documentos → Fase 5 → revisão
 Depois da outra org: Fase 5 com ORG=AMBAS (5B)
 ```
+
+## Modo teste × execução real
+
+| | `MODO_TESTE = sim` | `MODO_TESTE = não` (execução real) |
+|---|---|---|
+| Arquivos `_aprovado` | Se não existirem, a fase usa o `_proposto` e trata `pendente` como aprovado | **Obrigatórios.** Se faltar um `_aprovado` exigido, ou houver alguma linha `pendente`, a fase **para** com `PRECHECK_FALHOU.md` |
+| Linhas `rejeitado` | Ignoradas | Ignoradas |
+| Documentos e relatórios | Marcados com `⚠ NÃO VALIDADO — gerado em MODO_TESTE` | Sem a marca |
+| Ritmo | Pode rodar as fases em sequência | É preciso revisar e salvar os `_aprovado` **entre as fases**, conforme a tabela abaixo |
+
+## Arquivos que você salva como `_aprovado` (execução real)
+
+| Depois da fase | Arquivo gerado | Salvar como | Sem ele, para a fase |
+|---|---|---|---|
+| M | `_modelo/mapa_secoes_proposto.csv` | `_modelo/mapa_secoes_aprovado.csv` | 4 |
+| 0 | `fase0/relation_rules_proposto.csv` | `fase0/relation_rules_aprovado.csv` | 1 |
+| 0 | `fase0/termos_genericos_proposto.csv` | `fase0/termos_genericos_aprovado.csv` | 3 |
+| 0 | `fase0/glossario_proposto.csv` | `fase0/glossario_aprovado.csv` | 3 |
+| 1 | `fase1/sistemas_externos_proposto.csv` | `fase1/sistemas_externos_aprovado.csv` | 2 |
+| 2 | `fase2/infra_hubs_proposto.csv` | `fase2/infra_hubs_aprovado.csv` | 3 |
+| 3 | `fase3/matriz_componente_assunto_proposto.csv` | `fase3/matriz_componente_assunto_aprovado.csv` | 4 |
+| 3 | `fase3/conflitos_proposto.csv` | `fase3/conflitos_aprovado.csv` | 4 |
+| 3 | `fase3/pontos_orfaos_proposto.csv` | `fase3/pontos_orfaos_aprovado.csv` | 4 |
+
+Fases 4, 4R e 5 não geram `_aprovado`. Também não é `_aprovado`, mas é preparado por você: `_entradas/gabarito_<ORG>.csv` (depois da Fase 0).
+
+Como preencher: troque `pendente` por `aprovado`, `ajustado` (explicando em `comentario_revisao`) ou `rejeitado` em **todas** as linhas e salve com o novo nome (UTF-8, separador vírgula). O `_proposto` fica como está.
 
 ## Fase 4 para todos os assuntos
 

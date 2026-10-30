@@ -194,6 +194,23 @@
 
 ---
 
+## FASE 4R — Leitura crítica (por sigla, sessão nova)
+
+### A. Portão
+| ID | Verificar | Aceite |
+|---|---|---|
+| F4R-G1 ⭐ | `fase4R/<SIGLA>/leitura_critica.md`: conclusão **APTO** | Sim. Se NÃO APTO, rode a Fase 4 com `problemas.csv` e uma nova 4R |
+| F4R-G2 | `validation_report.md` da 4R aprovado (inclui a declaração de leitura cega) | Sim |
+
+### B. Revisão humana
+| ID | O que verificar | Como | Aceite | Se falhar |
+|---|---|---|---|---|
+| F4R-H01 ⭐ | Placar | `leitura_critica.md`: perguntas respondidas e corretas por integração | Coerente com a sua leitura | — |
+| F4R-H02 ⭐ | Faça você mesma 3 perguntas | Escolha Q06, Q09 e Q12 para uma integração e tente responder só com o documento | Conseguiu | Registre o problema e rode Fase 4 + 4R |
+| F4R-H03 | Problemas | `problemas.csv`: as correções sugeridas fazem sentido? | Sim | Ajuste antes de mandar de volta à Fase 4 |
+
+---
+
 ## FASE 5 — Consolidação
 
 ### A. Portão

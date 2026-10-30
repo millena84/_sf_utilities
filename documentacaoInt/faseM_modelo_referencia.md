@@ -82,4 +82,10 @@ Nomes exatos da Metadata API.
 
 ## Entrega
 Arquivos acima + `_modelo/validation_report.md` + `_modelo/RESUMO_FASEM.md`.
-**Ação humana antes da Fase 0:** incluir em `tipos_metadata.txt` os tipos de `tipos_faltantes.csv`; revisar `guia_estilo.md`; aprovar `mapa_secoes_proposto.csv` (salvar como `mapa_secoes_aprovado.csv`).
+
+### 📝 Arquivos que a revisora altera e salva como `_aprovado`
+| Arquivo gerado (`_proposto`) | O que preencher | Salvar como | Exigido por |
+|---|---|---|---|
+| `_modelo/mapa_secoes_proposto.csv` | `status_revisao` e `comentario_revisao` em todas as linhas | `_modelo/mapa_secoes_aprovado.csv` | Fase 4 |
+
+Outras ações (sem `_aprovado`): incluir em `_entradas/tipos_metadata.txt` os tipos de `tipos_faltantes.csv`; revisar e, se preciso, editar direto `_projeto/guia_estilo.md` e `_modelo/sintaxe_blocos.md`.

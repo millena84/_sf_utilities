@@ -167,3 +167,10 @@ Consolide os documentos por integração. Conteúdo do inventário (decisões re
 
 ## Entrega
 Documentos em `docs/<SIGLA>/` + dossiês + `fase4/<SIGLA>/validation_report.md` + `fase4/<SIGLA>/RESUMO.md` (com a tabela **assunto → integrações documentadas** e a lista de DANGER) + `comparacao_modelo.md` quando aplicável.
+
+**Próximo passo obrigatório:** Fase 4R (leitura crítica), numa sessão nova.
+
+**Ciclo de correção:** se existir `fase4R/<SIGLA>/problemas.csv` de uma leitura crítica anterior, trate cada linha como **correção obrigatória** nesta execução e registre em `RESUMO.md` como cada uma foi resolvida.
+
+### 📝 Arquivos que a revisora altera e salva como `_aprovado`
+Nenhum. A revisão humana desta fase é feita sobre os documentos, depois da Fase 4R.
