@@ -8,3 +8,4 @@ Prompts curtos para corrigir ou completar uma fase **sem rodá-la inteira de nov
 | `fase0_preencher_atributos.md` | 0 | A coluna `atributos` (ou `estado`) do inventário veio vazia |
 | `fase0_reagrupar_nao_resolvidas.md` | 0 | A taxa de referências não resolvidas veio perto de 100% |
 | `fase1_enriquecer_sistemas_externos.md` | 1 | Os sistemas externos vieram com nomes técnicos, `DINAMICO` ou `SIS::DESCONHECIDO` |
+| `fase1_resolver_endpoints_dinamicos.md` | 1 | Pontos com endpoint `DINAMICO` ou sistema `SIS::DESCONHECIDO` (endereço vindo de Custom Metadata, Custom Label, classe de configuração) |

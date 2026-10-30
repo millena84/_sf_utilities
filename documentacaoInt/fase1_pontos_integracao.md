@@ -60,7 +60,12 @@ Inclua sinais adicionais descobertos na fase 0. Se um sinal depende de um tipo *
 
 ### 1.3 Resolução de endpoints e sistemas externos
 - Resolva `callout:Nome` → arquivo da Named Credential → host. Resolva Remote Sites → host. Literais em `setEndpoint` → host.
-  Endpoints vindos de Custom Metadata/Custom Setting: resolva se o registro estiver na base; senão `DINAMICO`.
+- **Endpoint vindo de variável — siga a trilha até o valor:** identifique de onde vem o valor passado ao `setEndpoint` (variável, campo, parâmetro, concatenação `'callout:' + x`), seguindo chamadas a classes de configuração até 2 níveis. Então:
+  - **Custom Metadata** (`Tipo__mdt.getInstance('Registro')`, `getAll()`, SOQL em `__mdt`): abra `customMetadata/Tipo.Registro.md-meta.xml` e leia o campo usado; com um registro por ambiente (`_PRD`, `_HML`, `_DEV`), registre todos e indique o de produção.
+  - **Custom Label** (`System.Label.X`): leia em `labels/CustomLabels.labels-meta.xml`.
+  - O valor encontrado é URL → domínio; ou nome de Named Credential → abra a Named Credential.
+  - **Custom Setting**: valor fora do repositório → `DINAMICO`, com observação "Custom Setting — valor fora do repositório (N06)".
+  - Registre a trilha em `fase1/revisao/endpoints_dinamicos.csv` (`id_ponto,componente_id,trilha,fonte_final,registro_ou_componente,ambiente,host,evidencias`).
   Siga as regras de `regras_ligacao.md` (`L01`–`L09`, `L19`, `L22`, `L36`, `L37`, `L42`) e os casos difíceis do fim do arquivo. Valores de Custom Setting nunca estão no repositório (`N06`); Custom Metadata e Custom Labels estão (`N07`).
 - Agrupe por host/credencial e proponha sistemas externos:
   `fase1/sistemas_externos_proposto.csv`
@@ -107,6 +112,7 @@ Para cada ponto de integração, registre **o que foi encontrado** para cada um 
 | F1-A09 | Todo sistema proposto tem ≥1 ponto | BLOQUEANTE |
 | F1-A10 | `host` contém só domínio (sem path, query, credencial) | BLOQUEANTE |
 | F1-A11 | % de pontos `DINAMICO` e `SIS::DESCONHECIDO` reportados | ALERTA |
+| F1-A20 | Todo ponto `DINAMICO` tem trilha registrada em `endpoints_dinamicos.csv` e fonte final identificada (`CustomSetting` ou `nao_resolvido` com motivo quando não houver valor no repositório) | BLOQUEANTE |
 | F1-A12 | Lacunas (sinais em tipos fora do escopo) listadas | ALERTA |
 | F1-A13 | Nenhum segredo nos artefatos (incluindo conteúdo de certificado) | BLOQUEANTE |
 | F1-A16 | Todo componente de configuração do inventário está em `componentes_integracao.csv`; todo certificado tem vencimento ou `nao_disponivel` | BLOQUEANTE |
