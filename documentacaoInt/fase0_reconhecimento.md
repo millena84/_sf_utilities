@@ -145,6 +145,7 @@ Gere em `fase0/revisao/` (seed=42, `AMOSTRA_REVISAO` linhas):
 | F0-A15 | CSVs bem formados: cabeçalho exato, mesmo nº de colunas em todas as linhas, UTF-8 | BLOQUEANTE |
 | F0-A16 | Idempotência: rodar os scripts 2x gera arquivos idênticos | BLOQUEANTE |
 | F0-A17 | Nenhum comando sf/sfdx foi utilizado (declarar no relatório) | BLOQUEANTE |
+| F0-A21 | `atributos` preenchido em ≥ 95% das linhas de Flow, ApexTrigger, LightningComponentBundle e AuraDefinitionBundle, e em toda ApexClass que tenha anotação ou interface listada; `estado` preenchido em Flow, ApexTrigger e ApexClass. Reportar contagem por tipo e 3 exemplos | BLOQUEANTE |
 | F0-A20 | Toda regra `L..` da base cujos tipos estão em escopo foi avaliada: incluída (com `id_base`) ou listada em `decisions.md` como "não ocorre nesta org" | BLOQUEANTE |
 | F0-A18 | Nenhum arquivo de `_modelo/` ou `modelo_referencia/` foi lido; `gabarito_<ORG>_PARA_PREENCHER.csv` tem uma linha por assunto e a coluna `componente_id_esperado` vazia | BLOQUEANTE |
 
