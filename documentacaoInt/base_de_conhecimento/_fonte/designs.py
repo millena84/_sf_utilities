@@ -181,11 +181,11 @@ def quick_action():
 OUT_SYNC = [
  D("b.1", "LWC / Screen Flow → cadeia de classes → callout", "O usuário aciona a tela; o servidor passa por service e client antes do callout. O usuário espera a resposta.", ui_callout(True)),
  D("b.2", "LWC / Screen Flow → uma classe que faz o callout", "Mesmo desenho do b.1, mas o próprio ponto de entrada faz a chamada.", ui_callout(False)),
- D("b.3", "Screen Flow → ação HTTP Callout (declarativa)", "Sem Apex. O assistente de HTTP Callout gera um registro de External Service.", flow_http(), obs=["HTTP Callout exige Named Credential: as variantes E3–E6 não existem para este desenho."]),
+ D("b.3", "Screen Flow → ação HTTP Callout (declarativa)", "Sem Apex. O assistente de HTTP Callout gera um registro de External Service.", flow_http(), obs=["HTTP Callout exige Named Credential: as variantes E3–E6 não existem para este desenho.", "No XML, o registro gerado pelo HTTP Callout tem `registrationProviderType`=SchemaInferred (API 57.0+) [MA-ESR]."]),
  D("b.4", "Flow ou Apex → External Service (OpenAPI)", "A API é registrada por um schema OpenAPI; Flow e Apex usam as ações geradas.", ext_service(), obs=["External Services exigem Named Credential."]),
  D("b.5", "LWC / Screen Flow → stub SOAP gerado (WSDL2Apex)", "Callout SOAP com classes geradas a partir do WSDL.", wsdl()),
- D("b.6", "LWC → Apex Continuation", "Chamada longa (até 120 s) sem prender thread do servidor.", continuation(), validar=["Limites e assinatura exata de `@AuraEnabled(continuation=true)` em LWC."]),
- D("c.1", "FlexCard → Integration Procedure → HTTP Action", "Exibição de dado externo via OmniStudio.", omni_flexcard(False) + omni_flexcard(True), validar=["Nomes de metadata OmniStudio padrão (`OmniUiCard`, `OmniIntegrationProcedure`, `OmniDataTransform`). No pacote gerenciado (Vlocity) esses itens são registros/DataPacks, não metadata."]),
+ D("b.6", "LWC → Apex Continuation", "Chamada longa (até 120 s) sem prender thread do servidor.", continuation(), obs=["Confirmado [AX-CONTL]: até 3 callouts paralelos, 3 encadeados, timeout máximo de 120 s por continuation."], validar=["Anotação usada em LWC (`@AuraEnabled(continuation=true ...)`): a página do Apex Developer Guide fala de Visualforce e \"Lightning component\", sem a anotação."]),
+ D("c.1", "FlexCard → Integration Procedure → HTTP Action", "Exibição de dado externo via OmniStudio.", omni_flexcard(False) + omni_flexcard(True), validar=["`OmniUiCard`, `OmniIntegrationProcedure`, `OmniDataTransform` e `OmniScript` não constam na lista de Metadata Types do Metadata API Developer Guide (API 68.0) [MA-TYPES]. Confirmar na documentação do OmniStudio. No pacote gerenciado (Vlocity) esses itens são registros/DataPacks."]),
  D("c.2", "OmniScript → Integration Procedure ou Remote Action", "Processo guiado com etapa de integração.", omniscript(), validar=["Mesmos pontos do c.1; interface da Remote Action depende do runtime (padrão ou pacote)."]),
  D("d.1", "LWC → fetch direto do navegador", "Sem servidor Salesforce no meio. Só para APIs públicas ou com token do próprio usuário.", browser_fetch(), obs=["Não usa Named Credential nem Remote Site Setting: quem autoriza é a CSP (`CspTrustedSite`) e o CORS do sistema externo."]),
  D("e.1", "Salesforce Connect (OData / cross-org)", "Virtualização: dado externo lido sob demanda, sem cópia.", sf_connect(False)),
@@ -350,7 +350,8 @@ def outbound_msg():
 
 def ext_subscriber(app):
     rows = [ator("Pub/Sub API (ou CometD)", "entrega os eventos ao assinante", "barramento", EXT),
-            ator(EXT, "assinante gRPC/CometD; trata replay ID", "—", "Pub/Sub API")]
+            ator(EXT, "assinante gRPC/CometD; trata replay ID", "—", "Pub/Sub API"),
+            R("Assinatura gerenciada", "ManagedEventSubscription", "lê/referencia", "`topicName`, `defaultReplay`, `state` para a RPC ManagedSubscribe (Beta, API 60.0+)", EXT, "—", "Opcional")]
     rows += app_in(app, "JWT")
     rows += [R("Permission Set (leitura do evento / do objeto)", "PermissionSet", "autoriza", "Read no `__e` ou no objeto do CDC", "plataforma", "—")]
     return rows
@@ -470,15 +471,15 @@ def staging():
 OUT_ASYNC = [
  D("D.1", "Trigger Apex → @future ou Queueable → callout", "Callout fora da transação do registro (callout síncrono em trigger não é permitido). Serve para atualizar o externo ou buscar dados e enriquecer o registro.", trig_async()),
  D("D.2", "Flow record-triggered → caminho assíncrono → callout", "Versão declarativa do D.1.", flow_async()),
- D("D.3", "Trigger/Flow publica Platform Event → assinante faz o callout", "Desacopla a transação de origem do callout.", pe_callout(), validar=["Callout em Platform Event–Triggered Flow: confirmar se exige caminho assíncrono."]),
- D("D.4", "Outbound Message (SOAP com retry)", "Legado; ainda comum em orgs antigas.", outbound_msg(), obs=["Não usa Named Credential nem Remote Site Setting."], validar=["Disponibilidade da ação Outbound Message em record-triggered Flow e na criação de novas Workflow Rules."]),
+ D("D.3", "Trigger/Flow publica Platform Event → assinante faz o callout", "Desacopla a transação de origem do callout.", pe_callout(), obs=["Confirmado [PE-SUB]: em trigger de Platform Event, \"with some exceptions, you generally can’t make Apex callouts\" — por isso o assinante Apex enfileira um Queueable."], validar=["Callout em Platform Event–Triggered Flow: não encontrado nas páginas consultadas."]),
+ D("D.4", "Outbound Message (SOAP com retry)", "Legado; ainda comum em orgs antigas.", outbound_msg(), obs=["Não usa Named Credential nem Remote Site Setting.", "No XML [MA-WF]: `workflows/Objeto.workflow` → `outboundMessages` (`endpointUrl`, `fields`, `integrationUser`, `includeSessionId`) e ação `type`=OutboundMessage na regra."], validar=["Ação Outbound Message em Flow: o valor não aparece na lista de `actionType` (InvocableActionType) da página Flow [MA-FLOW]. Criação de novas Workflow Rules: não verificado."]),
  D("E.1", "Platform Event publicado → sistema externo assina", "O Salesforce publica; o externo consome via Pub/Sub API.", pe_external()),
  D("E.2", "Change Data Capture", "Mudanças em registros viram eventos sem código de publicação.", cdc()),
  D("E.3", "Canal customizado com enriquecimento e filtro", "Seleciona eventos, adiciona campos e filtra antes de entregar.", custom_channel()),
- D("E.4", "Event Relay → Amazon EventBridge", "Ponte nativa de eventos com a AWS.", relay(), obs=["Envia eventos para fora do Salesforce (AWS)."], validar=["Tipo exato da Named Credential usada pelo Event Relay."]),
+ D("E.4", "Event Relay → Amazon EventBridge", "Ponte nativa de eventos com a AWS.", relay(), obs=["Envia eventos para fora do Salesforce (AWS).", "Confirmado [MA-ERC]: `destinationResourceName` é o nome da Named Credential com prefixo `callout:` e guarda a conta AWS; `eventChannel` é um canal `X__chn`."], validar=["Tipo (`namedCredentialType`) exigido para essa Named Credential: não informado na página."]),
  D("F.1", "Schedulable → Batch Apex com callout", "Sincronização periódica em lotes.", sched_batch("BATCH")),
  D("F.2", "Schedulable → Queueable encadeado (paginação)", "Percorre APIs paginadas.", sched_batch("QUEUE")),
- D("F.3", "Flow agendado → callout", "Versão declarativa do F.1.", sched_flow(), validar=["Suporte a HTTP Callout em Schedule-Triggered Flow."]),
+ D("F.3", "Flow agendado → callout", "Versão declarativa do F.1.", sched_flow(), validar=["Suporte a HTTP Callout em Schedule-Triggered Flow: não encontrado nas páginas consultadas."]),
  D("F.4", "Apex → Bulk API 2.0 de outra org", "Carga entre orgs.", cross_org_bulk()),
  D("G.1", "Fila de integração em objeto (staging) + processador", "Resiliência com status, tentativas e reprocessamento.", staging()),
 ]
@@ -630,14 +631,28 @@ def mid_ip():
             var.append((f"Chamador {caller} · endpoint {e}", rows))
     return var
 
+def mule_es():
+    var = []
+    for prov in ("MuleSoft", "Anypoint"):
+        for o in ("FLOW", "APEX"):
+            for e in NC_E:
+                if o == "FLOW":
+                    rows = [R("Flow", "Flow", "executa", "`actionCalls` com `actionType`=externalService", "gatilho do Flow", "Registro de External Service")]; c = "Flow"
+                else:
+                    rows = [R("Classe Apex", "ApexClass", "executa", "chama `ExternalService.<Servico>`", "trigger/serviço/UI", "Registro de External Service")]; c = "Classe Apex"
+                rows += [R("Registro de External Service", "ExternalServiceRegistration", "lê/referencia", f"`registrationProviderType`={prov}; operações da API do MuleSoft", c, "Named Credential")]
+                rows += endpoint(e, "Registro de External Service", MULE)
+                var.append((f"Fonte {prov} · chamador {'Flow' if o=='FLOW' else 'Apex'} · endpoint {e}", rows))
+    return var
+
 MID = [
  D("M.1", "Org → middleware (síncrono ou via Apex assíncrono)", "Igual aos desenhos b e D, com o endpoint apontando para o middleware.", mid_out_sync()),
  D("M.2", "Middleware assina Platform Event / CDC", "O conector do middleware consome eventos via Pub/Sub API.", mid_sub()),
  D("M.3", "Middleware → org (REST padrão ou Apex REST)", "O middleware chama a org.", mid_in("SYNC")),
  D("M.4", "Middleware → org (Bulk API 2.0)", "Batch Data Synchronization.", mid_in("BULK")),
  D("M.5", "Middleware faz polling na org", "Sem evento; consulta periódica.", mid_poll()),
- D("M.6", "Integration Procedure como middleware dentro da org", "Orquestração e transformação sem middleware externo.", mid_ip(), validar=["Nome da API Apex de invocação de Integration Procedure (runtime padrão × pacote)."]),
- D("M.7", "MuleSoft for Flow / conectores como ações de Flow", "Conectores MuleSoft expostos no Flow.", [("A validar", [R("Flow", "Flow", "executa", "usa a ação do conector", "gatilho", "conector"), ator("Conector MuleSoft", "nome, licença e metadata a confirmar", "Flow", "Sistema externo")])], validar=["Produto, licenciamento e metadata types envolvidos."]),
+ D("M.6", "Integration Procedure como middleware dentro da org", "Orquestração e transformação sem middleware externo.", mid_ip(), validar=["Metadata types OmniStudio ausentes da lista de Metadata Types (API 68.0) [MA-TYPES]; API Apex de invocação de Integration Procedure não confirmada."]),
+ D("M.7", "API MuleSoft registrada como External Service → Flow ou Apex", "A especificação vem do MuleSoft/Anypoint; Flow e Apex chamam as operações geradas.", mule_es(), obs=["Confirmado [MA-ESR]: `registrationProviderType` = MuleSoft ou Anypoint (API 63.0+)."]),
 ]
 
 # =========================== OUTRAS ===========================
@@ -665,6 +680,9 @@ def ui_int():
         rows += ([R("Página Visualforce", "ApexPage", "executa", "`<apex:canvasApp>`", "Usuário", "Canvas App")] if host == "VF" else [R("Página Lightning", "FlexiPage", "executa", "componente padrão Canvas App", "Usuário", "Canvas App")])
         rows += [R("Connected App com Canvas", "ConnectedApp", "autoriza + lê", "URL do Canvas, método de acesso (signed request/OAuth), locais permitidos", "host", "Sistema externo"), ator(EXT, "app web que recebe o signed request", "Canvas", "—")]
         var.append((f"Canvas em {'Visualforce' if host=='VF' else 'Lightning Page'}", rows))
+    var.append(("Canvas via External Client App", [USER, R("Página Lightning", "FlexiPage", "executa", "componente Canvas App", "Usuário", "Canvas App"),
+        R("External Client App", "ExternalClientApplication", "autoriza", "app registrado", "host", "—"),
+        R("Configuração Canvas do app", "ExtlClntAppCanvasSettings", "autoriza + lê", "URL e acesso do Canvas (API 66.0+)", "External Client App", "Sistema externo"), ator(EXT, "app web", "Canvas", "—")]))
     var.append(("iframe em LWC", [USER, R("Componente LWC", "LightningComponentBundle", "executa", "renderiza `<iframe>`", "Página", "Sistema externo"), R("CSP Trusted Site", "CspTrustedSite", "autoriza", "libera o domínio em `frame-src`", "navegador", "—"), ator(EXT, "precisa permitir ser emoldurado (X-Frame-Options/CSP)", "LWC", "—")]))
     return var
 

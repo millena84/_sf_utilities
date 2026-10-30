@@ -16,13 +16,17 @@ Uso no pacote de prompts (`documentacaoInt/`): é material de consulta, principa
 | [in-async.md](in-async.md) | Externo envia; Salesforce processa depois | H.1–H.5 |
 | [mid.md](mid.md) | Middleware / MuleSoft | M.1–M.7 |
 | [outras.md](outras.md) | Org↔org, UI, SSO, Data Cloud | N.1–N.4 |
+| [guia_evidencias.md](guia_evidencias.md) | Como achar cada componente nos arquivos: pasta, sufixo, campos XML, padrões de código Apex, campos sensíveis | — |
+| [regras_ligacao.md](regras_ligacao.md) | Como seguir de um componente ao próximo (documentado × heurística) | — |
+| [fontes_validacao.md](fontes_validacao.md) | Páginas oficiais consultadas e resultado da validação dos itens ⚠️ | — |
 
 Identificador de variante: `<desenho>.v<n>` (ex.: `b.2.v4`).
 
 | Arquivo de apoio | Uso |
 |---|---|
-| `desenhos.json` | Mesmo conteúdo em JSON (desenho → variantes → componentes). Preferível para agentes e scripts |
-| `_fonte/` | Definições (`blocks.py`, `designs.py`) e gerador (`render.py`). Edite as definições e regenere: `python3 _fonte/render.py .` a partir desta pasta |
+| `desenhos.json` | Desenhos em JSON (desenho → variantes → componentes, com `como_achar`). Preferível para agentes e scripts |
+| `evidencias_e_ligacoes.json` | Catálogo de tipos, padrões de código, regras de ligação e fontes em JSON |
+| `_fonte/` | Definições (`blocks.py`, `designs.py`, `evidencias.py`, `ligacoes.py`) e gerador (`render.py`). Edite as definições e regenere: `python3 _fonte/render.py .` a partir desta pasta |
 
 ## Como ler cada tabela
 
@@ -34,6 +38,7 @@ Identificador de variante: `<desenho>.v<n>` (ex.: `b.2.v4`).
 | Relação | **executa** (roda lógica), **executa (DML)** (grava dados), **lê/referencia** (é consultado/apontado), **autoriza** (libera acesso), **ator** (participante fora da metadata) |
 | Acionado por / Aciona | Quem dispara o componente e o que ele dispara a seguir. `plataforma` = o próprio Salesforce |
 | Obrigatoriedade | **Obrigatório** na variante; **Opcional** = comum, mas pode faltar |
+| Como achar no projeto | Pasta/sufixo, campo XML ou padrão de código (`Cnn`) que comprova o componente; `[ID]` = fonte oficial. Detalhes em [guia_evidencias.md](guia_evidencias.md) |
 
 "Fluxo principal" lista só os passos obrigatórios que executam ou são atores.
 
@@ -43,8 +48,8 @@ Identificador de variante: `<desenho>.v<n>` (ex.: `b.2.v4`).
 
 | Código | Variante | Componentes |
 |---|---|---|
-| E1 | Named Credential (modelo novo) + External Credential | `NamedCredential`, `ExternalCredential`, `PermissionSet` (principal), `Certificate` opcional |
-| E2 | Named Credential legada | `NamedCredential`, `AuthProvider` e `Certificate` opcionais |
+| E1 | Named Credential (`namedCredentialType`=SecuredEndpoint) + External Credential | `NamedCredential`, `ExternalCredential`, `PermissionSet` (principal), `Certificate` opcional |
+| E2 | Named Credential legada (`namedCredentialType`=Legacy) | `NamedCredential`, `AuthProvider` e `Certificate` opcionais |
 | E3 | URL fixa no código | `RemoteSiteSetting`, `Certificate` opcional |
 | E4 | Custom Metadata (endpoint, client_id…) | `CustomObject (__mdt)`, `CustomField`, `CustomMetadata`, `RemoteSiteSetting`; classe de token e `PlatformCachePartition` opcionais |
 | E5 | Custom Metadata com o nome da Named Credential | `CustomMetadata` + `NamedCredential` + `ExternalCredential` + `PermissionSet` |
@@ -71,15 +76,17 @@ Webhooks via Site (g.6) não usam OAuth.
 - **Custom Metadata com segredo:** `client_id` costuma ser aceitável; `client_secret`, senha, token e chave privada em Custom Metadata ficam legíveis por Apex e por quem vê o Setup, e vão para o repositório (segredo versionado). Prefira External Credential/Named Credential ou `Certificate`.
 - `EventRelayConfig` (E.4) envia eventos ao Amazon EventBridge.
 
-## Itens a validar
+## Validação
 
-Marcados com ⚠️ nos arquivos. Principais:
+Em 2026-10-30 os fatos foram conferidos na documentação oficial (Metadata API Developer Guide Winter '27 / API 68.0, Apex Developer Guide, Platform Events, Change Data Capture e Salesforce DX). O resultado de cada item ⚠️ antigo e a lista de páginas estão em [fontes_validacao.md](fontes_validacao.md).
 
-- OmniStudio padrão: nomes `OmniUiCard`, `OmniIntegrationProcedure`, `OmniDataTransform`, `OmniScript`; no pacote gerenciado são registros/DataPacks.
-- Callout em Platform Event–Triggered Flow e em Schedule-Triggered Flow.
-- Ação Outbound Message em Flow e criação de novas Workflow Rules.
-- Tipo de Named Credential usado pelo Event Relay.
-- MuleSoft for Flow e Data Cloud: produto e metadata types.
-- `@AuraEnabled(continuation=true)` em LWC.
+Continuam **não confirmados** (marcados com ⚠️ nos desenhos):
 
-Nada aqui foi conferido em página oficial nesta versão. Antes de usar como fonte formal, valide cada item em <https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/>.
+- metadata types do OmniStudio padrão (não constam na lista de Metadata Types da API 68.0);
+- ação Outbound Message em Flow;
+- callout em Platform Event–Triggered Flow e em Schedule-Triggered Flow;
+- anotação de Continuation em LWC;
+- tipo de Named Credential exigido pelo Event Relay;
+- Data Cloud.
+
+Mudanças desta validação nos desenhos: E1/E2 identificados por `namedCredentialType`; M.7 passou a ser "API MuleSoft registrada como External Service" (confirmado); N.2 ganhou Canvas via External Client App; E.1/E.2/E.3 ganharam `ManagedEventSubscription` opcional; textos de Connected App e External Client App usam os nomes reais dos campos.
