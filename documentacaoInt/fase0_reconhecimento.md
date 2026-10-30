@@ -131,6 +131,8 @@ Gere em `fase0/revisao/` (seed=42, `AMOSTRA_REVISAO` linhas):
 | F0-A19 | Toda regra com ocorrência aparece em `revisao/amostra_relacoes.csv` | BLOQUEANTE |
 | F0-A09 | Reverificação: todo `caminho:linha` de exemplos e da amostra existe e contém o padrão citado | BLOQUEANTE |
 | F0-A10 | Taxa de referências não resolvidas calculada; acima de `ALERTA_REFS_NAO_RESOLVIDAS` gera alerta | ALERTA |
+| F0-A10b | Sanidade da resolução: taxa de não resolvidas ≤ 95% **e** `relation_sample.csv` com ligações resolvidas para ≥ 3 tipos de destino diferentes. Caso contrário, há erro de formato de ID ou de cálculo: diagnosticar e corrigir antes de entregar | BLOQUEANTE |
+| F0-A10c | Toda referência resolvida usa exatamente o formato de ID do inventário (`Tipo::NomeApi`); a comparação de nomes ignora maiúsculas/minúsculas | BLOQUEANTE |
 | F0-A11 | Todo termo do léxico aparece em ≥1 componente; contagens recalculáveis a partir do inventário | BLOQUEANTE |
 | F0-A12 | Nº de linhas do glossário = nº de assuntos em `assuntos.csv` (todos, independentemente da sigla); todo termo em `termos_da_org` existe no léxico | BLOQUEANTE |
 | F0-A13 | Assuntos com `qtd_componentes_alcancados = 0` listados | ALERTA |
