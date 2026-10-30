@@ -88,6 +88,8 @@ Se uma regra não ocorrer na amostra, faça uma busca dirigida no inventário in
   `referencia_textual,categoria(nativo|customizado|desconhecido),qtd_ocorrencias,qtd_componentes_origem,exemplos_origem(até 3, com caminho:linha),id_regra,motivo_provavel`
   - `nativo`: tipos e namespaces do Apex (`String`, `List`, `Map`, `Set`, `System`, `Database`, `Schema`, `Test`…) e objetos/campos padrão do Salesforce.
   - `customizado`: nomes com `__c`, `__mdt`, `__e`, `__x`, ou com padrão de classe/componente do projeto.
+  - Referências cuja origem é classe de teste (`is_test = true`) não entram no arquivo nem na taxa.
+  - Tipos nativos do Apex incluem também `Http`, `HttpRequest`, `HttpResponse`, exceções padrão (`*Exception`) e classes do namespace `System`.
   (`motivo_provavel`: fora_do_escopo | pacote_gerenciado | padrao_padrao_salesforce | desconhecido)
 
 ### 0.4 Léxico da org
