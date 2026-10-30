@@ -9,3 +9,4 @@ Prompts curtos para corrigir ou completar uma fase **sem rodá-la inteira de nov
 | `fase0_reagrupar_nao_resolvidas.md` | 0 | A taxa de referências não resolvidas veio perto de 100% |
 | `fase1_enriquecer_sistemas_externos.md` | 1 | Os sistemas externos vieram com nomes técnicos, `DINAMICO` ou `SIS::DESCONHECIDO` |
 | `fase1_resolver_endpoints_dinamicos.md` | 1 | Pontos com endpoint `DINAMICO` ou sistema `SIS::DESCONHECIDO` (endereço vindo de Custom Metadata, Custom Label, classe de configuração) |
+| `fase1_resolver_endpoints_vazios.md` | 1 | Pontos OUTBOUND com endereço em branco, inclusive quando o endereço chega por parâmetro de uma classe genérica de HTTP |

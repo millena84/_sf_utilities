@@ -60,7 +60,7 @@ Inclua sinais adicionais descobertos na fase 0. Se um sinal depende de um tipo *
 
 ### 1.3 Resolução de endpoints e sistemas externos
 - Resolva `callout:Nome` → arquivo da Named Credential → host. Resolva Remote Sites → host. Literais em `setEndpoint` → host.
-- **Endpoint vindo de variável — siga a trilha até o valor:** identifique de onde vem o valor passado ao `setEndpoint` (variável, campo, parâmetro, concatenação `'callout:' + x`), seguindo chamadas a classes de configuração até 2 níveis. Então:
+- **Endpoint vindo de variável — siga a trilha até o valor:** identifique de onde vem o valor passado ao `setEndpoint` (variável, campo, parâmetro, concatenação `'callout:' + x`), seguindo chamadas a classes de configuração até 2 níveis. **Se o endereço chega por parâmetro** (ex.: classe genérica de HTTP), siga também **para trás**: localize as classes que chamam o método e a origem do argumento em cada uma, até 3 níveis. Processe todo ponto OUTBOUND sem endereço, inclusive em branco. Então:
   - **Custom Metadata** (`Tipo__mdt.getInstance('Registro')`, `getAll()`, SOQL em `__mdt`): abra `customMetadata/Tipo.Registro.md-meta.xml` e leia o campo usado; com um registro por ambiente (`_PRD`, `_HML`, `_DEV`), registre todos e indique o de produção.
   - **Custom Label** (`System.Label.X`): leia em `labels/CustomLabels.labels-meta.xml`.
   - O valor encontrado é URL → domínio; ou nome de Named Credential → abra a Named Credential.
