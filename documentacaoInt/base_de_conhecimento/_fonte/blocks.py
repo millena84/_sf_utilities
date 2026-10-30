@@ -11,8 +11,8 @@ def ator(c, papel, por, aciona, ob="Obrigatório"):
 
 # ---------- Fontes de endpoint/autenticação para callout Apex (OUT) ----------
 ENDPOINTS = {
- "E1": "Named Credential (modelo novo) + External Credential",
- "E2": "Named Credential legada (autenticação embutida)",
+ "E1": "Named Credential (namedCredentialType=SecuredEndpoint) + External Credential",
+ "E2": "Named Credential legada (namedCredentialType=Legacy, autenticação embutida)",
  "E3": "URL fixa no código Apex + Remote Site Setting",
  "E4": "Custom Metadata (endpoint, client_id etc.) + Remote Site Setting; token obtido por callout próprio",
  "E5": "Custom Metadata guarda o NOME da Named Credential + Named Credential + External Credential",
@@ -24,7 +24,7 @@ def endpoint(code, caller, alvo=EXT):
         return [
          R("Named Credential", "NamedCredential", "lê/referencia", "resolve a URL base usada em `callout:Nome`", caller, "External Credential"),
          R("External Credential", "ExternalCredential", "autoriza", "fornece o protocolo de autenticação (OAuth, JWT, Basic, Custom) e os principals", "Named Credential", alvo),
-         R("Permission Set (acesso ao principal)", "PermissionSet", "autoriza", "dá ao usuário que executa o callout acesso ao principal da External Credential", "plataforma (no momento do callout)", "—"),
+         R("Permission Set (acesso ao principal)", "PermissionSet", "autoriza", "`externalCredentialPrincipalAccesses` dá ao usuário que executa o callout acesso ao principal da External Credential", "plataforma (no momento do callout)", "—"),
          R("Certificate", "Certificate", "autoriza", "assina o JWT ou faz mutual TLS, quando o protocolo exige", "External Credential", "—", "Opcional"),
          ator(alvo, "recebe a requisição e devolve a resposta", caller, "—")]
     if code == "E2":
@@ -75,13 +75,14 @@ FLOWS = {
 
 def app_in(app, flow, caller=EXT):
     if app == "CA":
-        rows = [R("Connected App", "ConnectedApp", "autoriza", f"registra o cliente externo e libera o fluxo {FLOWS[flow]} e os escopos", caller, "Salesforce (emissão do token)")]
+        extra = " (`isClientCredentialEnabled` + `oauthClientCredentialUser`)" if flow == "CC" else ""
+        rows = [R("Connected App", "ConnectedApp", "autoriza", f"`oauthConfig`: registra o cliente externo e libera o fluxo {FLOWS[flow]}{extra} e os `scopes`", caller, "Salesforce (emissão do token)")]
     else:
         rows = [
          R("External Client App", "ExternalClientApplication", "autoriza", "registra o cliente externo", caller, "Salesforce (emissão do token)"),
-         R("Configurações OAuth do app", "ExtlClntAppOauthSettings", "autoriza", f"habilita o fluxo {FLOWS[flow]}, callback e escopos", "External Client App", "—"),
-         R("Configurações OAuth globais", "ExtlClntAppGlobalOauthSettings", "autoriza", "consumer key/secret e certificado. Não versionar segredos", "External Client App", "—"),
-         R("Políticas OAuth configuráveis", "ExtlClntAppOauthConfigurablePolicies", "autoriza", "quem pode usar o app, política de refresh token, IP relaxation, usuário run-as (Client Credentials)", "External Client App", "—"),
+         R("Configurações OAuth do app", "ExtlClntAppOauthSettings", "autoriza", f"escopos (`commaSeparatedOauthScopes`) do fluxo {FLOWS[flow]}", "External Client App", "—"),
+         R("Configurações OAuth globais", "ExtlClntAppGlobalOauthSettings", "autoriza", "`callbackUrl`, `consumerKey`, `consumerSecret` (segredo: não versionar), `certificate`, `isClientCredentialsFlowEnabled`", "External Client App", "—"),
+         R("Políticas OAuth configuráveis", "ExtlClntAppOauthConfigurablePolicies", "autoriza", "`commaSeparatedPermissionSet`/`commaSeparatedProfile`, `ipRelaxationPolicyType`, `clientCredentialsFlowUser`", "External Client App", "—"),
          R("Políticas gerais", "ExtlClntAppConfigurablePolicies", "autoriza", "habilita o app e seus plugins na org", "External Client App", "—")]
     if flow == "JWT":
         rows.append(R("Certificate (público, do cliente)", "Certificate", "autoriza", "o Salesforce valida a assinatura do JWT com o certificado carregado no app (fica no próprio app, não necessariamente como metadata Certificate)", "app", "—", "Obrigatório (no app)"))
