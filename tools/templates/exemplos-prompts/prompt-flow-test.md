@@ -3,29 +3,21 @@
 ## 1. Contexto do componente
 
 ### 1.1 O que é
-`FlowTest` (nome funcional: **Flow Test** ou **Teste de Flow**) é um recurso do Salesforce que permite criar e executar testes automatizados para validar o comportamento de Flows sem depender de execução manual. Ele registra cenários de entrada, ações simuladas e asserções sobre o resultado.
-
-Na prática, `FlowTest`:
-- define um cenário de teste vinculado a uma versão específica de um Flow;
-- especifica dados de entrada, registros de teste e expectativas de saída;
-- pode ser executado manualmente ou como parte de deploys;
-- ajuda a garantir que alterações em Flows não quebrem comportamentos existentes.
+`FlowTest` (nome funcional: **Flow Test**) é um metadata type/componente de configuração do Salesforce que deve ser analisado para extração, normalização, comparação e documentação técnica.
 
 ### 1.2 Para que serve
-- Automatizar a validação de Flows.
-- Garantir regressão em deploys.
-- Documentar comportamento esperado do Flow.
-- Reduzir testes manuais repetitivos.
+- Documentar a configuração funcional e técnica do componente.
+- Apoiar análise de impacto em automações, segurança e integrações.
+- Permitir snapshots comparáveis entre ambientes e versões.
 
 ### 1.3 Cenários típicos de uso
-- Testar Record-Triggered Flows com cenários de criação/atualização.
-- Validar decisões e branches de Screen Flows.
-- Garantir que subflows produzem resultados esperados.
-- Testar fórmulas e atribuições.
+- Auditoria e inventário técnico de metadata.
+- Diagnóstico de diferenças entre orgs/projetos.
+- Suporte a revisão de mudanças e governança de configuração.
 
 ### 1.4 Clouds / contextos
-- **Salesforce Core** — disponível onde Flow Builder e testes de Flow estão habilitados.
-- Aplicável a todos os tipos de Flow suportados por testes.
+- Salesforce Core (Setup e Metadata API).
+- Clouds e produtos relacionados conforme o componente (Sales, Service, Experience, Industries, Data/AI quando aplicável).
 
 ---
 
@@ -37,24 +29,33 @@ Na prática, `FlowTest`:
 |---|---|
 | Nome funcional UI | Flow Test |
 | Metadata type exact | `FlowTest` |
-| Pasta no projeto SFDX | `flowTests/` |
-| Arquivo padrão | `<apiName>.flowTest-meta.xml` |
-| Objeto interno (API padrão) | `FlowTestView`, `FlowTestResult` |
-| Objeto interno (Tooling API) | `FlowTest` (com campo `Metadata`) |
-| Acessível por Metadata API | Sim — retrieve/deploy |
-| Acessível por API padrão / SOQL | Sim — `FlowTestView`, `FlowTestResult` |
-| Acessível por Tooling API | Sim — `SELECT ... FROM FlowTest` |
-| Acessível por Apex | Parcial — via SOQL em views |
-| Acessível por UI | Sim — **Flow Builder → Tests** |
+| Pasta no projeto SFDX | Validar no projeto (`FlowTest` pode variar por tipo) |
+| Arquivo padrão | Validar padrão `*-meta.xml` específico do tipo |
+| Objeto interno (API padrão) | Validar objeto(s) de suporte para consulta |
+| Objeto interno (Tooling API) | Validar disponibilidade e campos expostos |
+| Acessível por Metadata API | Sim (quando suportado pelo metadata type) |
+| Acessível por API padrão / SOQL | Validar por componente |
+| Acessível por Tooling API | Validar por componente |
+| Acessível por Apex | Validar consultabilidade e limites |
+| Acessível por UI | Sim — Setup relacionado ao componente |
 
 ### 2.2 Componentes relacionados relevantes
 
 | Componente / artefato | Nome real no metadata / API | Por que importa |
 |---|---|---|
-| Flow | `Flow` (metadata/API) | Flow sendo testado. |
-| Flow Version | `FlowVersionView` | Versão específica testada. |
-| Flow Test Result | `FlowTestResult` | Resultado da execução. |
-| Apex Test / Deployment | `ApexTestResult`, `DeployDetails` | Testes podem ser executados em deploy. |
+| Dependências diretas | Validar tipo e relação | Impacta consistência da documentação |
+| Segurança/acesso | `PermissionSet`, `Profile`, objetos de acesso | Define uso efetivo do componente |
+| Automações | `Flow`, Apex, regras e orquestrações | Pode alterar comportamento em runtime |
+| Integrações | Named/External Credential, APIs, conectores | Pode depender de políticas e permissões |
+
+### 2.3 Matriz de acessibilidade
+
+| Fonte | Estrutura/metadata | Consulta API padrão | Tooling API | Setup/UI | Estado efetivo |
+|---|---|---|---|---|---|
+| Nome/identidade | Sim | Validar | Validar | Sim | Sim |
+| Configurações principais | Sim | Parcial/validar | Parcial/validar | Sim | Sim |
+| Relacionamentos/dependências | Parcial | Sim (queries dedicadas) | Sim (quando suportado) | Parcial | Sim |
+| Segurança/permissões | Não centralizado | Sim (objetos de permissão) | Parcial | Sim | Sim |
 
 ---
 
@@ -62,88 +63,90 @@ Na prática, `FlowTest`:
 
 ### 3.1 Estrutura XML / Metadata (`FlowTest`)
 
-Arquivo típico: `flowTests/<API_Name>.flowTest-meta.xml`.
-
-#### Tags principais
-
-| Tag | Ocorrência | Descrição prática |
-|---|---|---|
-| `<flowApiName>` | 1 | API Name do Flow testado. |
-| `<label>` | 1 | Nome amigável do teste. |
-| `<description>` | 0..1 | Descrição do cenário. |
-| `<flowVersion>` | 0..1 | Versão do Flow testada. |
-| `<testConditions>` | 0..1 | Bloco de condições/asserções do teste. |
-| `<testCondition>` | 0..N | Condição específica a ser validada. |
-| `<testInputs>` | 0..1 | Dados de entrada do teste. |
-| `<testInput>` | 0..N | Valor de entrada para variável/elemento. |
+- Identificar tags obrigatórias e opcionais do metadata type.
+- Mapear cardinalidade de cada bloco (`0..1`, `0..N`, `1`).
+- Registrar campos de identidade, escopo, status, ativação e referências.
+- Diferenciar valores declarados localmente vs estado efetivo na org.
 
 ### 3.2 Objetos internos via API padrão
 
-#### `FlowTestView`
+- Definir objeto(s) oficiais para leitura analítica.
+- Listar campos críticos para documentação e comparação.
+- Validar permissões necessárias para consulta.
 
-| Campo | Significado prático |
-|---|---|
-| `Id` | ID do teste. |
-| `FlowDefinitionViewId` | Definição do Flow testado. |
-| `Label` | Nome do teste. |
-| `FlowVersionId` | Versão testada. |
+### 3.3 Tooling API
 
-#### `FlowTestResult`
+- Verificar se o componente possui representação em Tooling API.
+- Confirmar disponibilidade de `Metadata`/campos equivalentes.
+- Tratar limitações de tamanho, paginação e visibilidade.
 
-| Campo | Significado prático |
-|---|---|
-| `Id` | ID do resultado. |
-| `FlowTestViewId` | Teste executado. |
-| `Status` | `Pass`, `Fail`, `Skipped`, `Error`. |
-| `StartTime`, `EndTime` | Duração. |
-| `ErrorMessage` | Mensagem de erro, se houver. |
+### 3.4 Configuração observável em outras fontes
 
-### 3.3 Exemplos de query
+- Setup/UI de administração do componente.
+- `SetupAuditTrail` para rastreabilidade.
+- Código e configuração do projeto (Apex, Flow, arquivos declarativos).
 
-```sql
-SELECT Id, Label, FlowDefinitionViewId, FlowDefinitionView.ApiName, FlowVersionId
-FROM FlowTestView
-ORDER BY Label
-```
+### 3.5 Campos mascarados, omitidos, protegidos ou irrecuperáveis
 
-```sql
-SELECT Id, FlowTestViewId, FlowTestView.Label, Status, ErrorMessage, StartTime, EndTime
-FROM FlowTestResult
-ORDER BY StartTime DESC
-```
+- Identificar dados sensíveis não exportáveis/mascarados.
+- Registrar diferenças entre o que aparece em XML, API e UI.
+- Garantir documentação sem exposição de secrets.
 
 ---
 
 ## 4. Dados relevantes dos componentes relacionados
 
-### 4.1 `Flow`
-
-- Teste é sempre vinculado a uma definição/versão de Flow.
-- Alterações na lógica do Flow podem exigir atualização dos testes.
-
-### 4.2 `FlowVersionView`
-
-- Importante para saber qual versão foi coberta pelo teste.
-
-### 4.3 `FlowTestResult`
-
-- Estado efetivo de execução. Não confundir teste definido com teste aprovado.
+- Relacionar entidades/configurações que compõem o comportamento real do `FlowTest`.
+- Mapear dependências de segurança, automação e integração.
+- Explicitar impacto de mudanças no componente principal sobre os relacionados.
 
 ---
 
-## 5. Boas práticas e pontos de atenção
+## 5. Consultas e formas de extração
 
-- Não expor dados reais ou PII em cenários de teste.
-- Documentar o propósito de cada teste na descrição.
-- Manter testes atualizados quando o Flow evolui.
-- Separar testes por cenário (sucesso, erro, caminho alternativo).
-- Executar testes antes de deploys para detectar regressão.
-- Não assumir que um teste definido foi executado com sucesso; validar `FlowTestResult`.
+### 5.1 Extração por Metadata API
+- Retrieve do tipo `FlowTest` no escopo necessário.
+- Normalização de XML para comparação entre snapshots.
+
+### 5.2 Extração por API padrão (`sf data query`)
+- Definir queries com campos explícitos (evitar `FIELDS(ALL)` quando houver limitação).
+- Tratar paginação, limites e permissões de acesso.
+
+### 5.3 Extração por Tooling API (quando aplicável)
+- Usar queries focadas em identidade, status e payload técnico.
+- Separar leitura de metadados de leitura de estado operacional.
+
+### 5.4 Consolidação
+- Unificar dados de XML, APIs e Setup em tabela interna padronizada.
+- Registrar evidências, data/hora, API version e ambiente de origem.
 
 ---
 
-## 6. Links de referência oficial
+## 6. Boas práticas e pontos de atenção
 
-- [Salesforce Help — Test a Flow](https://help.salesforce.com/s/articleView?id=sf.flow_test.htm)
-- [Salesforce Developer — FlowTest Metadata Type](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_flowtest.htm)
-- [Salesforce Help — Flow Builder](https://help.salesforce.com/s/articleView?id=sf.flow.htm)
+- Não assumir que a estrutura de `FlowTest` é igual à de outros metadata types.
+- Separar claramente configuração declarada de estado efetivo da org.
+- Validar contratos de API por versão antes da implementação.
+- Priorizar leitura somente (`read-only`) durante coleta técnica.
+- Documentar limitações, lacunas e campos indisponíveis por fonte.
+- Proteger dados sensíveis e nunca expor secrets.
+
+### 6.1 Particularidades específicas deste componente
+- define um cenário de teste vinculado a uma versão específica de um Flow;
+- especifica dados de entrada, registros de teste e expectativas de saída;
+- pode ser executado manualmente ou como parte de deploys;
+- ajuda a garantir que alterações em Flows não quebrem comportamentos existentes.
+- Automatizar a validação de Flows.
+- Garantir regressão em deploys.
+- Documentar comportamento esperado do Flow.
+- Reduzir testes manuais repetitivos.
+- Testar Record-Triggered Flows com cenários de criação/atualização.
+- Validar decisões e branches de Screen Flows.
+
+---
+
+## 7. Links de referência oficial
+
+- Salesforce Developer Documentation (Metadata API, Object Reference e Tooling API do componente).
+- Salesforce Help do componente e recursos correlatos.
+- Notas de release para mudanças de comportamento/campos por versão de API.
